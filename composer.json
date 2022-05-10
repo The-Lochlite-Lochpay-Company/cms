@@ -29,7 +29,7 @@
         "spatie/laravel-sluggable": "^3.4",
         "tightenco/ziggy": "^1.0"
     },
-    "license": "copyright",
+    "license": "proprietary",
     "autoload": {
         "psr-4": {
             "lochlite\\cms\\": "src/"
