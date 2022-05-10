@@ -22,7 +22,7 @@ class UpdateJob implements ShouldQueue
 
     public function handle()
     {
-        return event(new Update($this->currentversion);
+        return event(new Update($this->currentversion));
     }
 	
 }
