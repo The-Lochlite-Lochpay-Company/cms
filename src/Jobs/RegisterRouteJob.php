@@ -27,7 +27,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use lochlite\cms\Events\RegisterRoute;
 
 class RegisterRouteJob implements ShouldQueue
 {
@@ -42,7 +41,6 @@ class RegisterRouteJob implements ShouldQueue
 
     public function handle()
     {
-        return event(new RegisterRoute($this->array));
     }
 	
 }
