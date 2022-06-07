@@ -20,14 +20,21 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-use lochlite\cms\Events\Update;
-
-class UpdateListeners
+class CreateMailTemplatesTable extends Migration
 {
-    public function handle(Update $event)
+    public function up()
     {
-        $version = $event->currentversion;
+        Schema::create('mail_templates', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('mailable');
+            $table->text('subject')->nullable();
+            $table->longtext('html_template');
+            $table->longtext('text_template')->nullable();
+            $table->timestamps();
+        });
     }
 }

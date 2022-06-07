@@ -20,14 +20,39 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use lochlite\cms\Events\Update;
-
-class UpdateListeners
+return new class extends Migration
 {
-    public function handle(Update $event)
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
     {
-        $version = $event->currentversion;
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->id();
+            $table->string('type')->nullable();
+            $table->string('title')->nullable();
+            $table->mediumText('body')->nullable();
+            $table->string('image')->default('/assets/img/notify.webp')->nullable();
+            $table->nullableMorphs('notifiable');
+            $table->text('data')->nullable();
+            $table->timestamp('read_at')->nullable();
+            $table->timestamps();
+        });
     }
-}
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('notifications');
+    }
+};

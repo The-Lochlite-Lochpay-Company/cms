@@ -20,14 +20,29 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+namespace lochlite\cms\Jobs;
 
-use lochlite\cms\Events\Update;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use lochlite\cms\Events\RegisterRoute;
 
-class UpdateListeners
+class RegisterRouteJob implements ShouldQueue
 {
-    public function handle(Update $event)
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $array;
+
+    public function __construct($array)
     {
-        $version = $event->currentversion;
+        $this->array = $array;
     }
+
+    public function handle()
+    {
+        return event(new RegisterRoute($this->array));
+    }
+	
 }

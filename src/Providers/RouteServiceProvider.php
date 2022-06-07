@@ -20,14 +20,49 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+namespace lochlite\cms\Providers;
 
-use lochlite\cms\Events\Update;
+use Illuminate\Cache\RateLimiting\Limit;
+use App\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 
-class UpdateListeners
+class RouteServiceProvider extends ServiceProvider
 {
-    public function handle(Update $event)
+    /**
+     * The path to the "home" route for your application.
+     *
+     * This is used by Laravel authentication to redirect users after login.
+     *
+     * @var string
+     */
+    public const HOME = '/dashboard';
+
+    /**
+     * Define your route model bindings, pattern filters, etc.
+     *
+     * @return void
+     */
+    public function boot()
     {
-        $version = $event->currentversion;
+        $this->configureRateLimiting();
+
+        $this->routes(function () {
+            Route::middleware('web')
+                ->group(__DIR__ . '/../Routes/web.php');
+        });
+    }
+
+    /**
+     * Configure the rate limiters for the application.
+     *
+     * @return void
+     */
+    protected function configureRateLimiting()
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
     }
 }

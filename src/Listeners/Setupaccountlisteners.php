@@ -22,12 +22,44 @@
 
 namespace lochlite\cms\Listeners;
 
-use lochlite\cms\Events\Update;
+use lochlite\cms\Events\Setupaccount;
+use lochlite\cms\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
-class UpdateListeners
+class Setupaccountlisteners
 {
-    public function handle(Update $event)
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $version = $event->currentversion;
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  \App\Events\Setupaccount  $event
+     * @return void
+     */
+    public function handle($event = null)
+    {
+		 if(is_null($event->user)){
+         $user = Auth()->User();
+         $id = $user->id;
+		 } else {
+         $user = $event->user;
+         $id = $user->id;
+		 }
+		 if($user){
+			$user->assignRole('user');
+		 }
     }
 }

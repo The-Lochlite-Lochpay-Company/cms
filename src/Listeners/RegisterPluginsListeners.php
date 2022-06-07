@@ -22,12 +22,27 @@
 
 namespace lochlite\cms\Listeners;
 
-use lochlite\cms\Events\Update;
+use lochlite\cms\Events\RegisterPlugins;
+use lochlite\cms\lochlitecms;
+ use File;
 
-class UpdateListeners
+class RegisterPluginsListeners
 {
-    public function handle(Update $event)
+    public function handle(RegisterPlugins $event)
     {
-        $version = $event->currentversion;
+        $app = $event->app;
+         spl_autoload_register(function ($name) {
+			if(File::exists(base_path($name). '.php')){
+            include(base_path($name). '.php');
+			}
+         }); 
+		 $folder = collect(File::directories(base_path('plugins')));
+		 foreach($folder as $item){
+		 	$str = collect(glob($item . '\\Providers\\*Provider.php'))->first();
+		 	$filter = pathinfo($str);
+		 	$path = $filter['dirname'] .'\\'. $filter['filename'];
+		 	$newclass = str_replace('.php', '', strstr($str, '\plugins'));
+			$app->register(new $newclass(app()));
+        }		
     }
 }

@@ -22,12 +22,31 @@
 
 namespace lochlite\cms\Listeners;
 
-use lochlite\cms\Events\Update;
+use lochlite\cms\Models\User;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
-class UpdateListeners
+class Failedloginlisteners
 {
-    public function handle(Update $event)
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $version = $event->currentversion;
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  \App\Events\Login  $event
+     * @return void
+     */
+    public function handle($event)
+    {
+       $user = $event->user;
     }
 }

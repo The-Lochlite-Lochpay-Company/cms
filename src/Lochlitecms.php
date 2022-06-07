@@ -1,334 +1,439 @@
 <?php
+/**
+* The Lochlite & Lochpay Company - Technology that makes people's lives easier
+*
+* (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
+*
+* Software: LOCHLITE CMS
+* Version: 2.0.7  
+* License: Proprietary
+* Made in: Brazil
+* Author: The Lochlite & Lochpay Company
+* Developer: IGOR MACEDO MONTALVÃO
+* Website: https://lochlite.com | https://lochpay.com | https://gpgic.com 
+* Support: drcg@gpgic.com | drcg@lochlite.com | drcl@lochlite.com
+*
+* LEGAL NOTICE: The author(s) of the software grants the user of the software a personal, non-transferable, limited and revocable license without the right to market, resell, distribute, clone or recycle the software; The author(s) reserve the right to renew, revoke or modify the license, as well as impose fines for its violation at its most reasonable discretion.
+*
+* DISCLAIMER: The author(s) of the Software will not be responsible for any physical, moral, property damages or of any nature due to the software, its enjoyment or risks up to the limits of the legislation in force in Brazil.
+*
+* ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
+**/
 
-namespace App\Http\Controllers;
+namespace lochlite\cms;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use Carbon\Carbon;
-use App\Models\Settings;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Inertia\Inertia;
-use DB; use Auth; use Arr; use Str;
+use Illuminate\Routing\Router;
+use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use lochlite\cms\Jobs\RegisterRouteJob;
+use lochlite\cms\Models\User;
+use lochlite\cms\Models\Fileupload;
+use Artisan; use Storage; use Route; use File;
 
-class WelcomeController extends Controller
+class Lochlitecms implements LochlitecmsInterface
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    function __construct()
+    private static $instance;
+	
+    private $keypass, $module, $plugins='\plugins', $basePath;
+	
+    public function __construct($keypass=null)
     {
-         $this->middleware('permission:publish update|edit system|delete update', ['only' => ['index','show']]);
-         $this->middleware('permission:publish update', ['only' => ['create','store']]);
-         $this->middleware('permission:edit update', ['only' => ['edit','update']]);
-         $this->middleware('permission:delete update', ['only' => ['destroy']]);
+         $this->keypass = $keypass;
+         $this->basePath = app()->path();
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function start($keypass=null) {
+         return new Lochlitecms($keypass);
+    }
+	
+    public function getInstance() {
+         if(!isset(self::$instance)) {
+		 return false;
+         }
+		 return self::$instance;
+    }
+	
+    public static function setStaticInstance() {
+         if(!isset(self::$instance)) {
+		 self::$instance = new Lochlitecms();
+         }
+		 return self::$instance;
+    }
+	
+    public function setInstance() {
+         if(!isset(self::$instance)) {
+		 self::$instance = new Lochlitecms();
+         }
+		 return self::$instance;
+    }
+
+    public function setKeypass(string $keypass)
+    {
+		$this->keypass = $keypass;
+        return $this;
+    }
+
+    private function error(string $module, string $description, string $solution)
+    {
+        return collect(['success' => false, 'module' => $module, 'description' => $description, 'solution' => $solution]);
+    }
+
+    private function success(string $module, string $message=null)
+    {
+        return collect(['success' => true, 'module' => $module, 'message' => $message]);
+    }
+
+    public function application()
+    {
+        return collect(['name' => 'Lochlite CMS', 'version' => '2.0.7', 'madein' => 'Brazil', 'brand' => 'The Lochlite & Lochpay Company', 'manufacturer' => 'Lochlite e Lochpay Softwares e Pagamentos LTDA', 'license' => ['type' => 'private', 'name' => 'Proprietary', 'url' => 'https://djg.gpgic.com'], 'url_product' => 'https://lochlite.com/solutions/cms', 'homepage' => 'https://lochlite.com', 'developer' => ['name' => 'Igor Macedo Montalvão', 'contact' => ['email' => ['igor.macedo@gpgic.com', 'igmacedo01@gmail.com']]], 'support' => ['to' => 'drcg@gpgic.com', 'name' => 'Lochlite Technical Support', 'homepage' => 'https://drcg.gpgic.com']]);
+    }
+
+    public function listModule()
+    {
+        return collect(['setInstance', 'start', 'setKeypass', 'application', 'listModule', 'update', 'report', 'support', 'artisan', 'command', 'config', 'isFile', 'isFolder', 'existsFolder', 'getFolder', 'existsPluginsFolder', 'getPluginsFolder']);
+    }
+
+    public function update()
+    {
+		if(!is_null($this->keypass) && is_string($this->keypass)){
+        return Lochlitecms::success('update', 'Updated successfully.');
+		} else {
+        return Lochlitecms::error('update', 'Keypass is missing, you must provide it before proceeding.', 'Use "new Lochlitecms($keypass)" or if using static method, use "Lochlitecms::setKeypass($keypass)" to solve this problem.');
+		}
+    }
+
+    public function report($error=null)
+    {
+		if(is_null($error)){
+        return Lochlitecms::error('report', 'A mandatory parameter is used, inform it before proceeding.', 'Use "new Lochlitecms($keypass)->report("your message here")" or if using static method, use "Lochlitecms::setKeypass($keypass)->report("your message here")" to resolve this problem.');
+		} else if (!is_null($this->keypass) && is_string($this->keypass)){
+        return Lochlitecms::error('report', 'Keypass is missing, you must provide it before proceeding.', 'Use "new Lochlitecms($keypass)" or if using static method, use "Lochlitecms::setKeypass($keypass)" to solve this problem.');
+		} else {
+        return Lochlitecms::success('report', 'Reported successfully.');
+		}
+    }
+
+    public function support($message=null)
+    {
+		if(is_null($message)){
+        return Lochlitecms::error('support', 'A mandatory parameter is used, inform it before proceeding.', 'Use "new Lochlitecms($keypass)->support("your message here")" or if using static method use "Lochlitecms::setKeypass($keypass)->support("your message here")" to resolve this problem.');
+		} else if(is_null($this->keypass) && is_string($this->keypass)){
+        return Lochlitecms::error('support', 'Keypass is missing, you must provide it before proceeding.', 'Use "new Lochlitecms($keypass)" or if using static method, use "Lochlitecms::setKeypass($keypass)" to solve this problem.');
+		} else {
+        return Lochlitecms::success('support', 'Support requested successfully.');
+		}
+    }
+
+    public function artisan($command)
+    {
+        $result = Artisan::call($command);	   
+        return collect(['success' => $result == 0 ? true : false, 'output' => Artisan::output()]);
+    }
+
+    public function command($command)
+    {
+        $result = shell_exec($command);	   
+        return collect(['success' => $result == 0 ? true : false, 'output' => $result]);
+    }
+
+    public function config($param=false)
+    {
+		if($param){
+        return config()->get('lochlite.' .$param);
+	    } else {
+        return config()->get('lochlite');
+	    }
+    }
+
+    public function isFile($path)
+    {
+		 return File::isFile($path);
+    }
+
+    public function isFolder($path)
+    {
+		 return File::isDirectory($path);
+    }
+
+    public function existsFolder($path)
+    {
+         if(File::exists($path) && Lochlitecms::isFolder($path) === true){
+		 return true;
+         } else {
+		 return false;
+         }
+    }
+
+    public function getFolder($path, $param='')
+    {    if(Lochlitecms::existsFolder($path)){
+		 $provider = File::glob($path .'\*'. $param);
+		 return File::file($provider[0])->dirname();
+	     } else {
+         return Lochlitecms::existsFolder($path);
+		 }	 
+    }
+
+    public function FilesistemPlugin()
+    {
+		 return Storage::disk('plugins');
+    }
+
+    public function existsPluginsFolder()
+    {
+         return Lochlitecms::existsFolder(base_path('plugins'));
+    }
+
+    public function getPluginsFolder()
+    {    if(Lochlitecms::existsPluginsFolder()){
+         return Lochlitecms::FilesistemPlugin();
+	     } else {
+         return Lochlitecms::existsPluginsFolder();
+		 }	 
+    }
+
+    public function startPlugins($app)
+    {
+		
+      try{ 
+      
+      /**
+      * For information on 'spl_autoload_register' see: https://www.php.net/manual/en/function.spl-autoload-register.php
+      * For information on 'glob()' see: https://www.php.net/manual/en/function.glob.php
+      * For information on 'app()' see: https://laravel.com/docs/9.x/helpers#method-app
+      * base_path() returns the path of the plugins folder, something like: 'D:\www\laravel\plguins'
+      * $name returns the namespace of the plugin's service provider, something like: '\plugins\plugin-name\Providers\PluginNameServiceProvider'
+      * 'File::' is an abbreviation for the facade 'Illuminate\support\facades\File'
+      **/
+     
+      //Import file if class not found
+      spl_autoload_register(function ($name) {
+         //Check if the file exists before importing it
+         if(File::exists(base_path($name). '.php')){
+         include(base_path($name). '.php');
+         }
+      });
+     
+      //Access the plugins folder and list the directories
+      $folders = File::directories(base_path('plugins'));
+     
+      //Iterates over a set of subfolders and accesses each one of them looking for a file with 'Provider.php' in the name
+      foreach($folders as $item){
+         //Returns the absolute path of the first service provider it finds
+         $str = collect(glob($item . '\\Providers\\*Provider.php'))->first();
+         
+         //Proceed with registration if the plugin has a service provider, otherwise continue the loop
+         if(!is_null($str)){
+     
+         //Prepare the class name and namespace to be used
+         $filter = pathinfo($str);
+         $path = $filter['dirname'] .'\\'. $filter['filename'];
+         $newclass = str_replace('.php', '', strstr($str, '\plugins'));
+         
+         //Register the plugin provider
+         app()->register(new $newclass(app()));
+         }
+      }  
+     } catch(\Exception $e){
+         dd($e->getMessage());
+     }
+
+    }
+
+    public static function upload(Request $request, string $input='file', string $disk='uploads', string $folder='uploads')
     {
         try{
-		if(pages::where('welcome', true)->exists()){	
-        $welcome = Cache::get('welcome', function () {
-             $page = pages::where('welcome', true)->first();
-             Cache::put('welcome', $page);
-			 return $page;
-        });
-        $welcomebody = Cache::get('welcomebody', function () {
-             $pagebody = pagesbody::where('page_id', $page->id)->first();
-             Cache::put('welcome', $page);
-			 return $pagebody;
-        });
-        return Inertia::render('pagerendering', [
-		     'page' => $welcome,
-		     'pagebody' => $welcomebody,
-             'canLogin' => Route::has('login'),
-             'canRegister' => Route::has('register'),
-		]);
-        } else {
-        session()->flash('flash.banner', 'Página não encontrada.');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return Inertia::render('ErrorComponent', [
-             'canLogin' => Route::has('login'),
-             'canRegister' => Route::has('register'),
-		]);
-        }
+        $currentfile = $request->file($input ?? 'file');
+        $path = Storage::disk($disk ?? 'uploads')->putFile($folder ?? 'uploads', $currentfile);
+        $url = Storage::disk($disk ?? 'uploads')->url($path);
+        $size = Storage::disk($disk ?? 'uploads')->size($path);
+        $name = $currentfile->getClientOriginalName();
+        $type = $currentfile->getClientMimeType();
+        $typesystem = $currentfile->getMimeType();
+		
+		return collect(['success' => true, 'path' => $path, 'url' => $url, 'size' => $size, 'name' => $name, 'type' => $type, 'typesystem' => $typesystem]);
 		} catch(\Exception $e){
-        session()->flash('flash.banner', 'Falha ao recuperar os dados do página!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('error','Failed to retrieve página data')->setStatusCode(500);
+        return  collect(['success' => false, 'error' => $e->getMessage()]);
         }
     }
-	
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function subscriptnewsletter(Request $request)
+
+    public static function deleteUpload(string $path, string $disk='uploads')
     {
-        request()->validate([
-            'email' => 'email:rfc,dns|required|min:6|max:255',
-        ]);
         try{
-		if(!Newsletter::where('email', $request->get('email'))->exists() && !Mailchimp::isSubscribed($request->get('email'))){	
-        Mailchimp::subscribe($request->get('email'));
-		if(Mailchimp::lastActionSucceeded()){	
-        session()->flash('flash.banner', 'Parabéns! Você foi inscrito na nossa Newsletter, até mais!');
-        session()->flash('flash.bannerStyle', 'success');    
-        return redirect()->back()->with('success','Congratulations! You have been subscribed to our Newsletter, see you later!');
+		if(Storage::disk($disk ?? 'uploads')->exists($path)){
+        $result = Storage::disk($disk ?? 'uploads')->delete($path);
+		return collect(['success' => true, 'exists' => true, 'result' => $result]);
         } else {
-        session()->flash('flash.banner', 'Um erro impediu a sua inscrição, contacte o administrador para mais informações.');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->route('index')->with('error','An error prevented your registration, contact the administrator for more information.');
+		return collect(['success' => true, 'exists' => false]);
 		}
-        } else {
-        session()->flash('flash.banner', 'Esse e-mail já foi cadastrado!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->route('index')->with('error','This email has already been registered');
-		}
+		
 		} catch(\Exception $e){
-        session()->flash('flash.banner', 'Ocorreu um erro, você não foi inscrito na nossa Newsletter!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('error','An error has occurred, you have not been subscribed to our Newsletter!')->setStatusCode(500);
+        return  collect(['success' => false, 'error' => $e->getMessage()]);
         }
     }
-	
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function unsubscribenewsletter(Request $request, $email)
+
+    public static function setAvatar(Request $request)
     {
-        try{$request->session()->put('requestunsubscribe', intval($request->session()->get('requestunsubscribe') ?? 0) + 1);
-		if(session()->get('requestunsubscribe') >= 5){
-        session()->flash('flash.banner', 'Requisições em excesso, tente novamente mais tarde.');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->route('index')->with('error','Too many requests, please try again later.')->setStatusCode(429);
-        } else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-        session()->flash('flash.banner', 'Email invalido! Verifique o email e tente novamente.');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->route('index')->with('error','Invalid email! Check the email and try again.')->setStatusCode(404);
-        } else {
-		if(Newsletter::where('email', $email)->exists()){	
-        Mailchimp::unsubscribe($email);
-        session()->flash('flash.banner', 'Sua assinatura foi cancelada com sucesso, você não receberá mais e-mails.');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->route('index')->with('success','Your subscription has been successfully canceled, you will no longer receive emails.');
-        } else {
-        session()->flash('flash.banner', 'E-mail não encontrado!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->route('index')->with('error','Email not found')->setStatusCode(500);
+        try{
+		if(Auth()->check()){	
+        $user = Auth()->User();
+		if(!empty($user->profile_photo_path) && Storage::disk('uploads')->exists($user->profile_photo_path)){
+        Storage::disk('uploads')->delete($user->profile_photo_path);
 		}
+		if(!empty($user->profile_photo_path) && Fileupload::where('id', $user->id)->where('path', $user->profile_photo_path)->exists()){
+        $removeavatar = Fileupload::where('id', $user->id)->where('path', $user->profile_photo_path)->first();
+		$removeavatar->delete();
+		}
+		
+        $currentfile = $request->file('file');
+        $path = Storage::disk('uploads')->putFile('avatars', $currentfile);
+        $url = Storage::disk('uploads')->url($path);
+        $size = Storage::disk('uploads')->size($path);
+        $name = $currentfile->getClientOriginalName();
+        $type = $currentfile->getClientMimeType();
+        $typesystem = $currentfile->getMimeType();
+
+        $saveupload = Fileupload::create([
+            'user_id' => Auth()->User()->id,
+            'user_name' => Auth()->User()->name,
+            'visitor' => $request->ip(),
+            'filename' => $name,
+            'size' => $size,
+            'url' => $url,
+            'path' => $path,
+            'mimetype' => $type,
+            'status' => 'success',
+		]);
+
+        $user->update([
+		'avatar' => '/filing/'. now()->parse($saveupload->created_at)->toDateString(). '?url='. ($url ?? $user->avatar),
+		'profile_photo_path' => $path ?? $user->profile_photo_path,
+		]);
+		
+        return true;
+        } else {
+        return false;
         }
 		} catch(\Exception $e){
-        session()->flash('flash.banner', 'Ocorreu um erro, seu e-mail não foi removido de nossa Newsletter!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->route('index')->with('error','An error has occurred, your email has not been removed from our Newsletter!')->setStatusCode(500);
+        return $e->getMessage();
+        }
+	 
+    }
+
+    public static function deleteAvatar()
+    {
+        try{
+		if(Auth()->check()){	
+        $user = Auth()->User();
+		if(!empty($user->profile_photo_path) && Storage::disk('uploads')->exists($user->profile_photo_path)){
+        Storage::disk('uploads')->delete($user->profile_photo_path);
+		}
+		if(!empty($user->profile_photo_path) && Fileupload::where('id', $user->id)->where('path', $user->profile_photo_path)->exists()){
+        $removeavatar = Fileupload::where('id', $user->id)->where('path', $user->profile_photo_path)->first();
+		$removeavatar->delete();
+		}
+        $user->update(['avatar' => '', 'profile_photo_path' => '']);
+        return true;
+        } else {
+        return false;
+        }
+		} catch(\Exception $e){
+        return false;
         }
     }
-	
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function contact()
+
+    public static function cmsDisk()
     {
-         return Inertia::render('Contact', [
-             'canLogin' => Route::has('login'),
-             'canRegister' => Route::has('register'),
+        config()->set('filesystems.disks', ['lochlitecms' => ['driver' => 'local', 'root' => base_path('lochlite\cms'), 'throw' => false]]);
+		return Storage::disk('lochlitecms');	 
+    }
+
+    public function getRoutes()
+    {
+      try{ 
+        $routes = cache()->get('routes', function(){
+			cache()->put('routes', collect(), 100);
+			return cache()->get('routes');
+		});
+		foreach($routes as $item){
+			if(!is_array($item->get('type')) && $item->get('type') == 'resource'){
+			app()->router->resource($item->get('url'), $item->get('controller'), ['middleware' => $item->get('middleware') ?? ['web'], 'names' => $item->get('name') ?? null, 'only' => $item->get('only') ?? null, 'except' => $item->get('except') ?? null]);	 
+			} else {
+			app()->router->match($item->get('type'), $item->get('url'), [$item->get('controller'), $item->get('action')])->middleware($item->get('middleware') ?? ['web'])->name($item->get('name') ?? null);	 
+		    }
+		}
+	    return;
+     } catch(\Exception $e){
+         dd($e->getMessage());
+     }
+	 }
+
+    public static function addRoutes(array $array)
+    {
+        RegisterRouteJob::dispatch($array);
+    }
+
+    public static function defaultRoutes()
+    {
+         lochlitecms::addRoutes([
+         ['type' => 'resource', 'url' => '/blog', 'controller' => \lochlite\cms\Controllers\WelcomeBlogController::class, 'middleware' => ['web'], 'name' => 'blog'],
+         ['type' => 'resource', 'url' => '/page', 'controller' => \lochlite\cms\Controllers\WelcomePagesController::class, 'middleware' => ['web'], 'name' => 'page', 'only' => ['index']],
+         ['type' => 'resource', 'url' => '/dashboard', 'controller' => \lochlite\cms\Controllers\HomeController::class, 'middleware' => ['web', 'auth:sanctum', config('jetstream.auth_session'), 'verified'], 'name' => 'dashboard', 'only' => ['index']],
+
+         ['type' => 'resource', 'url' => '/manager/dashboard', 'controller' => \lochlite\cms\Controllers\Admin\AdminController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerdashboard'],
+         ['type' => 'resource', 'url' => '/manager/pages', 'controller' => \lochlite\cms\Controllers\Admin\PagesController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerpages'],
+         ['type' => 'resource', 'url' => '/manager/posts', 'controller' => \lochlite\cms\Controllers\Admin\PostsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerposts'],
+         ['type' => 'resource', 'url' => '/manager/notifications', 'controller' => \lochlite\cms\Controllers\Admin\NotificationsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managernotifications'],
+         ['type' => 'resource', 'url' => '/manager/roles', 'controller' => \lochlite\cms\Controllers\Admin\PermissionsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerroles'],
+         ['type' => 'resource', 'url' => '/manager/users', 'controller' => \lochlite\cms\Controllers\Admin\UsersController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerusers'],
+         ['type' => ['POST', 'PATH'], 'url' => '/manager/comments/setapproved/{id}', 'action' => 'moderatesetapproved', 'controller' => \lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managercomments.setapproved'],
+         ['type' => ['GET', 'HEAD'], 'url' => '/manager/comments/moderate', 'action' => 'moderate', 'controller' => \lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managercomments.moderate'],
+         ['type' => 'resource', 'url' => '/manager/comments', 'controller' => \lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managercomments'],
+         ['type' => 'resource', 'url' => '/manager/contacts', 'controller' => \lochlite\cms\Controllers\Admin\ContactsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managercontacts'],
+         ['type' => 'resource', 'url' => '/manager/feedbacks', 'controller' => \lochlite\cms\Controllers\Admin\FeedbacksController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerfeedbacks'],
+         ['type' => 'resource', 'url' => '/manager/feedback-responses', 'controller' => \lochlite\cms\Controllers\Admin\FeedbackresponsesController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerfeedback-responses'],
+         ['type' => 'resource', 'url' => '/manager/scheduling', 'controller' => \lochlite\cms\Controllers\Admin\SchedulingController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerscheduling'],
+         ['type' => 'resource', 'url' => '/manager/storange', 'controller' => \lochlite\cms\Controllers\Admin\StorangeController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerstorange'],
+         ['type' => ['GET', 'HEAD'], 'url' => '/manager/storange/download/{id}', 'action' => 'download', 'controller' => \lochlite\cms\Controllers\Admin\StorangeController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerstorange.download'],
+         ['type' => 'resource', 'url' => '/manager/emails', 'controller' => \lochlite\cms\Controllers\Admin\EmailsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'manageremails'],
+         ['type' => 'resource', 'url' => '/manager/emailsmodel', 'controller' => \lochlite\cms\Controllers\Admin\EmailsmodelController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'manageremailsmodel'],
+         ['type' => 'resource', 'url' => '/manager/settings', 'controller' => \lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managersettings'],
+         ['type' => ['GET', 'HEAD'], 'url' => '/manager/settings/cleandata', 'action' => 'cleandata', 'controller' => \lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managersettings.cleandata'],
+
+         ['type' => ['GET', 'HEAD'], 'url' => '/filing/{date}', 'action' => 'filefiling', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'filefiling'],
+         ['type' => ['GET', 'HEAD'], 'url' => '/download/{id}', 'action' => 'download', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'download'],
+         ['type' => ['GET', 'HEAD'], 'url' => '/contact', 'action' => 'contact', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'contact'],
+         ['type' => ['POST', 'PATH'], 'url' => '/sendcontact', 'action' => 'sendcontact', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'sendcontact'],
+         ['type' => ['GET', 'HEAD'], 'url' => '/feedback', 'action' => 'feedback', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'feedback'],
+         ['type' => ['POST', 'PATH'], 'url' => '/sendfeedback', 'action' => 'sendfeedback', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'sendfeedback'],
+         ['type' => ['POST', 'PATH'], 'url' => '/sendfeedback', 'action' => 'sendfeedback', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'sendfeedback'],
+         ['type' => ['POST', 'PATH'], 'url' => '/sendcomment/{id}', 'action' => 'sendcomment', 'controller' => \lochlite\cms\Controllers\WelcomeBlogController::class, 'middleware' => ['web'], 'name' => 'sendcomment'],
+         ['type' => ['POST', 'PATH'], 'url' => '/sendvotes/{id}', 'action' => 'sendvotes', 'controller' => \lochlite\cms\Controllers\WelcomeBlogController::class, 'middleware' => ['web'], 'name' => 'sendvotes'],
+         ['type' => ['POST', 'PATH'], 'url' => '/newsletter/subscript', 'action' => 'subscriptnewsletter', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'subscriptnewsletter'],
+         ['type' => ['GET', 'HEAD'], 'url' => '/newsletter/unsubscribe/{email}', 'action' => 'unsubscribenewsletter', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'unsubscribenewsletter'],
+         ['type' => 'resource', 'url' => '/', 'controller' => \lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'index', 'only' => ['index']],
          ]);
     }
-	
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sendcontact(Request $request)
+
+    public static function generateStylesheet(array $array)
     {
-        request()->validate([
-            'name' => 'string|required|min:6|max:255',
-            'email' => 'email:rfc,dns|required|min:6|max:255',
-            'message' => 'string|required|min:20|max:255',
-        ]);
-        try{
-		if(Contacts::where('visitor', request()->getClientIp())->whereTime('created_at', '>', Carbon::now()->subMinutes(30)->toDateTimeString())->exists()){	
-        session()->flash('flash.banner', 'Você enviou uma mensagem recentemente, tente novamente mais tarde!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('error','Your message has not been registered.')->setStatusCode(429);
-        } else {
-        $contact = Contacts::create([
-            'visitor' => request()->getClientIp(),
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'message' => $request->get('message'),
-		]);
-        session()->flash('flash.banner', 'Sua mensagem foi recebida com sucesso.');
-        session()->flash('flash.bannerStyle', 'success');    
-        return redirect()->back()->with('success','Contact received successfully.');
-        }
-		} catch(\Exception $e){
-        session()->flash('flash.banner', 'Sua mensagem não foi registrada!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('error','Your contact has not been registered')->setStatusCode(500);
-        }
+         foreach($array as $item){
+	     try{ 	
+         echo '<link rel="stylesheet" href="' .($item["href"] ?? ""). '" />';
+	     } catch(\Exception $e){}	
+	     }
+    }
+
+    public static function generateScript(array $array)
+    {
+         foreach($array as $item){
+	     try{ 	
+         echo '<script src="' .($item["src"] ?? ""). '"></script>';
+	     } catch(\Exception $e){}	
+	     }
     }
 	
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function feedback()
-    {
-         $questions = Feedbacks::all();
-         return Inertia::render('Feedback', [
-             'canLogin' => Route::has('login'),
-             'canRegister' => Route::has('register'),
-             'questions' => $questions,
-         ]);
-    }
 	
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sendfeedback(Request $request)
-    {
-        request()->validate([
-            'name' => 'string|required|min:6|max:255',
-            'email' => 'email:rfc,dns|required|min:6|max:255',
-            'responses' => 'array|required',
-        ]);
-        try{
-		if(Feedbacksresponses::where('visitor', request()->getClientIp())->whereTime('created_at', '>', Carbon::now()->subMinutes(30)->toDateTimeString())->exists()){	
-        session()->flash('flash.banner', 'Você registrou um feedback recentemente, tente novamente mais tarde!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('error','Your feedback has not been registered.')->setStatusCode(429);
-        } else {
-        $feedback = Feedbacksresponses::create([
-            'visitor' => request()->getClientIp(),
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'responses' => json_encode($request->get('responses')),
-		]);
-        session()->flash('flash.banner', 'Seu feedbeck foi recebido com sucesso.');
-        session()->flash('flash.bannerStyle', 'success');    
-        return redirect()->back()->with('success','Feedback received successfully.');
-        }
-        } catch(\Exception $e){
-        session()->flash('flash.banner', 'Seu feedback não foi registrado!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('error','Your feedback has not been registered.')->setStatusCode(500);
-        }
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        try{
-		if(pages::where('url', $id)->orWhere('id', $id)->exists()){	
-        $page = pages::where('url', $id)->orWhere('id', $id)->first();
-        $pagebody = pagesbody::where('page_id', $page->id)->first();
-		 if(session()->has('views')){
-		 if(!collect(session()->get('views'))->where('id', $page->id)->count() === 0){
-			session()->push('views', ['id' => $page->id]);
-			$page->update(['views' => intval($page->views) + 1]);
-		 }
-		 } else {
-			session()->put('views', array());
-			session()->push('views', ['id' => $page->id]);
-			$page->update(['views' => intval($page->views) + 1]);
-		 }	
-        return Inertia::render('pagerendering', [
-             'canLogin' => Route::has('login'),
-             'canRegister' => Route::has('register'),
-             'title' => $page->title ?? 'Sem titulo',
-             'page' => $page,
-             'pagebody' => $pagebody,
-             'version' => '2.0.5',
-         ]);
-        } else {
-        session()->flash('flash.banner', 'Página não encontrada.');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('success','Página not found');
-        }
-		} catch(\Exception $e){
-        session()->flash('flash.banner', 'Falha ao recuperar os dados do página!');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('error','Failed to retrieve página data')->setStatusCode(500);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
+

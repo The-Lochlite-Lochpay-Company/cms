@@ -20,29 +20,56 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Jobs;
+namespace lochlite\cms\Listeners;
 
-use Illuminate\Bus\Queueable;
+use lochlite\cms\Events\Historyaccount;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use lochlite\cms\Events\Update;
+use lochlite\cms\Models\User;
+use lochlite\cms\Models\History;
 
-class UpdateJob implements ShouldQueue
+class Historyaccountlisteners
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public $currentversion;
-
-    public function __construct($currentversion)
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $this->currentversion = $currentversion;
+        //
     }
 
-    public function handle()
+    /**
+     * Handle the event.
+     *
+     * @param  \App\Events\Historyaccount  $event
+     * @return void
+     */
+    public function handle(Historyaccount $event)
     {
-        return event(new Update($this->currentversion));
+         $user = $event->user;
+         $id = $user->id;
+         $name = $user->name;
+         $action = $event->action;
+         $description = $event->description;
+         $history = History::create([
+            'userid' => $id,
+            'username' => $name,
+            'ip' => session()->get('ip'),
+            'agent' => session()->get('browser'),
+            'device' => session()->get('device'),
+            'system' => session()->get('system'),
+            'city' => session()->get('city'),
+            'state' => session()->get('states'),
+            'country' => session()->get('country'),
+            'longitude' => session()->get('longitude'),
+            'latitude' => session()->get('latitude'),
+            'url' => url()->current(),
+            'urlprevious' => url()->previous(),
+            'action' => $action,
+            'description' => $description,
+         ]);
+		return $history;
     }
-	
 }

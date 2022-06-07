@@ -20,14 +20,39 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
-use lochlite\cms\Events\Update;
-
-class UpdateListeners
+class CreateCommentsReplyTable extends Migration
 {
-    public function handle(Update $event)
+    /**
+     * Run the migrations.
+     */
+    public function up()
     {
-        $version = $event->currentversion;
+        Schema::create('commentsreplies', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('comment_id')->nullable();
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('avatar')->default('/assets/img/avatar.webp')->nullable();
+            $table->longText('comment')->nullable();
+            $table->string('status')->default('pending')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('comment_id')->references('id')->on('comments');
+            $table->timestamps();
+        });
+        DB::statement("ALTER TABLE commentsreplies MODIFY comment LONGBLOB");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::dropIfExists('commentsreply');
     }
 }

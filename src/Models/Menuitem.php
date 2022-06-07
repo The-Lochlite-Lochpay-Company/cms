@@ -20,14 +20,12 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+namespace lochlite\cms\Models;
 
-use lochlite\cms\Events\Update;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class UpdateListeners
+class Menuitem extends Model
 {
-    public function handle(Update $event)
-    {
-        $version = $event->currentversion;
-    }
+    use HasFactory;
 }

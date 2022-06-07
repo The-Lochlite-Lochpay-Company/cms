@@ -20,14 +20,51 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Laravel\Fortify\Fortify;
 
-use lochlite\cms\Events\Update;
-
-class UpdateListeners
+return new class extends Migration
 {
-    public function handle(Update $event)
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
     {
-        $version = $event->currentversion;
+        Schema::table('users', function (Blueprint $table) {
+            $table->text('two_factor_secret')
+                    ->after('password')
+                    ->nullable();
+
+            $table->text('two_factor_recovery_codes')
+                    ->after('two_factor_secret')
+                    ->nullable();
+
+            if (Fortify::confirmsTwoFactorAuthentication()) {
+                $table->timestamp('two_factor_confirmed_at')
+                        ->after('two_factor_recovery_codes')
+                        ->nullable();
+            }
+        });
     }
-}
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(array_merge([
+                'two_factor_secret',
+                'two_factor_recovery_codes',
+            ], Fortify::confirmsTwoFactorAuthentication() ? [
+                'two_factor_confirmed_at',
+            ] : []));
+        });
+    }
+};

@@ -20,14 +20,64 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+namespace lochlite\cms\Models;
 
-use lochlite\cms\Events\Update;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use lochlite\cms\Models\Commentsreply;
+use lochlite\cms\Models\Posts;
+use lochlite\cms\Models\User;
 
-class UpdateListeners
+class Comments extends Model
 {
-    public function handle(Update $event)
+    use HasFactory;
+	
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['user_id', 'post_id', 'avatar', 'name', 'email', 'comment', 'status'];	
+
+
+    /**
+     * Get the content of the post.
+     */
+    public function user()
     {
-        $version = $event->currentversion;
+        return $this->hasMany(User::class, 'id', 'user_id');
     }
+
+    /**
+     * Get the content of the post.
+     */
+    public function post()
+    {
+        return $this->hasMany(Posts::class, 'id', 'post_id');
+    }
+
+    /**
+     * Get the content of the post.
+     */
+    public static function pending()
+    {
+        return Comments::where('status', 'pending');
+    }
+
+    /**
+     * Get the content of the post.
+     */
+    public static function approved()
+    {
+        return Comments::where('status', 'approved');
+    }
+
+    /**
+     * Get the content of the post.
+     */
+    public function reply()
+    {
+        return $this->hasMany(Commentsreply::class, 'comment_id', 'id');
+    }
+
 }

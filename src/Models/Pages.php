@@ -20,14 +20,45 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+namespace lochlite\cms\Models;
 
-use lochlite\cms\Events\Update;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use lochlite\cms\Models\Pagesbody;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+use Auth;
 
-class UpdateListeners
+class Pages extends Model
 {
-    public function handle(Update $event)
+    use HasFactory;
+    use HasSlug;
+	
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['title', 'authors', 'category', 'keywords', 'description', 'url', 'welcome', 'status'];	
+
+    /**
+     * Get the content of the post.
+     */
+    public function body()
     {
-        $version = $event->currentversion;
+        return $this->hasMany(Pagesbody::class, 'page_id', 'id')->first();
+    }
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('url')
+			->usingLanguage('pt')
+            ->doNotGenerateSlugsOnUpdate()
+            ->preventOverwrite();
     }
 }

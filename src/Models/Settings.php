@@ -22,13 +22,10 @@
 
 namespace lochlite\cms\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use lochlite\cms\Models\User;
-use Carbon\Carbon;
-use lochlite\cms\Models\Settings;
+use Illuminate\Database\Eloquent\Model;
 
-class Updates extends Model
+class Settings extends Model
 {
     use HasFactory;
 	
@@ -38,12 +35,67 @@ class Updates extends Model
      * @var string[]
      */
     protected $fillable = [
-	'version',
-	'lastversion',
-	'path',
-	'backup',
-	'description',
+	'appname',
+	'domain',
+	'timezone',
+	'mailfrom_name',
+	'mailfrom_address',
+	'mail_host',
+	'mail_port',
+	'mail_protocol',
+	'mail_encryption',
+	'mail_username',
+	'mail_password',
+	'mailgun_domain',
+	'mailgun_secret',
+	'mailgun_endpoint',
+	'mailgun_scheme',
+	'mailchimp_api',
+	'mailchimp_list_id',
+	'analytics_view_id',
+	'lochlite_api_services',
+	'lochlite_api_update',
+	'sftp_host',
+	'sftp_username',
+	'sftp_password',
+	'sftp_private_key',
+	'ftp_host',
+	'ftp_username',
+	'ftp_password',
+	'ftp_port',
+	'ftp_ssl',
+	'ftp_passive',
+	'ftp_timeout',
+	'ftp_root',
+	'aws_access_key_id',
+	'aws_secret_access_key',
+	'aws_default_region',
+	'aws_bucket',
+	'aws_use_path_style_endpoint',
+	'memcached_username',
+	'memcached_password',
+	'memcached_host',
+	'memcached_port',
+	'redis_url',
+	'redis_host',
+	'redis_username',
+	'redis_password',
+	'redis_port',
+	'pusher_app_id',
+	'pusher_app_key',
+	'pusher_app_secret',
+	'pusher_app_cluster',
+	'backup_key',
+	'mail_driver',
+	'broadcast_driver',
+	'session_driver',
+	'session_lifetime',
+	'filesystem_disk',
+	'cache_driver',
+	'text_editor',
+	'debug',
+	'running',
+	'default',
 	'status',
     ];	
-
 }
