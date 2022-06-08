@@ -52,8 +52,10 @@ class MainServiceProvider extends ServiceProvider
 		@Jetstream::ignoreRoutes();
 	   
 	   $settings = Cache::get('settings', function () {
-		     $listsettings = Settings::where('default', true)->orWhere('id', 1)->first();
-             Cache::put('settings', $listsettings, now()->addHours(5));
+		   if(Settings::where('default', true)->orWhere('id', 1)->exists()){ 
+		   $listsettings = Settings::where('default', true)->orWhere('id', 1)->first();
+		   } else {$listsettings = collect();}
+			   Cache::put('settings', $listsettings, now()->addHours(5));
 			 return $listsettings;
         });
 		Config::set('app.name', $settings->appname ?? 'App Name');
