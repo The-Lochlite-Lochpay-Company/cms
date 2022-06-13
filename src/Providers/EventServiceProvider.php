@@ -20,7 +20,7 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Providers;
+namespace Lochlite\cms\Providers;
 
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Failed;
@@ -32,19 +32,19 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
-use lochlite\cms\Events\Update;
-use lochlite\cms\Listeners\UpdateListeners;
-use lochlite\cms\Events\RegisterPlugins;
-use lochlite\cms\Listeners\RegisterPluginsListeners;
-use lochlite\cms\Events\RegisterRoute;
-use lochlite\cms\Listeners\RegisterRouteListeners;
+use Lochlite\cms\Events\Update;
+use Lochlite\cms\Listeners\UpdateListeners;
+use Lochlite\cms\Events\RegisterPlugins;
+use Lochlite\cms\Listeners\RegisterPluginsListeners;
+use Lochlite\cms\Events\RegisterRoute;
+use Lochlite\cms\Listeners\RegisterRouteListeners;
 
-use lochlite\cms\Events\Setupaccount;
-use lochlite\cms\Listeners\Setupaccountlisteners;
-use lochlite\cms\Listeners\Successfulloginlisteners;
-use lochlite\cms\Listeners\Failedloginlisteners;
-use lochlite\cms\Listeners\Authenticationattemptlisteners;
-use lochlite\cms\Listeners\Successfullogoutlisteners;
+use Lochlite\cms\Events\Setupaccount;
+use Lochlite\cms\Listeners\Setupaccountlisteners;
+use Lochlite\cms\Listeners\Successfulloginlisteners;
+use Lochlite\cms\Listeners\Failedloginlisteners;
+use Lochlite\cms\Listeners\Authenticationattemptlisteners;
+use Lochlite\cms\Listeners\Successfullogoutlisteners;
 
 class EventServiceProvider extends ServiceProvider
 {

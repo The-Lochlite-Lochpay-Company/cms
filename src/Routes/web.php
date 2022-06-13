@@ -23,12 +23,12 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Jetstream\Jetstream;
-use lochlite\cms\Controllers\WelcomeController;
-use lochlite\cms\Controllers\WelcomeBlogController;
-use lochlite\cms\Controllers\Admin\CommentsController;
-use lochlite\cms\Controllers\Admin\StorangeController;
-use lochlite\cms\Controllers\Admin\SettingsController;
-use lochlite\cms\lochlitecms;
+use Lochlite\cms\Controllers\WelcomeController;
+use Lochlite\cms\Controllers\WelcomeBlogController;
+use Lochlite\cms\Controllers\Admin\CommentsController;
+use Lochlite\cms\Controllers\Admin\StorangeController;
+use Lochlite\cms\Controllers\Admin\SettingsController;
+use Lochlite\cms\Lochlitecms;
 
 /*
 |--------------------------------------------------------------------------

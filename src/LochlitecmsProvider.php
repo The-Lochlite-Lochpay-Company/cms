@@ -20,15 +20,17 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms;
+namespace Lochlite\cms;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Console\Scheduling\Schedule;
-use lochlite\cms\Providers\MainServiceProvider;
-use lochlite\cms\Providers\EventServiceProvider;
-use lochlite\cms\Providers\RouteServiceProvider;
-use lochlite\cms\Jobs\UpdateJob;
-use lochlite\cms\Events\RegisterPlugins;
+use Lochlite\cms\Providers\MainServiceProvider;
+use Lochlite\cms\Providers\EventServiceProvider;
+use Lochlite\cms\Providers\RouteServiceProvider;
+use Lochlite\cms\Middleware\MainMiddleware;
+use Lochlite\cms\Jobs\UpdateJob;
+use Lochlite\cms\Events\RegisterPlugins;
 use Gate;
 
 class LochlitecmsProvider extends ServiceProvider
@@ -40,17 +42,17 @@ class LochlitecmsProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('lochlitecms', function($app) {
-            $package = new Lochlitecms();
-			return $package->setInstance();
-        });
-        $this->app->register(MainServiceProvider::class);
-        $this->app->register(EventServiceProvider::class);
-        $this->app->booted(function () {
-        $this->app->register(RouteServiceProvider::class);
+         $this->app->bind('Lochlitecms', function($app) {
+             $package = new Lochlitecms();
+		 	return $package->setInstance();
+         });
+         $this->app->register(RouteServiceProvider::class);
+         $this->app->register(MainServiceProvider::class);
+         $this->app->register(EventServiceProvider::class);
+         $this->app->booted(function () {
              $schedule = $this->app->make(Schedule::class);
              $schedule->job(new UpdateJob('2.0.6'))->daily();
-        });
+         });
     }
 
     /**
@@ -58,18 +60,15 @@ class LochlitecmsProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Kernel $kernel)
     {
-
-     Gate::before(function ($user, $ability) {
-         if ($user->hasRole('Admin')) {
-             return true;
-         }
-     });
-     $this->loadMigrationsFrom(__DIR__ . './Migrations');
-     $this->loadViewsFrom(__DIR__ . './Views', 'lochlitecms');
-     $this->loadRoutesFrom(__DIR__ . './Routes/web.php');
-	 $instanceCMS = lochlitecms::setStaticInstance();	
+     $kernel->pushMiddleware(MainMiddleware::class);
+     $this->loadMigrationsFrom(__DIR__ . '/Migrations');
+     $this->loadViewsFrom(__DIR__ . '/Views', 'lochlitecms');
+     $this->loadViewsFrom(base_path('plugins'), 'plugins');
+     $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
+	 $instanceCMS = Lochlitecms::setStaticInstance();	
+     $instanceCMS->startConfig();
      $instanceCMS->defaultRoutes();
      $instanceCMS->startPlugins(app());
      $instanceCMS->getRoutes();

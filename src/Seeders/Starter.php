@@ -1,43 +1,23 @@
 <?php
-/**
-* The Lochlite & Lochpay Company - Technology that makes people's lives easier
-*
-* (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
-*
-* Software: LOCHLITE CMS
-* Version: 2.0.7  
-* License: Proprietary
-* Made in: Brazil
-* Author: The Lochlite & Lochpay Company
-* Developer: IGOR MACEDO MONTALVÃO
-* Website: https://lochlite.com | https://lochpay.com | https://gpgic.com 
-* Support: drcg@gpgic.com | drcg@lochlite.com | drcl@lochlite.com
-*
-* LEGAL NOTICE: The author(s) of the software grants the user of the software a personal, non-transferable, limited and revocable license without the right to market, resell, distribute, clone or recycle the software; The author(s) reserve the right to renew, revoke or modify the license, as well as impose fines for its violation at its most reasonable discretion.
-*
-* DISCLAIMER: The author(s) of the Software will not be responsible for any physical, moral, property damages or of any nature due to the software, its enjoyment or risks up to the limits of the legislation in force in Brazil.
-*
-* ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
-**/
 
-namespace lochlite\cms\Seeders;
+namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use lochlite\cms\Mail\DefaultMail;
-use lochlite\cms\Mail\TwoMail;
-use lochlite\cms\Mail\ThreeMail;
-use lochlite\cms\Mail\FourMail;
-use lochlite\cms\Mail\FiveMail;
-use lochlite\cms\Mail\SixMail;
-use lochlite\cms\Mail\SevenMail;
-use lochlite\cms\Mail\EightMail;
-use lochlite\cms\Mail\NineMail;
-use lochlite\cms\Mail\TenMail;
-use lochlite\cms\Models\User;
-use lochlite\cms\Models\Settings;
-use lochlite\cms\Models\Posts;
-use lochlite\cms\Models\Postsbody;
+use Lochlite\cms\Mail\DefaultMail;
+use Lochlite\cms\Mail\TwoMail;
+use Lochlite\cms\Mail\ThreeMail;
+use Lochlite\cms\Mail\FourMail;
+use Lochlite\cms\Mail\FiveMail;
+use Lochlite\cms\Mail\SixMail;
+use Lochlite\cms\Mail\SevenMail;
+use Lochlite\cms\Mail\EightMail;
+use Lochlite\cms\Mail\NineMail;
+use Lochlite\cms\Mail\TenMail;
+use Lochlite\cms\Models\User;
+use Lochlite\cms\Models\Settings;
+use Lochlite\cms\Models\Posts;
+use Lochlite\cms\Models\Postsbody;
 use Spatie\MailTemplates\Models\MailTemplate;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
