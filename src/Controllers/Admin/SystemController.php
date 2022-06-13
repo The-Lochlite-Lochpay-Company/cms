@@ -23,27 +23,13 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Lochlite\cms\Models\Settings;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class SettingsController extends Controller
+class SystemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    function __construct()
-    {
-         $this->middleware('permission:publish system|edit system|delete system', ['only' => ['index','show']]);
-         $this->middleware('permission:publish system', ['only' => ['create','store']]);
-         $this->middleware('permission:edit system', ['only' => ['edit','update','cleandata']]);
-         $this->middleware('permission:delete system', ['only' => ['destroy']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -51,46 +37,37 @@ class SettingsController extends Controller
      */
     public function index()
     {
-        $settings = Settings::where('domain', request()->getHttpHost())->orWhere('default', true)->first();
-		 if (request()->wantsJson()) {
-           return $posts;
-         }
-         return Lochlitecms::renderPanelCMS('Panel/settings/index', [
+         $mysql = \DB::select('select version()')[0]->{'version()'};
+         return Lochlitecms::renderPanelCMS('Panel/system/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
-             'title' => 'Configurações do sistema | Lochlite CMS',
+             'title' => 'Gerenciamento de rotas | Lochlite CMS',
              'user' => Auth::User(),
              'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
              'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
              'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Configurações do sistema',
-             'breadcrumbCurrentSection' => 'Configurações',
-             'settings' => $settings,
+             'framework' => app()->version(),
+             'langplatform' => phpversion(),
+             'extensions' => collect(['CURL' => phpversion('curl'), 'FTP' => phpversion('ftp'), 'FILEINFO' => phpversion('fileinfo'), 'INTL' => phpversion('intl'), 'LDAP' => phpversion('ldap'), 'GD' => phpversion('gd'), 'GMP' => phpversion('gmp'), 'EXIF' => phpversion('exif'), 'MBSTRING' => phpversion('mbstring'), 'IMAP' => phpversion('imap'), 'MYSQLI' => phpversion('mysqli'), 'PDO_MYSQL' => phpversion('pdo_mysql'), 'PDO_SQLITE' => phpversion('pdo_sqlite'), 'PDO_FIREBIRD' => phpversion('pdo_firebird'), 'PDO_ODBC' => phpversion('pdo_odbc'), 'ODBC' => phpversion('odbc'), 'PDO_PGSQL' => phpversion('pdo_pgsql'), 'PGSQL' => phpversion('pgsql'), 'OPENSSL' => phpversion('openssl'), 'SOAP' => phpversion('soap'), 'SOCKETS' => phpversion('sockets'), 'SODIUM' => phpversion('sodium'), 'SQLITE3' => phpversion('sqlite3'), 'TIDY' => phpversion('tidy'), 'XSL' => phpversion('xsl')]),
+             'mysql' => $mysql,
+             'host' => request()->getSchemeAndHttpHost(),
+             'server' => (request()->server('SERVER_SIGNATURE') ?? 'NOT SIGNED'). ' - ' .(request()->server('SERVER_SOFTWARE') ?? 'CGI'). ' '  .(request()->server('SERVER_PROTOCOL') ?? 'HTTP/1.1'),
+             'breadcrumbCurrentTitle' => 'Gerenciamento de rotas',
+             'breadcrumbCurrentSection' => 'Rotas',
              'version' => Lochlitecms::application()->get('version'),
          ]);
-    }
+	}
 
     /**
-     * Display a listing of the resource.
+     * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function cleandata()
+    public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/settings/cleandata', [
-             'canLogin' => Route::has('login'),
-             'canRegister' => Route::has('register'),
-             'title' => 'Configurações do sistema | Lochlite CMS',
-             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
-             'user' => Auth::User(),
-             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
-             'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Configurações do sistema',
-             'breadcrumbCurrentSection' => 'Configurações',
-             'version' => Lochlitecms::application()->get('version'),
-         ]);
+        //
     }
-	
+
     /**
      * Store a newly created resource in storage.
      *
@@ -98,8 +75,30 @@ class SettingsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {	
-         return Lochlitecms::optimize($request->get('module')); 
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
     /**
@@ -109,8 +108,19 @@ class SettingsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $module)
+    public function update(Request $request, $id)
     {
-		return Lochlitecms::setConfig($module, $request);
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }

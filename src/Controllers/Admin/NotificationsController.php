@@ -20,14 +20,14 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Notifications;
-use lochlite\cms\Events\Publishnotifications;
+use Lochlite\cms\Models\Notifications;
+use Lochlite\cms\Events\Publishnotifications;
 use Newsletter as Mailchimp;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -44,7 +44,7 @@ class NotificationsController extends Controller
 		 if (request()->wantsJson()) {
            return $notifications;
          }
-         return Inertia::render('Panel/notifications/index', [
+         return Lochlitecms::renderPanelCMS('Panel/notifications/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de notificações | Lochlite CMS',
@@ -55,7 +55,7 @@ class NotificationsController extends Controller
              'breadcrumbCurrentSection' => 'Notificações',
              'notifications' => $notifications,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
 
     /**
@@ -65,7 +65,7 @@ class NotificationsController extends Controller
      */
     public function create()
     {
-         return Inertia::render('Panel/notifications/create', [
+         return Lochlitecms::renderPanelCMS('Panel/notifications/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de notificações | Lochlite CMS',
@@ -75,7 +75,7 @@ class NotificationsController extends Controller
              'breadcrumbCurrentTitle' => 'Gestão de notificações',
              'breadcrumbCurrentSection' => 'Notificações',
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
 
     /**

@@ -20,48 +20,38 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace Lochlite\cms\Mail;
+namespace lochlite\cms\Events;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
-use Lochlite\cms\Models\User;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Spatie\MailTemplates\TemplateMailable;
 
-class EightMail extends TemplateMailable
+class Setupaccount
 {
-    //use Queueable, SerializesModels;
-
-    public $name, $email, $phone, $avatar, $address, $addressNumber, $city, $state, $country, $appname;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+    public $user;
 
     /**
-     * Create a new message instance.
+     * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct($user = null)
     {
-        $this->name = $user->name;
-        $this->email = $user->email;
-        $this->phone = $user->phone;
-        $this->avatar = $user->avatar;
-        $this->address = $user->address;
-        $this->addressNumber = $user->address_number;
-        $this->city = $user->city;
-        $this->state = $user->state;
-        $this->country = $user->country;
-        $this->appname = config()->get('app.name');
+        $this->user = $user;
     }
 
-
     /**
-     * Build the message.
+     * Get the channels the event should broadcast on.
      *
-     * @return $this
+     * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function build()
+    public function broadcastOn()
     {
-    //
+        return new PrivateChannel('channel-name');
     }
 }

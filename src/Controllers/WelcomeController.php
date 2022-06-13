@@ -20,19 +20,19 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers;
+namespace Lochlite\cms\Controllers;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Fileupload;
-use lochlite\cms\Models\Newsletter;
-use lochlite\cms\Models\Contacts;
-use lochlite\cms\Models\Pages;
-use lochlite\cms\Models\Pagesbody;
-use lochlite\cms\Models\Feedbacks;
-use lochlite\cms\Models\Feedbacksresponses;
+use Lochlite\cms\Models\Fileupload;
+use Lochlite\cms\Models\Newsletter;
+use Lochlite\cms\Models\Contacts;
+use Lochlite\cms\Models\Pages;
+use Lochlite\cms\Models\Pagesbody;
+use Lochlite\cms\Models\Feedbacks;
+use Lochlite\cms\Models\Feedbacksresponses;
 use Newsletter as Mailchimp;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Carbon\Carbon; use Inertia\Inertia; use Response; use Cache; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 use Lochlitecms;
@@ -65,6 +65,8 @@ class WelcomeController extends Controller
 		])->rootview('lochlitecms::app');
         } else {
         return Inertia::render('Welcome', [
+             'title' => Lochlitecms::config('appname'),
+             'description' => 'aaaaaaaaaaaaa',
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
 		])->rootview('lochlitecms::app');

@@ -38,7 +38,7 @@ return new class extends Migration
             $table->id();
 			$table->unsignedBigInteger('page_id')->nullable();
 			$table->longText('body')->nullable();
-            $table->foreign('page_id')->references('id')->on('pages');
+            $table->foreign('page_id')->references('id')->on('pages')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         DB::statement("ALTER TABLE pagesbodies MODIFY body LONGBLOB");

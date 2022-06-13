@@ -20,13 +20,13 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Contacts;
-use lochlite\cms\Models\User;
+use Lochlite\cms\Models\Contacts;
+use Lochlite\cms\Models\User;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -57,7 +57,7 @@ class ContactsController extends Controller
 		 if (request()->wantsJson()) {
            return $contacts;
          }
-         return Inertia::render('Panel/contacts/index', [
+         return Lochlitecms::renderPanelCMS('Panel/contacts/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de chamados | Lochlite CMS',
@@ -68,7 +68,7 @@ class ContactsController extends Controller
              'breadcrumbCurrentSection' => 'Contatos',
              'contacts' => $contacts,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -78,7 +78,7 @@ class ContactsController extends Controller
      */
     public function create()
     {
-         return Inertia::render('Panel/contacts/create', [
+         return Lochlitecms::renderPanelCMS('Panel/contacts/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de chamados | Lochlite CMS',
@@ -88,7 +88,7 @@ class ContactsController extends Controller
              'breadcrumbCurrentTitle' => 'Gestão de chamados',
              'breadcrumbCurrentSection' => 'Contatos',
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -135,7 +135,7 @@ class ContactsController extends Controller
         try{
 		if(Contacts::where('id', $id)->exists()){	
         $contact = Contacts::find($id);
-         return Inertia::render('Panel/contacts/show', [
+         return Lochlitecms::renderPanelCMS('Panel/contacts/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de chamados | Lochlite CMS',
@@ -146,7 +146,7 @@ class ContactsController extends Controller
              'breadcrumbCurrentSection' => 'Contatos',
              'contact' => $contact,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Mensagem não encontrada.');
         session()->flash('flash.bannerStyle', 'danger');    
@@ -171,7 +171,7 @@ class ContactsController extends Controller
 		if(Contacts::where('id', $id)->exists()){	
         $contact = Contacts::find($id);
     
-         return Inertia::render('Panel/contacts/edit', [
+         return Lochlitecms::renderPanelCMS('Panel/contacts/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de chamados | Lochlite CMS',
@@ -182,7 +182,7 @@ class ContactsController extends Controller
              'breadcrumbCurrentSection' => 'Contatos',
              'contact' => $contact,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Mensagem não encontrada.');
         session()->flash('flash.bannerStyle', 'danger');    

@@ -20,13 +20,13 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Feedbacks;
-use lochlite\cms\Models\Feedbacksresponses;
+use Lochlite\cms\Models\Feedbacks;
+use Lochlite\cms\Models\Feedbacksresponses;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -55,7 +55,7 @@ class FeedbacksController extends Controller
     {
         $feedbacks = Feedbacks::latest()->get();
         $feedbacksresponses = Feedbacksresponses::latest()->paginate(15);
-         return Inertia::render('Panel/feedbacks/index', [
+         return Lochlitecms::renderPanelCMS('Panel/feedbacks/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -67,7 +67,7 @@ class FeedbacksController extends Controller
              'feedbacks' => $feedbacks,
              'feedbacksresponses' => $feedbacksresponses,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -77,7 +77,7 @@ class FeedbacksController extends Controller
      */
     public function create()
     {
-         return Inertia::render('Panel/feedbacks/create', [
+         return Lochlitecms::renderPanelCMS('Panel/feedbacks/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -87,7 +87,7 @@ class FeedbacksController extends Controller
              'breadcrumbCurrentTitle' => 'Gestão de feedbacks',
              'breadcrumbCurrentSection' => 'Feedbacks',
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -139,7 +139,7 @@ class FeedbacksController extends Controller
         try{
 		if(Feedbacks::where('id', $id)->exists()){	
         $feedback = Feedbacks::find($id);
-         return Inertia::render('Panel/feedbacks/show', [
+         return Lochlitecms::renderPanelCMS('Panel/feedbacks/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -150,7 +150,7 @@ class FeedbacksController extends Controller
              'breadcrumbCurrentSection' => 'Feedbacks',
              'feedback' => $feedback,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Feedback não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    
@@ -175,7 +175,7 @@ class FeedbacksController extends Controller
 		if(Feedbacks::where('id', $id)->exists()){	
         $feedback = Feedbacks::find($id);
     
-         return Inertia::render('Panel/feedbacks/edit', [
+         return Lochlitecms::renderPanelCMS('Panel/feedbacks/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks| Lochlite CMS',
@@ -186,7 +186,7 @@ class FeedbacksController extends Controller
              'breadcrumbCurrentSection' => 'Feedbacks',
              'feedback' => $feedback,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Feedback não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    

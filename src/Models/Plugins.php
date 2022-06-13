@@ -20,7 +20,7 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Models;
+namespace Lochlite\cms\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,4 +28,37 @@ use Illuminate\Database\Eloquent\Model;
 class Plugins extends Model
 {
     use HasFactory;
+		
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [	
+		 'path',
+		 'namespace',
+		 'provider',
+		 'version',
+		 'last_version',
+		 'logo',
+		 'screenshots',
+		 'homepage',
+		 'authors',
+		 'name',
+		 'description',
+		 'failedmessage',
+		 'keywords',
+		 'license',
+		 'update',
+		 'keysecret',
+		 'status',
+         ];
+
+    protected $casts = [
+        'authors' => 'array',
+        'keywords' => 'array',
+        'screenshots' => 'array',
+        'support' => 'array'
+    ];
+
 }

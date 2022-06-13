@@ -40,8 +40,8 @@ return new class extends Migration
 			$table->string('name')->default('User name')->nullable();
 			$table->string('avatar')->default('/assets/images/faces-clipart/pic-1.png')->nullable();
 			$table->string('vote')->default('upvote')->nullable();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('post_id')->references('id')->on('posts');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -20,13 +20,13 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Feedbacksresponses;
-use lochlite\cms\Models\User;
+use Lochlite\cms\Models\Feedbacksresponses;
+use Lochlite\cms\Models\User;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -57,7 +57,7 @@ class FeedbackresponsesController extends Controller
 		 if (request()->wantsJson()) {
            return $feedbacksresponses;
          }
-         return Inertia::render('Panel/feedbacks/responses/index', [
+         return Lochlitecms::renderPanelCMS('Panel/feedbacks/responses/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -68,7 +68,7 @@ class FeedbackresponsesController extends Controller
              'breadcrumbCurrentSection' => 'Feedbacks',
              'feedbacksresponses' => $feedbacksresponses,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
 
     /**
@@ -103,7 +103,7 @@ class FeedbackresponsesController extends Controller
         try{
 		if(Feedbacksresponses::where('id', $id)->exists()){	
          $feedback = Feedbacksresponses::find($id);
-         return Inertia::render('Panel/feedbacks/responses/show', [
+         return Lochlitecms::renderPanelCMS('Panel/feedbacks/responses/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -114,7 +114,7 @@ class FeedbackresponsesController extends Controller
              'breadcrumbCurrentSection' => 'Feedbacks',
              'feedback' => $feedback,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Resposta não encontrada.');
         session()->flash('flash.bannerStyle', 'danger');    

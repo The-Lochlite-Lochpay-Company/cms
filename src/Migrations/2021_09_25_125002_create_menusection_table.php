@@ -41,7 +41,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->boolean('visible')->default(true)->nullable();
             $table->boolean('showtitle')->default(true)->nullable();
-            $table->foreign('menuid')->references('id')->on('menus');
+            $table->foreign('menuid')->references('id')->on('menus')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

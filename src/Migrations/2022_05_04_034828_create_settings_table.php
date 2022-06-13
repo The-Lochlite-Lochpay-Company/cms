@@ -36,6 +36,7 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
 			$table->string('appname')->default('App Name')->nullable();
+			$table->longText('description')->nullable();
 			$table->string('domain')->nullable();
 			$table->string('timezone')->default('America/Sao_Paulo')->nullable();
 			$table->string('language')->default('pt_BR')->nullable();

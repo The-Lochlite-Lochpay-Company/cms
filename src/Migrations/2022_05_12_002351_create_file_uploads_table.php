@@ -45,7 +45,7 @@ return new class extends Migration
             $table->string('url')->nullable();
 			$table->string('type')->default('public')->nullable();
 			$table->string('status')->default('processing')->nullable();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

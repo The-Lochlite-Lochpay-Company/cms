@@ -20,15 +20,15 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Settings;
-use lochlite\cms\Models\Posts;
-use lochlite\cms\Models\Postsbody;
+use Lochlite\cms\Models\Settings;
+use Lochlite\cms\Models\Posts;
+use Lochlite\cms\Models\Postsbody;
 use Spatie\Sitemap\Sitemap;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -58,7 +58,7 @@ class PostsController extends Controller
 		 if (request()->wantsJson()) {
            return $posts;
          }
-         return Inertia::render('Panel/posts/index', [
+         return Lochlitecms::renderPanelCMS('Panel/posts/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de artigos | Lochlite CMS',
@@ -69,7 +69,7 @@ class PostsController extends Controller
              'breadcrumbCurrentSection' => 'Artigos',
              'posts' => $posts,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -79,7 +79,7 @@ class PostsController extends Controller
      */
     public function create()
     {
-         return Inertia::render('Panel/posts/create', [
+         return Lochlitecms::renderPanelCMS('Panel/posts/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de artigos | Lochlite CMS',
@@ -89,7 +89,7 @@ class PostsController extends Controller
              'breadcrumbCurrentTitle' => 'Gestão de artigos',
              'breadcrumbCurrentSection' => 'Artigos',
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -147,7 +147,7 @@ class PostsController extends Controller
         try{
 		if(Posts::where('id', $id)->exists()){	
         $post = Posts::find($id);
-         return Inertia::render('Panel/posts/show', [
+         return Lochlitecms::renderPanelCMS('Panel/posts/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de artigos | Lochlite CMS',
@@ -158,7 +158,7 @@ class PostsController extends Controller
              'breadcrumbCurrentSection' => 'Artigos',
              'post' => $post,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Artigo não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    
@@ -184,7 +184,7 @@ class PostsController extends Controller
         $post = Posts::find($id);
         $postbody = Postsbody::where('post_id', $post->id)->first();
     
-         return Inertia::render('Panel/posts/edit', [
+         return Lochlitecms::renderPanelCMS('Panel/posts/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de artigos | Lochlite CMS',
@@ -196,7 +196,7 @@ class PostsController extends Controller
              'post' => $post,
              'postbody' => $postbody,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Artigo não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    

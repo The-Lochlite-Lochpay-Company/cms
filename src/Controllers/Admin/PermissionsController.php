@@ -20,11 +20,11 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -55,7 +55,7 @@ class PermissionsController extends Controller
 		 if (request()->wantsJson()) {
            return $roles;
          }
-         return Inertia::render('Panel/roles/index', [
+         return Lochlitecms::renderPanelCMS('Panel/roles/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de permissões | Lochlite CMS',
@@ -66,7 +66,7 @@ class PermissionsController extends Controller
              'breadcrumbCurrentSection' => 'Permissões',
              'roles' => $roles,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -77,7 +77,7 @@ class PermissionsController extends Controller
     public function create()
     {
         $permission = Permission::get();
-         return Inertia::render('Panel/roles/create', [
+         return Lochlitecms::renderPanelCMS('Panel/roles/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de permissões | Lochlite CMS',
@@ -88,7 +88,7 @@ class PermissionsController extends Controller
              'breadcrumbCurrentSection' => 'Permissões',
              'permission' => $permission,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -129,7 +129,7 @@ class PermissionsController extends Controller
         $role = Role::find($id);
         $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")->where("role_has_permissions.role_id",$id)->get();
     
-        return Inertia::render('Panel/roles/show', [
+        return Lochlitecms::renderPanelCMS('Panel/roles/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de permissões | Lochlite CMS',
@@ -141,7 +141,7 @@ class PermissionsController extends Controller
              'roledata' => $role,
              'rolePermissions' => $rolePermissions,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Papel não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    
@@ -167,7 +167,7 @@ class PermissionsController extends Controller
         $role = Role::find($id);
         $permission = Permission::get();
         $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)->pluck('role_has_permissions.permission_id')->all();
-         return Inertia::render('Panel/roles/edit', [
+         return Lochlitecms::renderPanelCMS('Panel/roles/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de permissões | Lochlite CMS',
@@ -180,7 +180,7 @@ class PermissionsController extends Controller
              'roledata' => $role,
              'rolePermissions' => $rolePermissions,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Papel não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    

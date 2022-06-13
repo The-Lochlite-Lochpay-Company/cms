@@ -38,7 +38,7 @@ return new class extends Migration
             $table->id();
 			$table->unsignedBigInteger('post_id')->nullable();
 			$table->longText('body')->nullable();
-            $table->foreign('post_id')->references('id')->on('posts');
+            $table->foreign('post_id')->references('id')->on('posts')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         DB::statement("ALTER TABLE postsbodies MODIFY body LONGBLOB");

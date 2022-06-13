@@ -20,25 +20,25 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\User;
-use lochlite\cms\Models\Emails;
-use lochlite\cms\Mail\DefaultMail;
-use lochlite\cms\Mail\TwoMail;
-use lochlite\cms\Mail\ThreeMail;
-use lochlite\cms\Mail\FourMail;
-use lochlite\cms\Mail\FiveMail;
-use lochlite\cms\Mail\SixMail;
-use lochlite\cms\Mail\SevenMail;
-use lochlite\cms\Mail\EightMail;
-use lochlite\cms\Mail\NineMail;
-use lochlite\cms\Mail\TenMail;
+use Lochlite\cms\Models\User;
+use Lochlite\cms\Models\Emails;
+use Lochlite\cms\Mail\DefaultMail;
+use Lochlite\cms\Mail\TwoMail;
+use Lochlite\cms\Mail\ThreeMail;
+use Lochlite\cms\Mail\FourMail;
+use Lochlite\cms\Mail\FiveMail;
+use Lochlite\cms\Mail\SixMail;
+use Lochlite\cms\Mail\SevenMail;
+use Lochlite\cms\Mail\EightMail;
+use Lochlite\cms\Mail\NineMail;
+use Lochlite\cms\Mail\TenMail;
 use Spatie\MailTemplates\Models\MailTemplate;
 use Newsletter as Mailchimp;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -69,7 +69,7 @@ class EmailsController extends Controller
 		 if (request()->wantsJson()) {
            return $emails;
          }
-         return Inertia::render('Panel/emails/index', [
+         return Lochlitecms::renderPanelCMS('Panel/emails/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de emails | Lochlite CMS',
@@ -80,7 +80,7 @@ class EmailsController extends Controller
              'breadcrumbCurrentSection' => 'Emails',
              'emails' => $emails,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -91,7 +91,7 @@ class EmailsController extends Controller
     public function create()
     {
          $models = MailTemplate::all();
-         return Inertia::render('Panel/emails/create', [
+         return Lochlitecms::renderPanelCMS('Panel/emails/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de emails | Lochlite CMS',
@@ -102,7 +102,7 @@ class EmailsController extends Controller
              'breadcrumbCurrentSection' => 'Emails',
              'models' => $models,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -176,7 +176,7 @@ class EmailsController extends Controller
         try{
 		if(Emails::where('id', $id)->exists()){	
         $email = Emails::find($id);
-         return Inertia::render('Panel/emails/show', [
+         return Lochlitecms::renderPanelCMS('Panel/emails/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de emails | Lochlite CMS',
@@ -187,7 +187,7 @@ class EmailsController extends Controller
              'breadcrumbCurrentSection' => 'Emails',
              'email' => $email,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Email não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    

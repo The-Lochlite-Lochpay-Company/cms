@@ -20,12 +20,12 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Scheduling;
+use Lochlite\cms\Models\Scheduling;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -55,7 +55,7 @@ class SchedulingController extends Controller
 		     $listevents = Scheduling::whereDate('start', '>=', $request->query('start') ?? now()->subDays(31))->whereDate('end', '<=', $request->query('end') ?? now())->get();
              return response()->json($listevents);
          }
-         return Inertia::render('Panel/scheduling/index', [
+         return Lochlitecms::renderPanelCMS('Panel/scheduling/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de agendamentos | Lochlite CMS',
@@ -65,7 +65,7 @@ class SchedulingController extends Controller
              'breadcrumbCurrentTitle' => 'Gestão de agendamentos',
              'breadcrumbCurrentSection' => 'Agendamentos',
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
 
     /**
@@ -101,7 +101,7 @@ class SchedulingController extends Controller
         ]);
         session()->flash('flash.banner', 'Evento salvo com sucesso.');
         session()->flash('flash.bannerStyle', 'success');    
-         return Inertia::render('Panel/scheduling/index', [
+         return Lochlitecms::renderPanelCMS('Panel/scheduling/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de agendamentos | Lochlite CMS',
@@ -112,7 +112,7 @@ class SchedulingController extends Controller
              'breadcrumbCurrentSection' => 'Agendamentos',
              'version' => Lochlitecms::application()->get('version'),
 			 'id' => $event->id
-         ])->rootview('lochlitecms::admin')->with('success','Event saved successfully');
+         ]);
     }
 
     /**

@@ -20,48 +20,20 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace Lochlite\cms\Mail;
+namespace Lochlite\cms\Events;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
-use Lochlite\cms\Models\User;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Spatie\MailTemplates\TemplateMailable;
 
-class EightMail extends TemplateMailable
+class RegisterRoute
 {
-    //use Queueable, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $name, $email, $phone, $avatar, $address, $addressNumber, $city, $state, $country, $appname;
+    public $array;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct(User $user)
+    public function __construct($array)
     {
-        $this->name = $user->name;
-        $this->email = $user->email;
-        $this->phone = $user->phone;
-        $this->avatar = $user->avatar;
-        $this->address = $user->address;
-        $this->addressNumber = $user->address_number;
-        $this->city = $user->city;
-        $this->state = $user->state;
-        $this->country = $user->country;
-        $this->appname = config()->get('app.name');
-    }
-
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build()
-    {
-    //
+        $this->array = $array;
     }
 }

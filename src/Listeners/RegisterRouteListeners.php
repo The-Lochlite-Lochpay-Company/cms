@@ -20,10 +20,11 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Listeners;
+namespace Lochlite\cms\Listeners;
 
-use lochlite\cms\Events\RegisterRoute;
-use lochlite\cms\lochlitecms;
+use Lochlite\cms\Events\RegisterRoute;
+use Lochlite\cms\Models\Routes;
+use Lochlite\cms\Lochlitecms;
 use File; use Artisan;
 
 class RegisterRouteListeners
@@ -36,24 +37,20 @@ class RegisterRouteListeners
 		     $routecache = true;
              $routes = cache()->get('routes', function(){
 		        $routecache = false;
-		     	cache()->put('routes', collect(), 1000);
-		     	return cache()->get('routes');
-		     });
+		        $database = Routes::all();
+		     	cache()->put('routes', $database, 1000);
+		     	return $database;
+		     }); 
 		     if($routecache){
              foreach($array as $item){
-		          if (!$routes->contains('url', $item['url'])) { 
-		              $newroute = true;
+		          if (!Routes::where('url', $item['url'])->exists()) {
+		              $newroute = true; 
 		              $typeroute = $item['type'] ?? 'resource';
-                      $routes->push(collect(['type' => $typeroute, 'url' => $item['url'], 'controller' => $item['controller'] ?? '\lochlite\cms\Controllers\WelcomeController', 'middleware' => $item['middleware'] ?? ['web'], 'name' => $item['name'] ?? null, 'only' => $item['only'] ?? null, 'except' => $item['except'] ?? null, 'action' => $item['action'] ?? 'index']));
-		          	  if(!is_array($typeroute) && $typeroute == 'resource'){
-					  app()->router->resource($item['url'], $item['controller'], ['middleware' => array_values($item['middleware']), 'names' => $item['name'] ?? null, 'only' => $item['only'] ?? null, 'except' => $item['except'] ?? null]);
-				      } else {
-					  app()->router->match($typeroute, $item['url'], [$item['controller'] ?? '\lochlite\cms\Controllers\WelcomeController', $item['action'] ?? 'index'])->middleware($item['middleware'] ?? ['web'])->name($item['name'] ?? null);	 
-                      }
+					  $thisroute = Routes::create(['type' => $typeroute, 'url' => $item['url'], 'controller' => $item['controller'] ?? '\lochlite\cms\Controllers\WelcomeController', 'middleware' => $item['middleware'] ?? ['web'], 'name' => $item['name'] ?? null, 'only' => $item['only'] ?? null, 'except' => $item['except'] ?? null, 'action' => $item['action'] ?? 'index']);
                   }
              }
 	         if($newroute){
-		         cache()->put('routes', $routes, 1000);
+		         cache()->put('routes', Routes::all(), 1000);
 				 Artisan::call('route:clear');
 				 Artisan::call('route:cache');
              }

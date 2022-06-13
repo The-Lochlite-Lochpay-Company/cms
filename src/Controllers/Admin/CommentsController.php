@@ -20,13 +20,13 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Posts;
-use lochlite\cms\Models\Comments;
+use Lochlite\cms\Models\Posts;
+use Lochlite\cms\Models\Comments;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -57,7 +57,7 @@ class CommentsController extends Controller
 		if (request()->wantsJson()) {
            return $comments;
          }
-         return Inertia::render('Panel/comments/index', [
+         return Lochlitecms::renderPanelCMS('Panel/comments/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de comentários | Lochlite CMS',
@@ -68,7 +68,7 @@ class CommentsController extends Controller
              'breadcrumbCurrentSection' => 'Comentários',
              'comments' => $comments,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
  
     /**
@@ -82,7 +82,7 @@ class CommentsController extends Controller
 		if (request()->wantsJson()) {
            return $comments;
          }
-         return Inertia::render('Panel/comments/moderate', [
+         return Lochlitecms::renderPanelCMS('Panel/comments/moderate', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de comentários | Lochlite CMS',
@@ -93,7 +93,7 @@ class CommentsController extends Controller
              'breadcrumbCurrentSection' => 'Comentários',
              'comments' => $comments,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -141,7 +141,7 @@ class CommentsController extends Controller
         try{
 		if(Comments::where('id', $id)->exists()){	
         $comment = Comments::where('id', $id)->with('post', 'reply')->first();
-		return Inertia::render('Panel/comments/show', [
+		return Lochlitecms::renderPanelCMS('Panel/comments/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de comentários | Lochlite CMS',
@@ -152,7 +152,7 @@ class CommentsController extends Controller
              'breadcrumbCurrentSection' => 'Comentários',
              'comment' => $comment,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Comentário não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    
@@ -176,7 +176,7 @@ class CommentsController extends Controller
         try{
 		if(Comments::where('id', $id)->exists()){	
         $comment = Comments::where('id', $id)->first();
-		return Inertia::render('Panel/comments/edit', [
+		return Lochlitecms::renderPanelCMS('Panel/comments/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de comentários | Lochlite CMS',
@@ -187,7 +187,7 @@ class CommentsController extends Controller
              'breadcrumbCurrentSection' => 'Comentários',
              'comment' => $comment,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Comentário não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    

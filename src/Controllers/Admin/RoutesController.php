@@ -23,13 +23,13 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Lochlite\cms\Models\Settings;
+use Lochlite\cms\Models\Routes;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class SettingsController extends Controller
+class RoutesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -51,46 +51,35 @@ class SettingsController extends Controller
      */
     public function index()
     {
-        $settings = Settings::where('domain', request()->getHttpHost())->orWhere('default', true)->first();
+        $routes = Routes::paginate(20);
 		 if (request()->wantsJson()) {
-           return $posts;
+           return $routes;
          }
-         return Lochlitecms::renderPanelCMS('Panel/settings/index', [
+         return Lochlitecms::renderPanelCMS('Panel/routes/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
-             'title' => 'Configurações do sistema | Lochlite CMS',
+             'title' => 'Gerenciamento de rotas | Lochlite CMS',
              'user' => Auth::User(),
              'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
              'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
              'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Configurações do sistema',
-             'breadcrumbCurrentSection' => 'Configurações',
-             'settings' => $settings,
+             'breadcrumbCurrentTitle' => 'Gerenciamento de rotas',
+             'breadcrumbCurrentSection' => 'Rotas',
+             'routes' => $routes,
              'version' => Lochlitecms::application()->get('version'),
          ]);
-    }
+	}
 
     /**
-     * Display a listing of the resource.
+     * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function cleandata()
+    public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/settings/cleandata', [
-             'canLogin' => Route::has('login'),
-             'canRegister' => Route::has('register'),
-             'title' => 'Configurações do sistema | Lochlite CMS',
-             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
-             'user' => Auth::User(),
-             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
-             'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Configurações do sistema',
-             'breadcrumbCurrentSection' => 'Configurações',
-             'version' => Lochlitecms::application()->get('version'),
-         ]);
+        //
     }
-	
+
     /**
      * Store a newly created resource in storage.
      *
@@ -98,8 +87,30 @@ class SettingsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {	
-         return Lochlitecms::optimize($request->get('module')); 
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
     /**
@@ -109,8 +120,19 @@ class SettingsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $module)
+    public function update(Request $request, $id)
     {
-		return Lochlitecms::setConfig($module, $request);
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }

@@ -20,13 +20,13 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Pages;
-use lochlite\cms\Models\Pagesbody;
+use Lochlite\cms\Models\Pages;
+use Lochlite\cms\Models\Pagesbody;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -57,7 +57,7 @@ class PagesController extends Controller
 		 if (request()->wantsJson()) {
            return $pages;
          }
-         return Inertia::render('Panel/pages/index', [
+         return Lochlitecms::renderPanelCMS('Panel/pages/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de pagínas | Lochlite CMS',
@@ -68,7 +68,7 @@ class PagesController extends Controller
              'breadcrumbCurrentSection' => 'Pagínas',
              'pages' => $pages,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -78,7 +78,7 @@ class PagesController extends Controller
      */
     public function create()
     {
-         return Inertia::render('Panel/pages/create', [
+         return Lochlitecms::renderPanelCMS('Panel/pages/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de pagínas | Lochlite CMS',
@@ -88,7 +88,7 @@ class PagesController extends Controller
              'breadcrumbCurrentTitle' => 'Gestão de pagínas',
              'breadcrumbCurrentSection' => 'Pagínas',
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
     
     /**
@@ -141,7 +141,7 @@ class PagesController extends Controller
         try{
 		if(Pages::where('id', $id)->exists()){	
          $page = Pages::find($id);
-         return Inertia::render('Panel/pages/show', [
+         return Lochlitecms::renderPanelCMS('Panel/pages/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de pagínas | Lochlite CMS',
@@ -152,7 +152,7 @@ class PagesController extends Controller
              'breadcrumbCurrentSection' => 'Pagínas',
              'page' => $page,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Pagína não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    
@@ -178,7 +178,7 @@ class PagesController extends Controller
         $page = Pages::find($id);
         $pagebody = Pagesbody::where('page_id', $page->id)->first();
 
-         return Inertia::render('Panel/pages/edit', [
+         return Lochlitecms::renderPanelCMS('Panel/pages/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de pagínas | Lochlite CMS',
@@ -190,7 +190,7 @@ class PagesController extends Controller
              'page' => $page,
              'pagebody' => $pagebody,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Pagína não encontrada.');
         session()->flash('flash.bannerStyle', 'danger');    
@@ -267,7 +267,7 @@ class PagesController extends Controller
         session()->flash('flash.bannerStyle', 'danger');    
         return redirect()->back()->with('success','Page has not been deleted');
         }
-		} catch(\Exception $e){
+		} catch(\Exception $e){dd($e); 
         session()->flash('flash.banner', 'Ocorreu um erro, a pagína não foi excluida!');
         session()->flash('flash.bannerStyle', 'danger');    
         return redirect()->back()->with('error','Page has not been deleted')->setStatusCode(500);

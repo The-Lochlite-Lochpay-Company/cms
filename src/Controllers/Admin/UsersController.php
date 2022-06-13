@@ -20,12 +20,12 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\User;
+use Lochlite\cms\Models\User;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -55,7 +55,7 @@ class UsersController extends Controller
 		 if (request()->wantsJson()) {
            return $users;
          }
-         return Inertia::render('Panel/users/index', [
+         return Lochlitecms::renderPanelCMS('Panel/users/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de usuários | Lochlite CMS',
@@ -66,7 +66,7 @@ class UsersController extends Controller
              'breadcrumbCurrentSection' => 'Usuários',
              'users' => $users,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
 
     /**
@@ -77,7 +77,7 @@ class UsersController extends Controller
     public function create()
     {
         $roles = Role::all();
-         return Inertia::render('Panel/users/create', [
+         return Lochlitecms::renderPanelCMS('Panel/users/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de usuários | Lochlite CMS',
@@ -88,7 +88,7 @@ class UsersController extends Controller
              'breadcrumbCurrentSection' => 'Usuários',
              'roles' => $roles,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
 	}
     
     /**
@@ -134,7 +134,7 @@ class UsersController extends Controller
         try{
 		if(User::where('id', $id)->exists()){	
          $user = User::find($id);
-         return Inertia::render('Panel/users/show', [
+         return Lochlitecms::renderPanelCMS('Panel/users/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de usuários | Lochlite CMS',
@@ -149,7 +149,7 @@ class UsersController extends Controller
              'useremail' => $user->email ?? 'undefined',
              'userroles' => $user->getRoleNames(),
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Usuário não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    
@@ -176,7 +176,7 @@ class UsersController extends Controller
         $roles = Role::all();
         $userroles = $user->getRoleNames(); 
     
-         return Inertia::render('Panel/users/edit', [
+         return Lochlitecms::renderPanelCMS('Panel/users/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de usuários | Lochlite CMS',
@@ -192,7 +192,7 @@ class UsersController extends Controller
              'rolesall' => $roles,
              'userroles' => $user->getRoleNames(),
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Usuário não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    

@@ -45,7 +45,7 @@ return new class extends Migration
             $table->boolean('active')->default(false)->nullable();
             $table->boolean('onlymobile')->default(false)->nullable();
             $table->string('location')->default('navbar')->nullable();
-            $table->foreign('menuid')->references('id')->on('menus');
+            $table->foreign('menuid')->references('id')->on('menus')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

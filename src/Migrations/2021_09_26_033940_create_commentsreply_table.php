@@ -41,8 +41,8 @@ class CreateCommentsReplyTable extends Migration
             $table->string('avatar')->default('/assets/img/avatar.webp')->nullable();
             $table->longText('comment')->nullable();
             $table->string('status')->default('pending')->nullable();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('comment_id')->references('id')->on('comments');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('comment_id')->references('id')->on('comments')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         DB::statement("ALTER TABLE commentsreplies MODIFY comment LONGBLOB");

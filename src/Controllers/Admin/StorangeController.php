@@ -20,12 +20,12 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace lochlite\cms\Controllers\Admin;
+namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use lochlite\cms\Models\Fileupload;
+use Lochlite\cms\Models\Fileupload;
 
-use lochlite\cms\Controllers\Controller;
+use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
@@ -55,7 +55,7 @@ class StorangeController extends Controller
 		 if (request()->wantsJson()) {
            return $files;
          }
-         return Inertia::render('Panel/fileupload/index', [
+         return Lochlitecms::renderPanelCMS('Panel/fileupload/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Armazenamento de arquivos | Lochlite CMS',
@@ -66,7 +66,7 @@ class StorangeController extends Controller
              'breadcrumbCurrentSection' => 'Armazenamento',
              'files' => $files,
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
 	}
 
     /**
@@ -76,7 +76,7 @@ class StorangeController extends Controller
      */
     public function create()
     {
-         return Inertia::render('Panel/fileupload/create', [
+         return Lochlitecms::renderPanelCMS('Panel/fileupload/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Armazenamento de arquivos | Lochlite CMS',
@@ -86,7 +86,7 @@ class StorangeController extends Controller
              'breadcrumbCurrentTitle' => 'Armazenamento de arquivos',
              'breadcrumbCurrentSection' => 'Armazenamento',
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
     }
 
     /**
@@ -132,7 +132,7 @@ class StorangeController extends Controller
         try{
 		if(Fileupload::where('id', $id)->exists()){	
         $file = Fileupload::find($id);
-         return Inertia::render('Panel/fileupload/show', [
+         return Lochlitecms::renderPanelCMS('Panel/fileupload/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Armazenamento de arquivos | Lochlite CMS',
@@ -144,7 +144,7 @@ class StorangeController extends Controller
              'file' => $file,
              'fileurl' => asset($file->url),
              'version' => Lochlitecms::application()->get('version'),
-         ])->rootview('lochlitecms::admin');
+         ]);
         } else {
         session()->flash('flash.banner', 'Arquivo não encontrado.');
         session()->flash('flash.bannerStyle', 'danger');    
