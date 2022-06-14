@@ -544,9 +544,9 @@ class Lochlitecms implements LochlitecmsInterface
       foreach($folders as $item){
 		 if(!Plugins::where('path', $item)->exists()){ 
          //Returns the absolute path of the first service provider it finds
-         $path = collect(glob($item . '\\manifest.json'))->first();
+         $path = collect(glob($item . DIRECTORY_SEPARATOR .'manifest.json'))->first();
 		 if(!is_null($path)){
-         $content = collect(json_decode(Storage::disk('plugins')->get(substr($item, strpos($item, 'plugins\\') + 8).  '\\manifest.json'), true));
+         $content = collect(json_decode(Storage::disk('plugins')->get(substr($item, strpos($item, 'plugins'. DIRECTORY_SEPARATOR) + 8).  DIRECTORY_SEPARATOR .'manifest.json'), true));
 		 Plugins::create([
 		 'path' => $item,
 		 'namespace' => $content->get('namespace'),
@@ -623,7 +623,7 @@ class Lochlitecms implements LochlitecmsInterface
          //Register the plugin provider
          app()->register(new $newclass(app()));
 		 if($item->status == 'processing'){$item->update(['status' => 'installed']); $item->save();}
-         } else if($alternative = Loochlitecms::searchPluginProvider($item->path)){
+         } else if($alternative = Lochlitecms::searchPluginProvider($item->path)){
          //Register the plugin provider
          app()->register(new $alternative(app()));
 		 if($item->status == 'processing'){$item->update(['status' => 'installed']); $item->save();}
