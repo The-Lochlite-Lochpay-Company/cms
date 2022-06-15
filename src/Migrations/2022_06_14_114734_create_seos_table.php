@@ -33,17 +33,29 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('routes', function (Blueprint $table) {
+        Schema::create('seos', function (Blueprint $table) {
             $table->id();
-            $table->json('type')->nullable();
-            $table->string('url')->nullable();
-            $table->string('controller')->nullable();
-            $table->string('action')->nullable();
-            $table->json('middleware')->nullable();
-            $table->json('only')->nullable();
-            $table->json('except')->nullable();
-            $table->string('name')->nullable();
-            $table->boolean('system')->default(false)->nullable();
+			$table->unsignedBigInteger('post_id')->nullable();
+			$table->unsignedBigInteger('page_id')->nullable();
+            $table->string('title')->default('Sem titulo')->nullable();
+            $table->string('description')->default('Sem descrição')->nullable();
+            $table->string('keywords')->default('homepage, company, business')->nullable();
+            $table->string('ogtype')->default('website')->nullable();
+            $table->string('ogurl')->nullable();
+            $table->string('ogtitle')->default('Sem titulo')->nullable();
+            $table->string('ogdescription')->default('Sem descrição')->nullable();
+            $table->string('ogimage')->nullable();
+            $table->string('twittercard')->default('summary_large_image')->nullable();
+            $table->string('twitterurl')->nullable();
+            $table->string('twittertitle')->default('Sem titulo')->nullable();
+            $table->string('twitterdescription')->default('Sem descrição')->nullable();
+            $table->string('twitterimage')->nullable();
+            $table->string('msapplicationtilecolor')->default('#00aba9')->nullable();
+            $table->string('themecolor')->default('#3b7977')->nullable();
+            $table->string('icon')->nullable();
+            $table->boolean('default')->default(false)->nullable();
+            $table->foreign('post_id')->references('id')->on('posts')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('page_id')->references('id')->on('pages')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -55,6 +67,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('routes');
+        Schema::dropIfExists('seos');
     }
 };

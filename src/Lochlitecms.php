@@ -5,7 +5,7 @@
 * (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
 *
 * Software: LOCHLITE CMS
-* Version: 2.0.7  
+* Version: 2.0.9  
 * License: Proprietary
 * Made in: Brazil
 * Author: The Lochlite & Lochpay Company
@@ -29,6 +29,7 @@ use Symfony\Component\Finder\Finder;
 use Lochlite\cms\Jobs\RegisterRouteJob;
 use Lochlite\cms\Models\User;
 use Lochlite\cms\Models\Fileupload;
+use Lochlite\cms\Models\Seo;
 use Lochlite\cms\Models\Settings;
 use Lochlite\cms\Models\Plugins;
 use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Route; use File;
@@ -789,6 +790,7 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'resource', 'url' => '/manager/dashboard', 'controller' => \Lochlite\cms\Controllers\Admin\AdminController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerdashboard'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/pages', 'controller' => \Lochlite\cms\Controllers\Admin\PagesController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerpages'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/posts', 'controller' => \Lochlite\cms\Controllers\Admin\PostsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerposts'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/seo', 'controller' => \Lochlite\cms\Controllers\Admin\SeoController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerseo'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/notifications', 'controller' => \Lochlite\cms\Controllers\Admin\NotificationsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managernotifications'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/roles', 'controller' => \Lochlite\cms\Controllers\Admin\PermissionsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerroles'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/users', 'controller' => \Lochlite\cms\Controllers\Admin\UsersController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerusers'],
@@ -822,6 +824,42 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'get', 'url' => '/newsletter/unsubscribe/{email}', 'action' => 'unsubscribenewsletter', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'unsubscribenewsletter'],
          ['system' => true, 'type' => 'get', 'url' => '/', 'action' => 'index', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'index.index'],
          ]);
+    }
+
+    public static function seo($param)
+    {
+		if(\Schema::hasTable('seos')){
+		if(!Seo::where('default', true)->orWhere('id', 1)->exists()){
+			Seo::create(['default' => true]);
+		}
+        $opt = cache()->get('seo', function(){
+			$seo = Seo::where('default', true)->orWhere('id', 1)->first();
+			cache()->put($seo, 5000);
+			return $seo;
+		});	
+		$filter = str_replace(':', '', $param);
+        return $opt->$filter;
+	    } else {
+		$opt = (object) array(
+		'title' => 'Sem titulo',
+		'description' => 'Sem descrição',
+		'keywords' => 'homepage, company, business',
+		'og:type' => 'website',
+		'og:url' => url()->current(),
+		'og:title' => 'Sem titulo',
+		'og:description' => 'Sem descrição',
+		'og:image' => 'Sem descrição',
+		'twitter:card' => 'summary_large_image',
+		'twitter:url' => url()->current(),
+		'twitter:title' => 'Sem titulo',
+		'twitter:description' => 'Sem descrição',
+		'twitter:image' => '',
+		'msapplicationtilecolor' => '#00aba9',
+		'themecolor' => '#3b7977',
+		'icon' => '',
+		);
+        return $opt->$param;
+		}
     }
 
     public static function generateStylesheet(array $array)
@@ -875,6 +913,7 @@ class Lochlitecms implements LochlitecmsInterface
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.cleandata') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersystem.index')), 'id' => 'manager', 'url' => '#manager', 'icon' => 'menu-icon mdi mdi-security', 'name' => 'Administração do site',
 		     'subitems' => [
 		     ['url' => route('managerroutes.index'), 'name' => 'Gerenciar rotas'],
+		     ['url' => route('managersettings.index'), 'name' => 'Configurações de SEO'],
 		     ['url' => route('managersettings.index'), 'name' => 'Configurações do sistema'],
 		     ['url' => route('managersettings.cleandata'), 'name' => 'Dados armazenados'],
 		     ['url' => route('managersystem.index'), 'name' => 'Informações do sistema'],
