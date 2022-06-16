@@ -33,30 +33,23 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('seos', function (Blueprint $table) {
+        Schema::create('pwas', function (Blueprint $table) {
             $table->id();
-			$table->unsignedBigInteger('post_id')->nullable();
-			$table->unsignedBigInteger('page_id')->nullable();
             $table->string('domain')->nullable();
-            $table->string('title')->default('Sem titulo')->nullable();
-            $table->string('description')->default('Sem descrição')->nullable();
-            $table->string('keywords')->default('homepage, company, business')->nullable();
-            $table->string('ogtype')->default('website')->nullable();
-            $table->string('ogurl')->nullable();
-            $table->string('ogtitle')->default('Sem titulo')->nullable();
-            $table->string('ogdescription')->default('Sem descrição')->nullable();
-            $table->string('ogimage')->nullable();
-            $table->string('twittercard')->default('summary_large_image')->nullable();
-            $table->string('twitterurl')->nullable();
-            $table->string('twittertitle')->default('Sem titulo')->nullable();
-            $table->string('twitterdescription')->default('Sem descrição')->nullable();
-            $table->string('twitterimage')->nullable();
-            $table->string('msapplicationtilecolor')->default('#00aba9')->nullable();
-            $table->string('themecolor')->default('#3b7977')->nullable();
-            $table->string('icon')->nullable();
+            $table->string('background_color')->default('#000000')->nullable();
+            $table->string('description')->default('Another app generated with Lochlite CMS')->nullable();
+            $table->string('dir')->default('ltr')->nullable();
+            $table->string('display')->default('standalone')->nullable();
+            $table->string('name')->default('Lochlite CMS')->nullable();
+            $table->string('orientation')->default('any')->nullable();
+            $table->string('scope')->default('/')->nullable();
+            $table->string('short_name')->default('Appname')->nullable();
+            $table->string('start_url')->default('/')->nullable();
+            $table->string('theme_color')->default('#cc8899')->nullable();
+            $table->json('content_security_policy')->nullable();
+            $table->json('categories')->nullable();
+            $table->json('icons')->nullable();
             $table->boolean('default')->default(false)->nullable();
-            $table->foreign('post_id')->references('id')->on('posts')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('page_id')->references('id')->on('pages')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -68,6 +61,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('seos');
+        Schema::dropIfExists('pwas');
     }
 };

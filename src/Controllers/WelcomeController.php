@@ -108,6 +108,42 @@ class WelcomeController extends Controller
     }
 
     /**
+     * Webmanifest file
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function application($path)
+    {
+        try{
+
+		if (Lochlitecms::cmsFetchPublicDisk()->exists($path)) {
+	    return response()->file(Lochlitecms::cmsFetchPublicDisk()->path($path));
+        } else {
+        session()->flash('flash.banner', 'Este arquivo não encontrado.');
+        session()->flash('flash.bannerStyle', 'danger');    
+        return redirect()->route('index.index')->with('success','This file no longer exists on our system.');
+		}
+		
+		} catch(\Exception $e){
+        session()->flash('flash.banner', 'Ocorreu um erro ao recuperar os dados do arquivo.');
+        session()->flash('flash.bannerStyle', 'danger');    
+        return redirect()->route('index.index')->with('error','Failed to retrieve file data')->setStatusCode(500);
+        }
+    }
+
+    /**
+     * Webmanifest file
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function pwa()
+    {
+     return Lochlitecms::pwaManifest();
+    }
+
+    /**
      * Download file
      *
      * @param  int  $id

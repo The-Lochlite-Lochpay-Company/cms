@@ -29,6 +29,7 @@ use Symfony\Component\Finder\Finder;
 use Lochlite\cms\Jobs\RegisterRouteJob;
 use Lochlite\cms\Models\User;
 use Lochlite\cms\Models\Fileupload;
+use Lochlite\cms\Models\Pwa;
 use Lochlite\cms\Models\Seo;
 use Lochlite\cms\Models\Settings;
 use Lochlite\cms\Models\Plugins;
@@ -743,6 +744,12 @@ class Lochlitecms implements LochlitecmsInterface
         }
     }
 
+    public static function cmsFetchPublicDisk()
+    {
+        config()->set('filesystems.disks', ['cmsFetchPublicDisk' => ['driver' => 'local', 'root' => base_path('vendor/Lochlite/cms/src/Disk/public/'), 'throw' => false]]);
+		return Storage::disk('cmsFetchPublicDisk');	 
+    }
+
     public static function cmsDisk()
     {
         config()->set('filesystems.disks', ['lochlitecms' => ['driver' => 'local', 'root' => base_path('lochlite\cms'), 'throw' => false]]);
@@ -790,6 +797,7 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'resource', 'url' => '/manager/dashboard', 'controller' => \Lochlite\cms\Controllers\Admin\AdminController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerdashboard'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/pages', 'controller' => \Lochlite\cms\Controllers\Admin\PagesController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerpages'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/posts', 'controller' => \Lochlite\cms\Controllers\Admin\PostsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerposts'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/pwa', 'controller' => \Lochlite\cms\Controllers\Admin\PwaController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerpwa'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/seo', 'controller' => \Lochlite\cms\Controllers\Admin\SeoController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerseo'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/notifications', 'controller' => \Lochlite\cms\Controllers\Admin\NotificationsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managernotifications'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/roles', 'controller' => \Lochlite\cms\Controllers\Admin\PermissionsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerroles'],
@@ -822,8 +830,69 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'post', 'url' => '/sendvotes/{id}', 'action' => 'sendvotes', 'controller' => \Lochlite\cms\Controllers\WelcomeBlogController::class, 'middleware' => ['web'], 'name' => 'sendvotes'],
          ['system' => true, 'type' => 'post', 'url' => '/newsletter/subscript', 'action' => 'subscriptnewsletter', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'subscriptnewsletter'],
          ['system' => true, 'type' => 'get', 'url' => '/newsletter/unsubscribe/{email}', 'action' => 'unsubscribenewsletter', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'unsubscribenewsletter'],
+         ['system' => true, 'type' => 'get', 'url' => '/manifest.webmanifest', 'action' => 'pwa', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'pwa'],
+         ['system' => true, 'type' => 'get', 'url' => '/application/{path}', 'action' => 'application', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'application'],
          ['system' => true, 'type' => 'get', 'url' => '/', 'action' => 'index', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'index.index'],
          ]);
+    }
+
+    public static function pwa()
+    {
+		if(\Schema::hasTable('pwas')){
+		if(!Pwa::where('default', true)->orWhere('id', 1)->exists()){
+			Pwa::create(['default' => true,
+			'icons' => [
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/12x12.png","type" => "image/png","sizes" => "12x12"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/24x24.png","type" => "image/png","sizes" => "24x24"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/32x32.png","type" => "image/png","sizes" => "32x32"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/48x48.png","type" => "image/png","sizes" => "48x48"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/56x56.png","type" => "image/png","sizes" => "56x56"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/72x72.png","type" => "image/png","sizes" => "72x72"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/96x96.png","type" => "image/png","sizes" => "96x96"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/144x144.png","type" => "image/png","sizes" => "144x144"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/168x168.png","type" => "image/png","sizes" => "168x168"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/192x192.png","type" => "image/png","sizes" => "192x192"]
+		     ],
+			]);
+		}
+        $manifest = cache()->get('pwa', function(){
+			$pwa = Pwa::where('default', true)->orWhere('id', 1)->first();
+			cache()->put($pwa, 5000);
+			return $pwa;
+		});	
+	    } else {
+		$manifest = (object) array(
+		'name' => 'Lochlite CMS',
+		'background_color' => '#000000',
+		'description' => 'Another app generated with Lochlite CMS',
+		'dir' => 'ltr',
+		'display' => 'standalone',
+		'orientation' => 'any',
+		'scope' => '/',
+		'short_name' => 'Appname',
+		'start_url' => '/',
+		'theme_color' => '#cc8899',
+		'content_security_policy' => [],
+		'icons' => [
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/12x12.png","type" => "image/png","sizes" => "12x12"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/24x24.png","type" => "image/png","sizes" => "24x24"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/32x32.png","type" => "image/png","sizes" => "32x32"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/48x48.png","type" => "image/png","sizes" => "48x48"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/56x56.png","type" => "image/png","sizes" => "56x56"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/72x72.png","type" => "image/png","sizes" => "72x72"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/96x96.png","type" => "image/png","sizes" => "96x96"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/144x144.png","type" => "image/png","sizes" => "144x144"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/168x168.png","type" => "image/png","sizes" => "168x168"],
+		     ["src" => request()->getSchemeAndHttpHost(). "/application/192x192.png","type" => "image/png","sizes" => "192x192"]
+		],
+		);
+		}
+        return $manifest;
+    }
+
+    public static function pwaManifest()
+    {
+		return response()->json(Lochlitecms::pwa()->setHidden(['id', 'default', 'domain', 'created_at', 'updated_at']));
     }
 
     public static function seo($param)
@@ -890,6 +959,8 @@ class Lochlitecms implements LochlitecmsInterface
 		     ['url' => route('managerpages.create'), 'name' => 'Criar página'],
 		     ['url' => route('managerpages.index'), 'name' => 'Todas as páginas'],
 		     ['url' => route('managerposts.index'), 'name' => 'Todos os artigos'],
+		     ['url' => route('managerseo.index'), 'name' => 'Configurações de SEO'],
+		     ['url' => route('managerpwa.index'), 'name' => 'Configurações de PWA'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'appearance', 'url' => '#appearance', 'icon' => 'menu-icon mdi mdi-palette', 'name' => 'Aparência',
@@ -913,7 +984,6 @@ class Lochlitecms implements LochlitecmsInterface
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.cleandata') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersystem.index')), 'id' => 'manager', 'url' => '#manager', 'icon' => 'menu-icon mdi mdi-security', 'name' => 'Administração do site',
 		     'subitems' => [
 		     ['url' => route('managerroutes.index'), 'name' => 'Gerenciar rotas'],
-		     ['url' => route('managersettings.index'), 'name' => 'Configurações de SEO'],
 		     ['url' => route('managersettings.index'), 'name' => 'Configurações do sistema'],
 		     ['url' => route('managersettings.cleandata'), 'name' => 'Dados armazenados'],
 		     ['url' => route('managersystem.index'), 'name' => 'Informações do sistema'],
