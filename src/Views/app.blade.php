@@ -26,7 +26,8 @@
 	     <meta name="msapplication-TileColor" content="{{ Lochlitecms::seo('msapplicationtilecolor') }}">
 	     <meta name="theme-color" content="{{ Lochlitecms::seo('themecolor') }}">
          @include('feed::links')
-	     <link rel="icon" type="image/png" sizes="32x32" href="{{ Lochlitecms::seo('icon') }}">
+	     <link rel="shortcut icon" sizes="32x32" href="{{ Lochlitecms::seo('icon') }}">
+         <link rel="manifest" href="/manifest.webmanifest">
          <link rel="stylesheet" href="css/app.css">
          <link rel="stylesheet" href="sass/main.css">
         @routes

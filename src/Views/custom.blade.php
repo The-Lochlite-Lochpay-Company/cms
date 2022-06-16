@@ -7,26 +7,27 @@
         <!-- CSRF Token -->
         <meta name="_token" content="{{ csrf_token() }}">
  
-         <title inertia>Sem titulo</title>
-	     <meta name="description" content="" inertia>
-	     <meta name="keywords" content="" inertia>
+         <title inertia>{{ Lochlitecms::seo('title') }}</title>
+	     <meta name="description" content="{{ Lochlitecms::seo('description') }}">
+	     <meta name="keywords" content="{{ Lochlitecms::seo('keywords') }}">
 	     <!-- Open Graph / Facebook -->
-	     <meta property="og:type" content="website">
-	     <meta property="og:url" content="{{url()->current()}}">
-	     <meta property="og:title" content="Sem titulo">
-	     <meta property="og:description" content="Sem descrição">
-	     <meta property="og:image" content="">
+	     <meta property="og:type" content="{{ Lochlitecms::seo('og:type') }}">
+	     <meta property="og:url" content="{{ Lochlitecms::seo('og:url') }}">
+	     <meta property="og:title" content="{{ Lochlitecms::seo('og:title') }}">
+	     <meta property="og:description" content="{{ Lochlitecms::seo('og:description') }}">
+	     <meta property="og:image" content="{{ Lochlitecms::seo('og:image') }}">
 	     
 	     <!-- Twitter -->
-	     <meta property="twitter:card" content="summary_large_image">
-	     <meta property="twitter:url" content="{{url()->current()}}">
-	     <meta property="twitter:title" content="Sem titulo">
-	     <meta property="twitter:description" content="Sem descrição">
-	     <meta property="twitter:image" content="">
-	     <meta name="msapplication-TileColor" content="#00aba9">
-	     <meta name="theme-color" content="#3b7977">
+	     <meta property="twitter:card" content="{{ Lochlitecms::seo('twitter:card') }}">
+	     <meta property="twitter:url" content="{{ Lochlitecms::seo('twitter:url') }}">
+	     <meta property="twitter:title" content="{{ Lochlitecms::seo('twitter:title') }}">
+	     <meta property="twitter:description" content="{{ Lochlitecms::seo('twitter:description') }}">
+	     <meta property="twitter:image" content="{{ Lochlitecms::seo('twitter:image') }}">
+	     <meta name="msapplication-TileColor" content="{{ Lochlitecms::seo('msapplicationtilecolor') }}">
+	     <meta name="theme-color" content="{{ Lochlitecms::seo('themecolor') }}">
          @include('feed::links')
-	     <link rel="icon" type="image/png" sizes="32x32" href="">
+	     <link rel="shortcut icon" type="image/png" sizes="32x32" href="">
+         <link rel="manifest" href="/manifest.webmanifest">
          @if(empty($headInlineScript) == false && is_string($headInlineScript) == true)
          <script> {!! $headInlineScript !!} </script>
          @endif
