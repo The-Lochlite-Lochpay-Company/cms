@@ -46,6 +46,7 @@ return new class extends Migration
             $table->string('short_name')->default('Appname')->nullable();
             $table->string('start_url')->default('/')->nullable();
             $table->string('theme_color')->default('#cc8899')->nullable();
+            $table->string('msapplicationtilecolor')->default('#00aba9')->nullable();
             $table->json('content_security_policy')->nullable();
             $table->json('categories')->nullable();
             $table->json('icons')->nullable();

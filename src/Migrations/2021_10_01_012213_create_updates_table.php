@@ -20,6 +20,8 @@ return new class extends Migration
 			$table->string('path')->nullable();
 			$table->string('backup')->nullable();
 			$table->longText('description')->nullable();
+			$table->longText('applychangeerror')->nullable();
+			$table->boolean('applychange')->default(false)->nullable();
 			$table->string('status')->default('processing')->nullable();
             $table->timestamps();
         });

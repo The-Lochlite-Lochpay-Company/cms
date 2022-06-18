@@ -141,6 +141,11 @@ class Lochlitecms implements LochlitecmsInterface
         return collect(['success' => $result == 0 ? true : false, 'output' => $result]);
     }
 
+    public function setChangesVersion()
+    {
+		return;
+    }
+
     public function config(String $param)
     {
 		return Lochlitecms::settingsDatabase()->$param;
@@ -746,7 +751,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public static function cmsFetchPublicDisk()
     {
-        config()->set('filesystems.disks', ['cmsFetchPublicDisk' => ['driver' => 'local', 'root' => base_path('vendor/Lochlite/cms/src/Disk/public/'), 'throw' => false]]);
+        config()->set('filesystems.disks', ['cmsFetchPublicDisk' => ['driver' => 'local', 'root' => base_path('vendor/lochlite/cms/src/Disk/public/'), 'throw' => false]]);
 		return Storage::disk('cmsFetchPublicDisk');	 
     }
 
@@ -771,7 +776,7 @@ class Lochlitecms implements LochlitecmsInterface
 			} elseif($item->type == 'get'){
 			app()->router->get($item->url, [$item->controller, $item->action ?? 'index'])->middleware($item->middleware ?? ['web'])->name($item->name ?? null);	 
 			}  elseif($item->type == 'post'){
-			app()->router->get($item->url, [$item->controller, $item->action ?? 'index'])->middleware($item->middleware ?? ['web'])->name($item->name ?? null);	 
+			app()->router->post($item->url, [$item->controller, $item->action ?? 'index'])->middleware($item->middleware ?? ['web'])->name($item->name ?? null);	 
 			} else {
 			app()->router->match($item->type, $item->url, [$item->controller, $item->action ?? 'index'])->middleware($item->middleware ?? ['web'])->name($item->name ?? null);	 
 		    }
@@ -836,7 +841,7 @@ class Lochlitecms implements LochlitecmsInterface
          ]);
     }
 
-    public static function pwa()
+    public static function pwa(String $param = null)
     {
 		if(\Schema::hasTable('pwas')){
 		if(!Pwa::where('default', true)->orWhere('id', 1)->exists()){
@@ -872,6 +877,7 @@ class Lochlitecms implements LochlitecmsInterface
 		'short_name' => 'Appname',
 		'start_url' => '/',
 		'theme_color' => '#cc8899',
+		'msapplicationtilecolor' => '#cc8899',
 		'content_security_policy' => [],
 		'icons' => [
 		     ["src" => request()->getSchemeAndHttpHost(). "/application/12x12.png","type" => "image/png","sizes" => "12x12"],
@@ -887,7 +893,7 @@ class Lochlitecms implements LochlitecmsInterface
 		],
 		);
 		}
-        return $manifest;
+        return $param == null ? $manifest : $manifest->$param;
     }
 
     public static function pwaManifest()
@@ -895,7 +901,7 @@ class Lochlitecms implements LochlitecmsInterface
 		return response()->json(Lochlitecms::pwa()->setHidden(['id', 'default', 'domain', 'created_at', 'updated_at']));
     }
 
-    public static function seo($param)
+    public static function seo(String $param = null)
     {
 		if(\Schema::hasTable('seos')){
 		if(!Seo::where('default', true)->orWhere('id', 1)->exists()){
@@ -907,27 +913,30 @@ class Lochlitecms implements LochlitecmsInterface
 			return $seo;
 		});	
 		$filter = str_replace(':', '', $param);
-        return $opt->$filter;
+        return $param == null ? $opt : $opt->$filter;
 	    } else {
 		$opt = (object) array(
 		'title' => 'Sem titulo',
 		'description' => 'Sem descrição',
+		'author' => 'Sem author',
 		'keywords' => 'homepage, company, business',
+		'google_site_verification' => '',
+		'p:domain_verify' => '',
 		'og:type' => 'website',
 		'og:url' => url()->current(),
 		'og:title' => 'Sem titulo',
 		'og:description' => 'Sem descrição',
 		'og:image' => 'Sem descrição',
+		'fb:app_id' => '',
 		'twitter:card' => 'summary_large_image',
 		'twitter:url' => url()->current(),
 		'twitter:title' => 'Sem titulo',
 		'twitter:description' => 'Sem descrição',
 		'twitter:image' => '',
-		'msapplicationtilecolor' => '#00aba9',
-		'themecolor' => '#3b7977',
+		'twitter:site' => '',
 		'icon' => '',
 		);
-        return $opt->$param;
+        return $param == null ? $opt : $opt->$param;
 		}
     }
 
@@ -965,8 +974,6 @@ class Lochlitecms implements LochlitecmsInterface
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'appearance', 'url' => '#appearance', 'icon' => 'menu-icon mdi mdi-palette', 'name' => 'Aparência',
 		     'subitems' => [
-		     ['url' => route('managercomments.moderate'), 'name' => 'Aprovar comentários'],
-		     ['url' => route('managercomments.index'), 'name' => 'Todos os comentários'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'comment', 'url' => '#comment', 'icon' => 'menu-icon mdi mdi-message-text', 'name' => 'Comentários',
@@ -975,10 +982,9 @@ class Lochlitecms implements LochlitecmsInterface
 		     ['url' => route('managercomments.index'), 'name' => 'Todos os comentários'],
 			 ]
 		 ],
-		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.cleandata')), 'id' => 'plugins', 'url' => '#plugins', 'icon' => 'menu-icon mdi mdi-apps', 'name' => 'Plugins',
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.create')), 'id' => 'plugins', 'url' => '#plugins', 'icon' => 'menu-icon mdi mdi-apps', 'name' => 'Plugins',
 		     'subitems' => [
 		     ['url' => route('managerplugins.index'), 'name' => 'Gerenciar plugins'],
-		     ['url' => route('managerplugins.index'), 'name' => 'Adicionar plugin'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.cleandata') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersystem.index')), 'id' => 'manager', 'url' => '#manager', 'icon' => 'menu-icon mdi mdi-security', 'name' => 'Administração do site',

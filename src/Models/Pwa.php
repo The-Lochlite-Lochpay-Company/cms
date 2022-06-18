@@ -47,6 +47,7 @@ class Pwa extends Model
          'short_name',
          'start_url',
          'theme_color',
+         'msapplicationtilecolor',
          'content_security_policy',
          'icons',
          'default',
