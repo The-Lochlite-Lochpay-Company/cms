@@ -65,8 +65,7 @@ class WelcomeController extends Controller
 		])->rootview('lochlitecms::app');
         } else {
         return Inertia::render('Welcome', [
-             'title' => Lochlitecms::config('appname'),
-             'description' => 'aaaaaaaaaaaaa',
+             'title' => Lochlitecms::seo('title'),
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
 		])->rootview('lochlitecms::app');

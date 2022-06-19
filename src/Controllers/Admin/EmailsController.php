@@ -126,8 +126,8 @@ class EmailsController extends Controller
 		     $user = User::where('email', $item);
              if($user->exists())	{	
 			 $Emailbody = (new $classMailable($user->first()))->render();
-             $EmailSent = Mail::to($user->first()->email)->send(new $classMailable($user->first()));
              try{
+             $EmailSent = Mail::to($user->first()->email)->send(new $classMailable($user->first()));
              if($EmailSent instanceof \Illuminate\Mail\SentMessage){
              $emails = Emails::create([
                  'userid' => $user->first()->id,

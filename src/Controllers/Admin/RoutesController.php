@@ -99,7 +99,20 @@ class RoutesController extends Controller
      */
     public function show($id)
     {
-        //
+         $route = Routes::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('Panel/routes/show', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Gerenciamento de rotas | Lochlite CMS',
+             'user' => Auth::User(),
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Gerenciamento de rotas',
+             'breadcrumbCurrentSection' => 'Rotas',
+             'showroute' => $route,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -110,7 +123,20 @@ class RoutesController extends Controller
      */
     public function edit($id)
     {
-        //
+         $route = Routes::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('Panel/routes/show', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Gerenciamento de rotas | Lochlite CMS',
+             'user' => Auth::User(),
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Gerenciamento de rotas',
+             'breadcrumbCurrentSection' => 'Rotas',
+             'showroute' => $route,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -133,6 +159,10 @@ class RoutesController extends Controller
      */
     public function destroy($id)
     {
-        //
+		 if(Routes::where('id', $id)->exists()){
+         $route = Routes::where('id', $id)->first();
+		 $route->delete();
+         }
+		 return redirect()>back();
     }
 }

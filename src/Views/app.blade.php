@@ -40,13 +40,14 @@
          <link rel="manifest" href="/manifest.webmanifest">
          <link rel="stylesheet" href="css/app.css">
          <link rel="stylesheet" href="sass/main.css">
+         {!! Lochlitecms::appendCoding('head') !!}
         @routes
         <script src="js/app.js" defer></script>
         @inertiaHead
     </head>
     <body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0" data-mode="web">
+         {!! Lochlitecms::appendCoding('body-top') !!}
         @inertia
-
-
+         {!! Lochlitecms::appendCoding('body-end') !!}
     </body>
 </html>

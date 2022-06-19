@@ -39,10 +39,10 @@ class SeoController extends Controller
     function __construct()
     {
          $this->middleware('auth:sanctum');
-         $this->middleware('permission:publish comments|edit comments|delete comments', ['only' => ['index','show']]);
-         $this->middleware('permission:publish comments', ['only' => ['create','store']]);
-         $this->middleware('permission:edit comments', ['only' => ['edit','update']]);
-         $this->middleware('permission:delete comments', ['only' => ['destroy']]);
+         $this->middleware('permission:publish seo|edit seo|delete seo', ['only' => ['index','show']]);
+         $this->middleware('permission:publish seo', ['only' => ['create','store']]);
+         $this->middleware('permission:edit seo', ['only' => ['edit','update']]);
+         $this->middleware('permission:delete seo', ['only' => ['destroy']]);
     }
 
     /**
@@ -61,18 +61,9 @@ class SeoController extends Controller
              'name' => Auth::User()->name ?? 'User Name',
              'breadcrumbCurrentTitle' => 'Configurações de Search Engine Optimization',
              'breadcrumbCurrentSection' => 'SEO',
+             'seo' => Lochlitecms::seo(),
              'version' => Lochlitecms::application()->get('version'),
          ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -83,51 +74,28 @@ class SeoController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        Lochlitecms::seo()->update([
+		'title' => $request->get('title'),
+		'description' => $request->get('description'),
+		'keywords' => $request->get('keywords'),
+		'author' => $request->get('author'),
+		'icon' => $request->get('favicon'),
+		'robots' => $request->get('robots'),
+		'translate' => $request->get('translate'),
+		'pdomain_verify' => $request->get('pdomain_verify'),
+		'google_site_verification' => $request->get('google_site_verification'),
+		'twittercard' => $request->get('twittercard'),
+		'twitterurl' => $request->get('twitterurl'),
+		'twittertitle' => $request->get('twittertitle'),
+		'twitterdescription' => $request->get('twitterdescription'),
+		'twitterimage' => $request->get('twitterimage'),
+		'twittersite' => $request->get('twittersite'),
+		'ogtype' => $request->get('ogtype'),
+		'ogurl' => $request->get('ogurl'),
+		'ogtitle' => $request->get('ogtitle'),
+		'ogdescription' => $request->get('ogdescription'),
+		'ogimage' => $request->get('ogimage'),
+		'fbapp_id' => $request->get('fbapp_id'),
+		]);
     }
 }

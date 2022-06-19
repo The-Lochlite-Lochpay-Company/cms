@@ -25,10 +25,12 @@ namespace Lochlite\cms;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\Finder\Finder;
 use Lochlite\cms\Jobs\RegisterRouteJob;
 use Lochlite\cms\Models\User;
 use Lochlite\cms\Models\Fileupload;
+use Lochlite\cms\Models\Appendcoding;
 use Lochlite\cms\Models\Pwa;
 use Lochlite\cms\Models\Seo;
 use Lochlite\cms\Models\Settings;
@@ -146,14 +148,14 @@ class Lochlitecms implements LochlitecmsInterface
 		return;
     }
 
-    public function config(String $param)
+    public function config(String $param = null)
     {
-		return Lochlitecms::settingsDatabase()->$param;
+		return $param == null ? Lochlitecms::settingsDatabase() : Lochlitecms::settingsDatabase()->$param;
     }
 
     private function settingsDatabase()
     {
-		if(\Schema::hasTable('settings') && Settings::where('default', true)->orWhere('id', 1)->exists()){
+		if(Schema::hasTable('settings') && Settings::where('default', true)->orWhere('id', 1)->exists()){
         return cache()->get('settings', function(){
 			$setting = Settings::where('default', true)->orWhere('id', 1)->first();
 			cache()->put($setting, 5000);
@@ -219,6 +221,7 @@ class Lochlitecms implements LochlitecmsInterface
 		Config()->set('mail.from.name', $settings->mailfrom_name ?? '');
 		Config()->set('mail.from.address', $settings->mailfrom_address ?? '');
 		Config()->set('mail.mailers.smtp.host', $settings->mail_host ?? '127.0.0.1');
+		Config()->set('mail.mailers.smtp.local_domain', $settings->mail_host ?? '127.0.0.1');
 		Config()->set('mail.mailers.smtp.port', $settings->mail_port ?? 587);
 		Config()->set('mail.mailers.smtp.username', $settings->mail_username ?? '');
 		Config()->set('mail.mailers.smtp.password', $settings->mail_password ?? '');
@@ -783,7 +786,7 @@ class Lochlitecms implements LochlitecmsInterface
 		}
 	    return;
      } catch(\Exception $e){
-         dd($e->getMessage());
+         
      }
 	 }
 
@@ -804,6 +807,7 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'resource', 'url' => '/manager/posts', 'controller' => \Lochlite\cms\Controllers\Admin\PostsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerposts'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/pwa', 'controller' => \Lochlite\cms\Controllers\Admin\PwaController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerpwa'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/seo', 'controller' => \Lochlite\cms\Controllers\Admin\SeoController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerseo'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/appendcoding', 'controller' => \Lochlite\cms\Controllers\Admin\AppendcodingController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerappendcoding'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/notifications', 'controller' => \Lochlite\cms\Controllers\Admin\NotificationsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managernotifications'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/roles', 'controller' => \Lochlite\cms\Controllers\Admin\PermissionsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerroles'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/users', 'controller' => \Lochlite\cms\Controllers\Admin\UsersController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerusers'],
@@ -940,6 +944,19 @@ class Lochlitecms implements LochlitecmsInterface
 		}
     }
 
+    private static function appendCodingRender($list)
+    {
+         foreach($list as $item){
+		 echo $item;
+         }
+    }
+
+    public static function appendCoding(String $position = 'head', String $status = 'active')
+    {
+        $list = Appendcoding::where('position', $position)->where('status', $status)->pluck('body');
+		return Lochlitecms::appendCodingRender($list);
+    }
+
     public static function generateStylesheet(array $array)
     {
          foreach($array as $item){
@@ -974,6 +991,7 @@ class Lochlitecms implements LochlitecmsInterface
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'appearance', 'url' => '#appearance', 'icon' => 'menu-icon mdi mdi-palette', 'name' => 'Aparência',
 		     'subitems' => [
+		     ['url' => route('managercomments.moderate'), 'name' => 'Adicionar codigo'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'comment', 'url' => '#comment', 'icon' => 'menu-icon mdi mdi-message-text', 'name' => 'Comentários',
