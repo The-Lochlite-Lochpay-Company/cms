@@ -24,3 +24,49 @@
    - Email service (sending and receiving)
    - File manager
 ```
+
+<h3>Starting from scratch with a starter kit</h3>
+<p>Currently you need a PHP developer to install this software or have moderate technical knowledge. If you're not sure if you can install it or things are going wrong, email <a href="mailto:drcg@lochlite.com"><strong> drcg@lochlite.com </strong></a> and we'll walk you through the process.</p>
+
+<b>The instructions below must be followed using your personal/corporate computer and not directly on the server. In the next section you will see how to place Lochlite CMS on the web server.</b>
+
+   1. <h5>Install Composer on your device</h5>
+      <p>Follow the guidance <a href="https://getcomposer.org/doc/00-intro.md">from this page</a> and proceed to the next step.</p>
+
+   2. <h5>Download Lochlite CMS</h5>
+      <p>Open the command prompt in the folder of your choice, paste the highlighted text below and press Enter.</p>
+
+      ```html
+      composer create-project lochlite/cms-install lochlite 
+      ```
+      
+      <p>This process may take a few minutes, do not interrupt it, wait until the command prompt is unlocked for new commands.</p>
+      
+   3. <h5>Configure the database</h5>
+      <p>In the previous step a folder called 'lochlite' was created by the system. Enter the 'lochlite' folder and locate a file called 'env' or '.env'.</p>
+      <p>Once you find the 'env' file, open it in a text editor, edit the snippet below with the corresponding details for your database and save the changes.</p>
+      
+      ```html
+       DB_CONNECTION=mysql
+       DB_HOST=127.0.0.1
+       DB_PORT=3306
+       DB_DATABASE=database_name
+       DB_USERNAME=database_username
+       DB_PASSWORD=database_password 
+      ```
+      <p>If you don't have a database or you don't know what the database details are, contact your hosting company or IT department for more details.</p>
+   
+   4. <h5>Making final adjustments</h5>
+      <p>Return to the command prompt opened in step 1, paste the highlighted text below and hit enter.</p>
+ 
+      ```html
+      cd lochlite; php artisan migrate --force && php artisan db:seed --force 
+      ```
+      <p>This process may take a few minutes, do not interrupt it, wait until the command prompt is unlocked for new commands.</p>
+      
+<p>If no errors occurred in the previous steps, you are ready to put your site online and start creating your pages and articles.</p>    
+
+<h3>Putting on a web server</h3>
+<p>The steps described in the previous section <strong>must be done on your local computer and not directly on the server</strong>, to put Lochlite CMS on a web server safely, some additional steps are necessary.</p>    
+
+         
