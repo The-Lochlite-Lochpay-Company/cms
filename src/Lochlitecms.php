@@ -158,7 +158,7 @@ class Lochlitecms implements LochlitecmsInterface
 		if(Schema::hasTable('settings') && Settings::where('default', true)->orWhere('id', 1)->exists()){
         return cache()->get('settings', function(){
 			$setting = Settings::where('default', true)->orWhere('id', 1)->first();
-			cache()->put($setting, 5000);
+			cache()->put('settings', $setting, 5000);
 			return $setting;
 		});	
 	    } else {
@@ -407,8 +407,10 @@ class Lochlitecms implements LochlitecmsInterface
         session()->flash('flash.bannerStyle', 'danger');    
         return redirect()->back()->with('error','Module not found.');
        }
+	   $setting->save();
 	   $clearcache = Artisan::call('cache:clear');	   
-       $clearconfig = Artisan::call('config:clear');	   
+       $clearconfig = Artisan::call('config:clear');
+	   cache()->forget('settings');
        return redirect()->back()->with('success','Settings updated successfully');
 	   } catch(\Exception $e){
           session()->flash('flash.banner', 'Falha ao atualizar as configurações de: '. $module);
@@ -496,6 +498,14 @@ class Lochlitecms implements LochlitecmsInterface
             session()->flash('flash.bannerStyle', 'danger');    
 		    return redirect()->route('login');	 
 		 }
+    }
+
+    public function visitor(String $ip = null, String $param = null)
+    {
+		 Config()->set('cache.default', 'array');
+		 $geo = ($ip == null ? GeoIP()->getLocation() : GeoIP($ip));
+		 Config()->set('cache.default', Lochlitecms::config('cache_driver'));
+         return $param == null ? $geo : $geo->$param;
     }
 
     public function isFile($path)
@@ -866,7 +876,7 @@ class Lochlitecms implements LochlitecmsInterface
 		}
         $manifest = cache()->get('pwa', function(){
 			$pwa = Pwa::where('default', true)->orWhere('id', 1)->first();
-			cache()->put($pwa, 5000);
+			cache()->put('pwa', $pwa, 5000);
 			return $pwa;
 		});	
 	    } else {
@@ -913,7 +923,7 @@ class Lochlitecms implements LochlitecmsInterface
 		}
         $opt = cache()->get('seo', function(){
 			$seo = Seo::where('default', true)->orWhere('id', 1)->first();
-			cache()->put($seo, 5000);
+			cache()->put('seo', $seo, 5000);
 			return $seo;
 		});	
 		$filter = str_replace(':', '', $param);
