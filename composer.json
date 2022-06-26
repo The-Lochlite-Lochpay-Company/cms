@@ -19,6 +19,7 @@
         "inertiajs/inertia-laravel": "^0.6",
         "laravel/framework": "^9.19",
         "laravel/tinker": "^2.7",
+        "laravel/socialite": "^5.0",
         "guzzlehttp/guzzle": "^7.4",
         "torann/geoip": "^3.0",
         "jenssegers/agent": "^2.6",
