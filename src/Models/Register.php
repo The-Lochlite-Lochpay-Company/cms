@@ -22,80 +22,42 @@
 
 namespace Lochlite\cms\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable implements MustVerifyEmail
+class Register extends Model
 {
-    use HasApiTokens;
     use HasFactory;
-    use HasProfilePhoto;
-    use Notifiable;
-    use TwoFactorAuthenticatable;
-	use HasRoles;
-
-    protected $guard_name = 'sanctum'; 
-
+	
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array
      */
     protected $fillable = [
-           'name',
-           'last_name',
-           'email',
-           'phone',
-           'internal_code',
-           'social_security',
-           'gender',
-           'address',
-           'address_number',
-           'city',
-           'state',
-           'country',
-           'zipcode',
-           'visitor',
-           'email_verified_at',
-           'password',
-           'avatar',
-           'profile_photo_path',
-           'status',
-    ];
+         'domain',
+         'title',
+         'description',
+         'emphasis',
+         'logintext',
+         'buttontext',
+         'buttoncolor',
+         'buttontextcolor',
+         'logo',
+         'image',
+         'form',
+         'imagevisible',
+         'google',
+         'googlereference',
+         'facebook',
+         'facebookreference',
+         'twitter',
+         'twitterreference',
+         'default',
+         'status',
+	];	
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = [
-        'profile_photo_url',
+        'form' => 'array',
     ];
 }
