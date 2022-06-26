@@ -37,7 +37,7 @@
 	     <meta name="msapplication-TileColor" content="{{ Lochlitecms::pwa('msapplicationtilecolor') }}">
 	     <meta name="theme-color" content="{{ Lochlitecms::pwa('theme_color') }}">
   
-	     <link rel="shortcut icon" href="/application/32x32.png">
+	     <link rel="shortcut icon" href="{{ Lochlitecms::seo('icon') }}">
          <link rel="manifest" href="/manifest.webmanifest">
          <link rel="stylesheet" href="/css/app.css">
          <link rel="stylesheet" href="/sass/main.css">

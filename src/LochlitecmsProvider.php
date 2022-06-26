@@ -31,6 +31,7 @@ use Lochlite\cms\Providers\RouteServiceProvider;
 use Lochlite\cms\Middleware\MainMiddleware;
 use Lochlite\cms\Jobs\UpdateJob;
 use Lochlite\cms\Events\RegisterPlugins;
+use Laravel\Fortify\Fortify;
 use Gate;
 
 class LochlitecmsProvider extends ServiceProvider
@@ -44,7 +45,7 @@ class LochlitecmsProvider extends ServiceProvider
     {
          $this->app->bind('Lochlitecms', function($app) {
              $package = new Lochlitecms();
-		 	return $package->setInstance();
+		 	 return $package->setInstance();
          });
          $this->app->register(RouteServiceProvider::class);
          $this->app->register(MainServiceProvider::class);
@@ -62,6 +63,7 @@ class LochlitecmsProvider extends ServiceProvider
      */
     public function boot(Kernel $kernel)
     {
+     header('Link: <https://fonts.gstatic.com>; rel="preconnect", <https://fonts.googleapis.com>; rel="preconnect", <'. request()->getSchemeAndHttpHost() .'/css/app.css>; rel="preload"; as="style"; type="text/css"');
      $kernel->pushMiddleware(MainMiddleware::class);
      $this->loadMigrationsFrom(__DIR__ . '/Migrations');
      $this->loadViewsFrom(__DIR__ . '/Views', 'lochlitecms');
@@ -73,5 +75,23 @@ class LochlitecmsProvider extends ServiceProvider
      $instanceCMS->defaultRoutes();
      $instanceCMS->startPlugins(app());
      $instanceCMS->getRoutes();
+     Fortify::loginView(function (\Illuminate\Http\Request $request) {
+         return Lochlitecms::login();
+     });
+     Fortify::registerView(function (\Illuminate\Http\Request $request) {
+         return Lochlitecms::register();
+     });
+     Fortify::requestPasswordResetLinkView(function (\Illuminate\Http\Request $request) {
+         return Lochlitecms::forgotpassword();
+     });
+     Fortify::resetPasswordView(function (\Illuminate\Http\Request $request) {
+         return Lochlitecms::resetpassword($request);
+     });
+     Fortify::verifyEmailView(function (\Illuminate\Http\Request $request) {
+         return Lochlitecms::emailverified();
+     });
+     Fortify::confirmPasswordView(function (\Illuminate\Http\Request $request) {
+         return Lochlitecms::confirmpassword();
+     });
     }
 }

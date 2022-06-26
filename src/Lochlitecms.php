@@ -35,6 +35,8 @@ use Lochlite\cms\Models\Pwa;
 use Lochlite\cms\Models\Seo;
 use Lochlite\cms\Models\Settings;
 use Lochlite\cms\Models\Plugins;
+use Lochlite\cms\Models\Login;
+use Lochlite\cms\Models\Register;
 use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Route; use File;
 
 class Lochlitecms implements LochlitecmsInterface
@@ -508,6 +510,62 @@ class Lochlitecms implements LochlitecmsInterface
          return $param == null ? $geo : $geo->$param;
     }
 
+    private static function loginDatabase(String $param = null)
+    {
+		 if(!Login::where('default', true)->orWhere('id', 1)->exists()){
+         Login::create(['default' => true]);
+		 }
+		 $login = Login::where('default', true)->orWhere('id', 1)->first();
+         return $login;
+    }
+
+    private static function registerDatabase(String $param = null)
+    {
+		 if(!Register::where('default', true)->orWhere('id', 1)->exists()){
+         Register::create(['default' => true]);
+		 }
+		 $register = Register::where('default', true)->orWhere('id', 1)->first();
+         return $register;
+    }
+
+    public static function login()
+    {    
+	     $login = Lochlitecms::loginDatabase();
+         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/login', ['title' => $login->title, 'description' => $login->description, 'login' => $login]);
+    }
+
+    public static function forgotpassword()
+    {    
+	     $login = Lochlitecms::loginDatabase();
+         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/forgotpassword', ['title' => 'Forgot Password', 'description' => $login->description, 'login' => $login]);
+    }
+
+    public static function resetpassword(Request $request)
+    {
+		 $token = $request->route('token');    
+		 $email = $request->query('email');    
+	     $login = Lochlitecms::loginDatabase();
+         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/resetpassword', ['title' => 'Forgot Password', 'description' => $login->description, 'email' => $email, 'token' => $token, 'login' => $login]);
+    }
+
+    public static function register()
+    {    
+	     $register = Lochlitecms::registerDatabase();
+         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/register', ['title' => $register->title, 'description' => $register->description, 'register' => $register]);
+    }
+
+    public static function emailverified()
+    {    
+	     $login = Lochlitecms::loginDatabase();
+         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/emailverified', ['title' => $login->title, 'description' => $login->description, 'login' => $login]);
+    }
+
+    public static function confirmpassword()
+    {    
+	     $login = Lochlitecms::loginDatabase();
+         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/confirmpassword', ['title' => $login->title, 'description' => $login->description, 'login' => $login]);
+    }
+
     public function isFile($path)
     {
 		 return File::isFile($path);
@@ -812,31 +870,31 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'get', 'url' => '/page/{id}', 'action' => 'index', 'controller' => \Lochlite\cms\Controllers\WelcomePagesController::class, 'middleware' => ['web'], 'name' => 'page.index'],
          ['system' => true, 'type' => 'resource', 'url' => '/dashboard', 'controller' => \Lochlite\cms\Controllers\HomeController::class, 'middleware' => ['web', 'auth:sanctum', config('jetstream.auth_session'), 'verified'], 'name' => 'dashboard', 'only' => ['index']],
 
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/dashboard', 'controller' => \Lochlite\cms\Controllers\Admin\AdminController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerdashboard'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/pages', 'controller' => \Lochlite\cms\Controllers\Admin\PagesController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerpages'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/posts', 'controller' => \Lochlite\cms\Controllers\Admin\PostsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerposts'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/pwa', 'controller' => \Lochlite\cms\Controllers\Admin\PwaController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerpwa'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/seo', 'controller' => \Lochlite\cms\Controllers\Admin\SeoController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerseo'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/appendcoding', 'controller' => \Lochlite\cms\Controllers\Admin\AppendcodingController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerappendcoding'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/notifications', 'controller' => \Lochlite\cms\Controllers\Admin\NotificationsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managernotifications'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/roles', 'controller' => \Lochlite\cms\Controllers\Admin\PermissionsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerroles'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/users', 'controller' => \Lochlite\cms\Controllers\Admin\UsersController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerusers'],
-         ['system' => true, 'type' => 'post', 'url' => '/manager/comments/setapproved/{id}', 'action' => 'moderatesetapproved', 'controller' => \Lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managercomments.setapproved'],
-         ['system' => true, 'type' => 'get', 'url' => '/manager/comments/moderate', 'action' => 'moderate', 'controller' => \Lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managercomments.moderate'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/comments', 'controller' => \Lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managercomments'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/contacts', 'controller' => \Lochlite\cms\Controllers\Admin\ContactsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managercontacts'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/feedbacks', 'controller' => \Lochlite\cms\Controllers\Admin\FeedbacksController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerfeedbacks'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/feedback-responses', 'controller' => \Lochlite\cms\Controllers\Admin\FeedbackresponsesController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerfeedback-responses'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/scheduling', 'controller' => \Lochlite\cms\Controllers\Admin\SchedulingController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerscheduling'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/storange', 'controller' => \Lochlite\cms\Controllers\Admin\StorangeController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerstorange'],
-         ['system' => true, 'type' => 'get', 'url' => '/manager/storange/download/{id}', 'action' => 'download', 'controller' => \Lochlite\cms\Controllers\Admin\StorangeController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerstorange.download'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/emails', 'controller' => \Lochlite\cms\Controllers\Admin\EmailsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'manageremails'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/emailsmodel', 'controller' => \Lochlite\cms\Controllers\Admin\EmailsmodelController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'manageremailsmodel'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/plugins', 'controller' => \Lochlite\cms\Controllers\Admin\PluginsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerplugins'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/system', 'controller' => \Lochlite\cms\Controllers\Admin\SystemController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managersystem'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/routes', 'controller' => \Lochlite\cms\Controllers\Admin\RoutesController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managerroutes'],
-         ['system' => true, 'type' => 'resource', 'url' => '/manager/settings', 'controller' => \Lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managersettings', 'only' => ['index', 'store', 'update']],
-         ['system' => true, 'type' => 'get', 'url' => '/manager/settings/cleandata', 'action' => 'cleandata', 'controller' => \Lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth:sanctum'], 'name' => 'managersettings.cleandata'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/dashboard', 'controller' => \Lochlite\cms\Controllers\Admin\AdminController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerdashboard'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/pages', 'controller' => \Lochlite\cms\Controllers\Admin\PagesController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerpages'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/posts', 'controller' => \Lochlite\cms\Controllers\Admin\PostsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerposts'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/pwa', 'controller' => \Lochlite\cms\Controllers\Admin\PwaController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerpwa'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/seo', 'controller' => \Lochlite\cms\Controllers\Admin\SeoController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerseo'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/appendcoding', 'controller' => \Lochlite\cms\Controllers\Admin\AppendcodingController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerappendcoding'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/notifications', 'controller' => \Lochlite\cms\Controllers\Admin\NotificationsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managernotifications'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/roles', 'controller' => \Lochlite\cms\Controllers\Admin\PermissionsController::class, 'middleware' => ['web', 'auth:sanctum', 'password.confirm', 'verified'], 'name' => 'managerroles'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/users', 'controller' => \Lochlite\cms\Controllers\Admin\UsersController::class, 'middleware' => ['web', 'auth:sanctum', 'password.confirm', 'verified'], 'name' => 'managerusers'],
+         ['system' => true, 'type' => 'post', 'url' => '/manager/comments/setapproved/{id}', 'action' => 'moderatesetapproved', 'controller' => \Lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managercomments.setapproved'],
+         ['system' => true, 'type' => 'get', 'url' => '/manager/comments/moderate', 'action' => 'moderate', 'controller' => \Lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managercomments.moderate'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/comments', 'controller' => \Lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managercomments'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/contacts', 'controller' => \Lochlite\cms\Controllers\Admin\ContactsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managercontacts'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/feedbacks', 'controller' => \Lochlite\cms\Controllers\Admin\FeedbacksController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerfeedbacks'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/feedback-responses', 'controller' => \Lochlite\cms\Controllers\Admin\FeedbackresponsesController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerfeedback-responses'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/scheduling', 'controller' => \Lochlite\cms\Controllers\Admin\SchedulingController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerscheduling'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/storange', 'controller' => \Lochlite\cms\Controllers\Admin\StorangeController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerstorange'],
+         ['system' => true, 'type' => 'get', 'url' => '/manager/storange/download/{id}', 'action' => 'download', 'controller' => \Lochlite\cms\Controllers\Admin\StorangeController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerstorange.download'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/emails', 'controller' => \Lochlite\cms\Controllers\Admin\EmailsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'manageremails'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/emailsmodel', 'controller' => \Lochlite\cms\Controllers\Admin\EmailsmodelController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'manageremailsmodel'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/plugins', 'controller' => \Lochlite\cms\Controllers\Admin\PluginsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified', 'password.confirm'], 'name' => 'managerplugins'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/system', 'controller' => \Lochlite\cms\Controllers\Admin\SystemController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managersystem'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/routes', 'controller' => \Lochlite\cms\Controllers\Admin\RoutesController::class, 'middleware' => ['web', 'auth:sanctum', 'verified', 'password.confirm'], 'name' => 'managerroutes'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/settings', 'controller' => \Lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified', 'password.confirm'], 'name' => 'managersettings', 'only' => ['index', 'store', 'update']],
+         ['system' => true, 'type' => 'get', 'url' => '/manager/settings/cleandata', 'action' => 'cleandata', 'controller' => \Lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified', 'password.confirm'], 'name' => 'managersettings.cleandata'],
 		   
          ['system' => true, 'type' => 'get', 'url' => '/filing/{date}', 'action' => 'filefiling', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'filefiling'],
          ['system' => true, 'type' => 'get', 'url' => '/download/{id}', 'action' => 'download', 'controller' => \Lochlite\cms\Controllers\WelcomeController::class, 'middleware' => ['web'], 'name' => 'download'],
