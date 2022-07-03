@@ -46,4 +46,3 @@ Broadcast::channel('Publishnotifications', function () {
     return true;
 });
 
-

@@ -5,7 +5,7 @@
 * (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
 *
 * Software: LOCHLITE CMS
-* Version: 2.0.7  
+* Version: 2.0.8  
 * License: Proprietary
 * Made in: Brazil
 * Author: The Lochlite & Lochpay Company
@@ -20,42 +20,35 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace Lochlite\cms\Models;
 
-return new class extends Migration
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Recoverypassword extends Model
 {
+    use HasFactory;
+	
     /**
-     * Run the migrations.
+     * The attributes that are mass assignable.
      *
-     * @return void
+     * @var array
      */
-    public function up()
-    {
-        Schema::create('routes', function (Blueprint $table) {
-            $table->id();
-            $table->json('type')->nullable();
-            $table->string('url')->nullable();
-            $table->string('controller')->nullable();
-            $table->string('action')->nullable();
-            $table->json('middleware')->nullable();
-            $table->json('only')->nullable();
-            $table->json('except')->nullable();
-            $table->string('name')->nullable();
-            $table->boolean('system')->default(false)->nullable();
-            $table->string('status')->default('active')->nullable();
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('routes');
-    }
-};
+    protected $fillable = [
+         'domain',
+         'title',
+         'description',
+         'emphasis',
+         'instruction',
+         'logintext',
+         'buttontext',
+         'buttoncolor',
+         'buttontextcolor',
+         'logo',
+         'image',
+         'form',
+         'imagevisible',
+         'default',
+         'status',
+	];	
+}

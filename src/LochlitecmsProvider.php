@@ -63,7 +63,6 @@ class LochlitecmsProvider extends ServiceProvider
      */
     public function boot(Kernel $kernel)
     {
-     header('Link: <https://fonts.gstatic.com>; rel="preconnect", <https://fonts.googleapis.com>; rel="preconnect", <'. request()->getSchemeAndHttpHost() .'/css/app.css>; rel="preload"; as="style"; type="text/css"');
      $kernel->pushMiddleware(MainMiddleware::class);
      $this->loadMigrationsFrom(__DIR__ . '/Migrations');
      $this->loadViewsFrom(__DIR__ . '/Views', 'lochlitecms');
@@ -71,6 +70,7 @@ class LochlitecmsProvider extends ServiceProvider
      $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 	 $instanceCMS = Lochlitecms::setStaticInstance();	
      $instanceCMS->setChangesVersion();
+     $instanceCMS->setDefaultHeaderResponse();
      $instanceCMS->startConfig();
      $instanceCMS->defaultRoutes();
      $instanceCMS->startPlugins(app());

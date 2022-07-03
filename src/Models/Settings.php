@@ -36,10 +36,10 @@ class Settings extends Model
      */
     protected $fillable = [
 	'appname',
-	'description',
-	'favicon',
+	'mail_verify',
 	'domain',
 	'timezone',
+	'language',
 	'mailfrom_name',
 	'mailfrom_address',
 	'mail_host',

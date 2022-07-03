@@ -45,7 +45,7 @@
         <script src="/js/app.js" defer></script>
         @inertiaHead
 </head>
-<body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0" data-base-url="{{url('/')}}" data-mode="dashboard">
+<body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0 sidebar-icon-only" data-base-url="{{url('/')}}" data-mode="dashboard">
         @inertia
 
 </body>

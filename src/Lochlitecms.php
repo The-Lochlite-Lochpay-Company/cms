@@ -5,7 +5,7 @@
 * (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
 *
 * Software: LOCHLITE CMS
-* Version: 2.0.9  
+* Version: 2.0.10  
 * License: Proprietary
 * Made in: Brazil
 * Author: The Lochlite & Lochpay Company
@@ -23,6 +23,7 @@
 namespace Lochlite\cms;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Routing\Router;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Schema;
@@ -37,6 +38,8 @@ use Lochlite\cms\Models\Settings;
 use Lochlite\cms\Models\Plugins;
 use Lochlite\cms\Models\Login;
 use Lochlite\cms\Models\Register;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Route; use File;
 
 class Lochlitecms implements LochlitecmsInterface
@@ -94,7 +97,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function application()
     {
-        return collect(['name' => 'Lochlite CMS', 'version' => '2.0.8', 'madein' => 'Brazil', 'brand' => 'The Lochlite & Lochpay Company', 'manufacturer' => 'Lochlite e Lochpay Softwares e Pagamentos LTDA', 'license' => ['type' => 'private', 'name' => 'Proprietary', 'url' => 'https://djg.gpgic.com'], 'url_product' => 'https://lochlite.com/solutions/cms', 'homepage' => 'https://lochlite.com', 'developer' => ['name' => 'Igor Macedo Montalvão', 'contact' => ['email' => ['igor.macedo@gpgic.com', 'igmacedo01@gmail.com']]], 'support' => ['to' => 'drcg@gpgic.com', 'name' => 'Lochlite Technical Support', 'homepage' => 'https://drcg.gpgic.com']]);
+        return collect(['name' => 'Lochlite CMS', 'version' => '2.0.10', 'madein' => 'Brazil', 'brand' => 'The Lochlite & Lochpay Company', 'manufacturer' => 'Lochlite e Lochpay Softwares e Pagamentos LTDA', 'license' => ['type' => 'private', 'name' => 'Proprietary', 'url' => 'https://djg.gpgic.com'], 'url_product' => 'https://lochlite.com/solutions/cms', 'homepage' => 'https://lochlite.com', 'developer' => ['name' => 'Igor Macedo Montalvão', 'contact' => ['email' => ['igor.macedo@gpgic.com', 'igmacedo01@gmail.com']]], 'support' => ['to' => 'drcg@gpgic.com', 'name' => 'Lochlite Technical Support', 'homepage' => 'https://drcg.gpgic.com']]);
     }
 
     public function listModule()
@@ -143,6 +146,13 @@ class Lochlitecms implements LochlitecmsInterface
     {
         $result = shell_exec($command);	   
         return collect(['success' => $result == 0 ? true : false, 'output' => $result]);
+    }
+
+    public function setDefaultHeaderResponse()
+    {
+        header('Link: <https://fonts.gstatic.com>; rel="preconnect", <https://fonts.googleapis.com>; rel="preconnect", <'. request()->getSchemeAndHttpHost() .'/css/app.css>; rel="preload"; as="style"; type="text/css"');
+        header('X-lly-visitor: '. Lochlitecms::visitorID());
+		return;
     }
 
     public function setChangesVersion()
@@ -475,6 +485,25 @@ class Lochlitecms implements LochlitecmsInterface
          }
     }
 
+    public function newPermissions(Array $data)
+    {
+         foreach($data as $item){
+			 if($item['type'] == 'permission'){
+			 if(Role::where('name', $item['role'])->exists() && !Permission::where('name', $item['name'])->exists()){
+             $role = Role::where('name', $item['role'])->first();
+			 Permission::create(['name' => $item['name']]);
+             $role->givePermissionTo($item['name']);
+			 }
+			 }
+			 else if($item['type'] == 'role'){
+			 if(!Role::where('name', $item['name'])->exists()){
+             Role::create(['name' => $item['name']]);
+			 }				 
+			 }
+             else{}
+		 }
+    }
+
     public function render(String $view = 'Welcome', Array $data = [], String $layout = 'lochlitecms::admin')
     {
          return Inertia::render($view, $data)->rootview($layout);
@@ -500,6 +529,20 @@ class Lochlitecms implements LochlitecmsInterface
             session()->flash('flash.bannerStyle', 'danger');    
 		    return redirect()->route('login');	 
 		 }
+    }
+
+    public function visitorID()
+    {
+		 if(!session()->has('visitor')){
+         $random = Str::random(32);
+	     $time = now();
+	     $visitor = Lochlitecms::visitor();
+	     $ip = $visitor->ip;
+	     $city = $visitor->city;
+	     $id = sha1($ip. $random .$time);
+		 session()->put('visitor', (object) ['id' => $id, 'city' => $city, 'ip' => $ip]);
+		 }
+         return session()->get('visitor')->id;
     }
 
     public function visitor(String $ip = null, String $param = null)
@@ -586,7 +629,8 @@ class Lochlitecms implements LochlitecmsInterface
     }
 
     public function getFolder($path, $param='')
-    {    if(Lochlitecms::existsFolder($path)){
+    {
+		if(Lochlitecms::existsFolder($path)){
 		 $provider = File::glob($path .'\*'. $param);
 		 return File::file($provider[0])->dirname();
 	     } else {
@@ -672,6 +716,42 @@ class Lochlitecms implements LochlitecmsInterface
 		 return false;
 	}
 
+    public function installPlugin(String $name, Callable $installed)
+    {
+     try{ 
+	     $plugin = Plugins::where('name', $name);
+         if($plugin->exists() && $plugin->first()->status == 'pre-installation'){
+             try{ 
+             $installed($plugin->first());
+			 $plugin->first()->update(['status' => 'installed']);
+             } catch(\Exception $e){
+ 			 $plugin->first()->update(['status' => 'fail-installed']);
+            }
+		 }
+     } catch(\Exception $e){
+         
+     }
+
+    }
+
+    public function reinstallationPlugin(String $name, String $version, Callable $installed)
+    {
+     try{ 
+	     $plugin = Plugins::where('name', $name);
+         if($plugin->exists() && $plugin->first()->version == $version){
+             try{ 
+             $installed($plugin->first());
+			 $plugin->first()->update(['status' => 'installed']);
+             } catch(\Exception $e){
+  			 $plugin->first()->update(['status' => 'fail-installed']);
+             }
+		 }
+     } catch(\Exception $e){
+         
+     }
+
+    }
+
     public function startPlugins($app)
     {
       try{ 
@@ -700,11 +780,11 @@ class Lochlitecms implements LochlitecmsInterface
          if(!is_null($newclass)){
          //Register the plugin provider
          app()->register(new $newclass(app()));
-		 if($item->status == 'processing'){$item->update(['status' => 'installed']); $item->save();}
+		 if($item->status == 'processing'){$item->update(['status' => 'pre-installation']); $item->save();}
          } else if($alternative = Lochlitecms::searchPluginProvider($item->path)){
          //Register the plugin provider
          app()->register(new $alternative(app()));
-		 if($item->status == 'processing'){$item->update(['status' => 'installed']); $item->save();}
+		 if($item->status == 'processing'){$item->update(['status' => 'pre-installation']); $item->save();}
          }  
          } catch(\Exception $e){
              $item->update(['status' => 'failed']);  $item->update(['failedmessage' => $e->getMessage()]); $item->save();
@@ -876,7 +956,10 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'resource', 'url' => '/manager/pwa', 'controller' => \Lochlite\cms\Controllers\Admin\PwaController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerpwa'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/seo', 'controller' => \Lochlite\cms\Controllers\Admin\SeoController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerseo'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/appendcoding', 'controller' => \Lochlite\cms\Controllers\Admin\AppendcodingController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerappendcoding'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/login', 'controller' => \Lochlite\cms\Controllers\Admin\LoginController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerlogin'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/register', 'controller' => \Lochlite\cms\Controllers\Admin\RegisterController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managerregister'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/notifications', 'controller' => \Lochlite\cms\Controllers\Admin\NotificationsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managernotifications'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/search', 'controller' => \Lochlite\cms\Controllers\Admin\SearchController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managersearch'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/roles', 'controller' => \Lochlite\cms\Controllers\Admin\PermissionsController::class, 'middleware' => ['web', 'auth:sanctum', 'password.confirm', 'verified'], 'name' => 'managerroles'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/users', 'controller' => \Lochlite\cms\Controllers\Admin\UsersController::class, 'middleware' => ['web', 'auth:sanctum', 'password.confirm', 'verified'], 'name' => 'managerusers'],
          ['system' => true, 'type' => 'post', 'url' => '/manager/comments/setapproved/{id}', 'action' => 'moderatesetapproved', 'controller' => \Lochlite\cms\Controllers\Admin\CommentsController::class, 'middleware' => ['web', 'auth:sanctum', 'verified'], 'name' => 'managercomments.setapproved'],
@@ -1051,6 +1134,8 @@ class Lochlitecms implements LochlitecmsInterface
 		     'subitems' => [
 		     ['url' => route('managerposts.create'), 'name' => 'Criar artigo'],
 		     ['url' => route('managerpages.create'), 'name' => 'Criar página'],
+		     ['url' => route('managerlogin.create'), 'name' => 'Criar página de login'],
+		     ['url' => route('managerregister.create'), 'name' => 'Criar página de registro'],
 		     ['url' => route('managerpages.index'), 'name' => 'Todas as páginas'],
 		     ['url' => route('managerposts.index'), 'name' => 'Todos os artigos'],
 		     ['url' => route('managerseo.index'), 'name' => 'Configurações de SEO'],
@@ -1059,7 +1144,9 @@ class Lochlitecms implements LochlitecmsInterface
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'appearance', 'url' => '#appearance', 'icon' => 'menu-icon mdi mdi-palette', 'name' => 'Aparência',
 		     'subitems' => [
-		     ['url' => route('managercomments.moderate'), 'name' => 'Adicionar codigo'],
+		     ['url' => route('managerappendcoding.index'), 'name' => 'Adicionar codigo'],
+		     ['url' => route('managerlogin.index'), 'name' => 'Página de login'],
+		     ['url' => route('managerregister.index'), 'name' => 'Página de registro'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'comment', 'url' => '#comment', 'icon' => 'menu-icon mdi mdi-message-text', 'name' => 'Comentários',

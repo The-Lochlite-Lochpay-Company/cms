@@ -37,7 +37,7 @@ return new class extends Migration
             $table->id();
             $table->string('domain')->nullable();
             $table->string('title')->default('Log in')->nullable();
-            $table->string('description')->default("Login to your account.")->nullable();
+            $table->string('description')->default('Login to your account.')->nullable();
             $table->string('emphasis')->default('Login to Your Account')->nullable();
             $table->string('forgottext')->default('Forgot your password?')->nullable();
             $table->string('buttontext')->default('Log in')->nullable();

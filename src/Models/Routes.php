@@ -34,7 +34,7 @@ class Routes extends Model
      *
      * @var array
      */
-    protected $fillable = ['type', 'name', 'url', 'controller', 'action', 'middleware', 'only', 'except', 'system'];	
+    protected $fillable = ['type', 'name', 'url', 'controller', 'action', 'middleware', 'only', 'except', 'system', 'status'];	
 
     protected $casts = [
         'type' => 'array',

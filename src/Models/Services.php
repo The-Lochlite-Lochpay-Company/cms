@@ -44,4 +44,19 @@ class Services extends Model
     protected $casts = [
         'api' => 'array',
     ];
+	
+    public function googleauth()
+    {
+        return $this->where('title', 'google-auth')->first();
+    }
+	
+    public function facebookauth()
+    {
+        return $this->where('title', 'facebook-auth')->first();
+    }
+	
+    public function twitterauth()
+    {
+        return $this->where('title', 'twitter-auth')->first();
+    }
 }
