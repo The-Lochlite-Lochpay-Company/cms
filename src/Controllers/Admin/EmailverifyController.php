@@ -23,15 +23,14 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Lochlite\cms\Models\User;
-use Lochlite\cms\Models\Plugins;
-use Lochlite\cms\Models\Settings;
+use Lochlite\cms\Models\Posts;
+use Lochlite\cms\Models\Comments;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class AdminController extends Controller
+class EmailverifyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -40,29 +39,8 @@ class AdminController extends Controller
      */
     public function index()
     {
-         function getSymbolByQuantity($bytes) {
-             $symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-             $exp = floor(log($bytes)/log(1024));
-         
-             return sprintf('%.2f '.$symbols[$exp], ($bytes/pow(1024, floor($exp))));
-         }
-         return Lochlitecms::renderPanelCMS('Panel/dashboard', [
-             'canLogin' => Route::has('login'),
-             'canRegister' => Route::has('register'),
-             'title' => 'Login & Registro | Lochlite CMS',
-             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
-             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
-             'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Login & Registro',
-             'breadcrumbCurrentSection' => 'Aparência',
-             'users' => User::all()->count(),
-             'plugins' => Plugins::where('status', 'installed')->count(),
-             'settings' => Settings::all()->count(),
-             'disk' => getSymbolByQuantity(disk_total_space("/")),
-             'diskfreespace' => getSymbolByQuantity(disk_free_space("/")),
-             'version' => Lochlitecms::application()->get('version')
-         ]);
-	}
+        //
+    }
 
     /**
      * Show the form for creating a new resource.

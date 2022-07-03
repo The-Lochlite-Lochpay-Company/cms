@@ -46,11 +46,11 @@ class RegisterRouteListeners
 		          if (!Routes::where('url', $item['url'])->exists()) {
 		              $newroute = true; 
 		              $typeroute = $item['type'] ?? 'resource';
-					  $thisroute = Routes::create(['type' => $typeroute, 'url' => $item['url'], 'controller' => $item['controller'] ?? '\lochlite\cms\Controllers\WelcomeController', 'middleware' => $item['middleware'] ?? ['web'], 'name' => $item['name'] ?? null, 'only' => $item['only'] ?? null, 'except' => $item['except'] ?? null, 'action' => $item['action'] ?? 'index']);
+					  $thisroute = Routes::create(['system' => $item['system'] ?? false, 'type' => $typeroute, 'url' => $item['url'], 'controller' => $item['controller'] ?? '\lochlite\cms\Controllers\WelcomeController', 'middleware' => (array) $item['middleware'] ?? ['web'], 'name' => $item['name'] ?? null, 'only' => $item['only'] ?? null, 'except' => $item['except'] ?? null, 'action' => $item['action'] ?? 'index']);
                   }
              }
 	         if($newroute){
-		         cache()->put('routes', Routes::all(), 1000);
+		         cache()->put('routes', Routes::all(), 10000);
 				 Artisan::call('route:clear');
 				 Artisan::call('route:cache');
              }

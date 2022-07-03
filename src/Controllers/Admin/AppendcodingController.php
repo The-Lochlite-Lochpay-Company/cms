@@ -23,10 +23,11 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Lochlite\cms\Models\Appendcoding; 
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
-use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
+use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
 class AppendcodingController extends Controller
 {
@@ -37,7 +38,22 @@ class AppendcodingController extends Controller
      */
     public function index()
     {
-        //
+        $appendcoding = Appendcoding::paginate(15);
+		if (request()->wantsJson()) {
+           return $appendcoding;
+         }
+         return Lochlitecms::renderPanelCMS('Panel/appendcoding/index', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Appendcoding | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Adicionar Código',
+             'breadcrumbCurrentSection' => 'Código',
+             'appendcoding' => $appendcoding,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -47,7 +63,17 @@ class AppendcodingController extends Controller
      */
     public function create()
     {
-        //
+         return Lochlitecms::renderPanelCMS('Panel/appendcoding/create', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Appendcoding | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Adicionar Código',
+             'breadcrumbCurrentSection' => 'Código',
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -58,7 +84,20 @@ class AppendcodingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        request()->validate([
+            'comment' => 'string|required',
+            'position' => 'string|required',
+            'status' => 'string|required',
+            'body' => 'string|required',
+        ]);
+        Appendcoding::create([
+		'userid' => Auth()->User()->id,
+		'comment' => $request->get('comment'),
+		'position' => $request->get('position'),
+		'status' => $request->get('status'),
+		'body' => $request->get('body'),
+		]);
+		return redirect()->route('managerappendcoding.index');
     }
 
     /**
@@ -69,7 +108,22 @@ class AppendcodingController extends Controller
      */
     public function show($id)
     {
-        //
+         if(Appendcoding::where('id', $id)->exists()){
+ 		 $appendcoding = Appendcoding::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('Panel/appendcoding/show', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Appendcoding | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Adicionar Código',
+             'breadcrumbCurrentSection' => 'Código',
+             'appendcoding' => $appendcoding,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
+	     }
+		 return redirect()->route('managerappendcoding.index');
     }
 
     /**
@@ -80,8 +134,23 @@ class AppendcodingController extends Controller
      */
     public function edit($id)
     {
-        //
-    }
+         if(Appendcoding::where('id', $id)->exists()){
+ 		 $appendcoding = Appendcoding::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('Panel/appendcoding/edit', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Appendcoding | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Adicionar Código',
+             'breadcrumbCurrentSection' => 'Código',
+             'appendcoding' => $appendcoding,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
+	     }
+		 return redirect()->route('managerappendcoding.index');
+	 }
 
     /**
      * Update the specified resource in storage.
@@ -92,7 +161,23 @@ class AppendcodingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        request()->validate([
+            'comment' => 'string|required',
+            'position' => 'string|required',
+            'status' => 'string|required',
+            'body' => 'string|required',
+        ]);
+         if(Appendcoding::where('id', $id)->exists()){
+ 		 $appendcoding = Appendcoding::where('id', $id)->first();
+         $appendcoding->update([
+		 'userid' => Auth()->User()->id,
+		 'comment' => $request->get('comment'),
+		 'position' => $request->get('position'),
+		 'status' => $request->get('status'),
+		 'body' => $request->get('body'),
+		 ]);
+		 }
+		 return redirect()->route('managerappendcoding.index');
     }
 
     /**
@@ -103,6 +188,10 @@ class AppendcodingController extends Controller
      */
     public function destroy($id)
     {
-        //
+         if(Appendcoding::where('id', $id)->exists()){
+ 		 $appendcoding = Appendcoding::where('id', $id)->first();
+         $appendcoding->delete();
+		 }
+		 return redirect()->route('managerappendcoding.index');
     }
 }

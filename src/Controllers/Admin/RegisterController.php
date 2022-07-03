@@ -23,14 +23,14 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Lochlite\cms\Models\Login;
+use Lochlite\cms\Models\Register;
 use Lochlite\cms\Models\Services;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class LoginController extends Controller
+class RegisterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -39,11 +39,11 @@ class LoginController extends Controller
      */
     public function index()
     {
-        $login = Login::paginate(15);
+        $register = Register::paginate(15);
 		if (request()->wantsJson()) {
-           return $login;
+           return $register;
          }
-         return Lochlitecms::renderPanelCMS('Panel/login/index', [
+         return Lochlitecms::renderPanelCMS('Panel/register/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -52,7 +52,7 @@ class LoginController extends Controller
              'name' => Auth::User()->name ?? 'User Name',
              'breadcrumbCurrentTitle' => 'Login & Registro',
              'breadcrumbCurrentSection' => 'Aparência',
-             'login' => $login,
+             'register' => $register,
              'version' => Lochlitecms::application()->get('version'),
          ]);
     }
@@ -65,7 +65,7 @@ class LoginController extends Controller
     public function create()
     {
 		 $services = Services::all();
-         return Lochlitecms::renderPanelCMS('Panel/login/create', [
+         return Lochlitecms::renderPanelCMS('Panel/register/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -77,7 +77,7 @@ class LoginController extends Controller
              'services' => $services,
              'version' => Lochlitecms::application()->get('version'),
          ]);
-	 }
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -87,7 +87,7 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-        Login::create([
+        Register::create([
 		'domain' => $request->get('domain'),
 		'default' => $request->get('default'),
 		'image' => $request->get('image'),
@@ -96,7 +96,7 @@ class LoginController extends Controller
 		'emphasis' => $request->get('emphasis'),
 		'title' => $request->get('title'),
 		'description' => $request->get('description'),
-		'forgottext' => $request->get('forgottext'),
+		'logintext' => $request->get('logintext'),
 		'buttontext' => $request->get('buttontext'),
 		'buttoncolor' => $request->get('buttoncolor'),
 		'buttontextcolor' => $request->get('buttontextcolor'),
@@ -107,7 +107,7 @@ class LoginController extends Controller
 		'twitter' => $request->get('twitter'),
 		'twitterreference' => $request->get('ttprovider'),
 		]);
-		return redirect()->route('managerlogin.index');
+		return redirect()->route('managerregister.index');
     }
 
     /**
@@ -118,9 +118,9 @@ class LoginController extends Controller
      */
     public function edit($id)
     {
-		 $login = Login::where('id', $id)->first();
+		 $register = Register::where('id', $id)->first();
 		 $services = Services::all();
-         return Lochlitecms::renderPanelCMS('Panel/login/edit', [
+         return Lochlitecms::renderPanelCMS('Panel/register/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -130,7 +130,7 @@ class LoginController extends Controller
              'breadcrumbCurrentTitle' => 'Login & Registro',
              'breadcrumbCurrentSection' => 'Aparência',
              'services' => $services,
-             'login' => $login,
+             'register' => $register,
              'version' => Lochlitecms::application()->get('version'),
          ]);
     }
@@ -144,8 +144,8 @@ class LoginController extends Controller
      */
     public function update(Request $request, $id)
     {
-		$login = Login::where('id', $id)->first();
-        $login->update([
+		$register = Register::where('id', $id)->first();
+        $register->update([
 		'domain' => $request->get('domain'),
 		'default' => $request->get('default'),
 		'image' => $request->get('image'),
@@ -154,7 +154,7 @@ class LoginController extends Controller
 		'emphasis' => $request->get('emphasis'),
 		'title' => $request->get('title'),
 		'description' => $request->get('description'),
-		'forgottext' => $request->get('forgottext'),
+		'logintext' => $request->get('logintext'),
 		'buttontext' => $request->get('buttontext'),
 		'buttoncolor' => $request->get('buttoncolor'),
 		'buttontextcolor' => $request->get('buttontextcolor'),
@@ -165,7 +165,7 @@ class LoginController extends Controller
 		'twitter' => $request->get('twitter'),
 		'twitterreference' => $request->get('ttprovider'),
 		]);
-		return redirect()->route('managerlogin.index');
+		return redirect()->route('managerregister.index');
     }
 
     /**
@@ -176,7 +176,7 @@ class LoginController extends Controller
      */
     public function destroy($id)
     {
-		$login = Login::where('id', $id)->first();
-		$login->delete();
+		$register = Register::where('id', $id)->first();
+		$register->delete();
     }
 }

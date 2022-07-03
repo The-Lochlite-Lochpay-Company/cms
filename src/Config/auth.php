@@ -82,7 +82,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => lochlite\cms\Models\User::class,
+            'model' => Lochlite\cms\Models\User::class,
         ],
 
         // 'users' => [

@@ -77,7 +77,19 @@ class RoutesController extends Controller
      */
     public function create()
     {
-        //
+         return Lochlitecms::renderPanelCMS('Panel/routes/create', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Criar rota | Lochlite CMS',
+             'user' => Auth::User(),
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Criar rota',
+             'breadcrumbCurrentSection' => 'Rotas',
+             'currentdomain' => request()->getSchemeAndHttpHost(),
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -88,7 +100,18 @@ class RoutesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         Routes::create([
+		 'name' => $request->get('name'),
+		 'url' => $request->get('url'),
+		 'type' => $request->input('type'),
+		 'action' => $request->get('action'),
+		 'controller' => $request->get('controller'),
+		 'status' => $request->get('status'),
+		 'only' => $request->input('only'),
+		 'except' => $request->input('except'),
+		 'middleware' => $request->input('middleware'),
+		 ]);
+		 return redirect()->route('managerroutes.index');
     }
 
     /**
@@ -99,7 +122,8 @@ class RoutesController extends Controller
      */
     public function show($id)
     {
-         $route = Routes::where('id', $id)->first();
+         if(Routes::where('id', $id)->exists()){
+ 		 $routes = Routes::where('id', $id)->first();
          return Lochlitecms::renderPanelCMS('Panel/routes/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
@@ -110,9 +134,11 @@ class RoutesController extends Controller
              'name' => Auth::User()->name ?? 'User Name',
              'breadcrumbCurrentTitle' => 'Gerenciamento de rotas',
              'breadcrumbCurrentSection' => 'Rotas',
-             'showroute' => $route,
+             'showroute' => $routes,
              'version' => Lochlitecms::application()->get('version'),
          ]);
+		 }
+		 return redirect()->route('managerroutes.index'); 
     }
 
     /**
@@ -123,8 +149,9 @@ class RoutesController extends Controller
      */
     public function edit($id)
     {
-         $route = Routes::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('Panel/routes/show', [
+         if(Routes::where('id', $id)->exists()){
+ 		 $routes = Routes::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('Panel/routes/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gerenciamento de rotas | Lochlite CMS',
@@ -134,9 +161,12 @@ class RoutesController extends Controller
              'name' => Auth::User()->name ?? 'User Name',
              'breadcrumbCurrentTitle' => 'Gerenciamento de rotas',
              'breadcrumbCurrentSection' => 'Rotas',
-             'showroute' => $route,
+             'showroute' => $routes,
+             'currentdomain' => request()->getSchemeAndHttpHost(),
              'version' => Lochlitecms::application()->get('version'),
          ]);
+		 }
+		 return redirect()->route('managerroutes.index');
     }
 
     /**
@@ -148,7 +178,32 @@ class RoutesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        request()->validate([
+            'name' => 'string|required',
+            'type' => 'required',
+            'url' => 'string|required',
+            'controller' => 'string|required',
+            'status' => 'string|required',
+            'action' => 'string|required',
+            'only' => 'nullable',
+            'except' => 'nullable',
+            'middleware' => 'required',
+        ]);
+         if(Routes::where('id', $id)->exists()){
+ 		 $routes = Routes::where('id', $id)->first();
+         $routes->update([
+		 'name' => $request->get('name'),
+		 'url' => $request->get('url'),
+		 'type' => $request->input('type'),
+		 'action' => $request->get('action'),
+		 'controller' => $request->get('controller'),
+		 'status' => $request->get('status'),
+		 'only' => $request->input('only'),
+		 'except' => $request->input('except'),
+		 'middleware' => $request->input('middleware'),
+		 ]);
+		 }
+		 return redirect()->route('managerroutes.index');
     }
 
     /**
