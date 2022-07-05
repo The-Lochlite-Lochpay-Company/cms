@@ -3,9 +3,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-       <meta name="application-name" content="{{ Lochlitecms::config('appname') }}">
+        <meta name="application-name" content="{{ Lochlitecms::config('appname') }}">
         <meta name="generator" content="Lochlite CMS">
-	     <meta name="robots" content="{{ Lochlitecms::seo('robots') }}">
+	    <meta name="robots" content="{{ Lochlitecms::seo('robots') }}">
   
         <!-- CSRF Token -->
         <meta name="_token" content="{{ csrf_token() }}">
@@ -35,7 +35,6 @@
          <meta name="twitter:site" content="{{ Lochlitecms::seo('twitter:site') }}">
 	     <meta name="msapplication-TileColor" content="{{ Lochlitecms::pwa('msapplicationtilecolor') }}">
 	     <meta name="theme-color" content="{{ Lochlitecms::pwa('theme_color') }}">
-         @include('feed::links')
 	     <link rel="shortcut icon" href="{{ Lochlitecms::seo('icon') }}">
          <link rel="manifest" href="/manifest.webmanifest">
          @if(empty($headInlineScript) == false && is_string($headInlineScript) == true)
@@ -43,7 +42,7 @@
          @endif
 
          @routes
-         <script src="{{ mix('js/app.js') }}" defer></script>
+		 @vite(['resources/css/app.css', 'resources/sass/main.scss', 'resources/js/app.js'])
          @inertiaHead
          @if(empty($importCSS) == false && is_array($importCSS) == true)
 	      	{!! Lochlitecms::generateStylesheet($importCSS) !!}

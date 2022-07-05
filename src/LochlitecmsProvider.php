@@ -29,6 +29,7 @@ use Lochlite\cms\Providers\MainServiceProvider;
 use Lochlite\cms\Providers\EventServiceProvider;
 use Lochlite\cms\Providers\RouteServiceProvider;
 use Lochlite\cms\Middleware\MainMiddleware;
+use Spatie\Sitemap\SitemapGenerator;
 use Lochlite\cms\Jobs\UpdateJob;
 use Lochlite\cms\Events\RegisterPlugins;
 use Laravel\Fortify\Fortify;
@@ -53,7 +54,11 @@ class LochlitecmsProvider extends ServiceProvider
          $this->app->booted(function () {
              $schedule = $this->app->make(Schedule::class);
              $schedule->job(new UpdateJob('2.0.6'))->daily();
-         });
+             $schedule->command('backup:run')->daily();
+             $schedule->call(function () {
+		     $sitemap = SitemapGenerator::create(config('app.url'))->writeToFile(public_path('sitemap.xml'));
+		     })->daily();
+		});
     }
 
     /**

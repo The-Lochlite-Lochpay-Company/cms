@@ -3,7 +3,6 @@
     <head>
          <meta charset="utf-8">
          <meta name="viewport" content="width=device-width, initial-scale=1">
-         <link rel="stylesheet" href="/css/app.css">
          <meta name="application-name" content="{{ Lochlitecms::config('appname') }}">
          <meta name="generator" content="Lochlite CMS">
 	     <meta name="robots" content="{{ Lochlitecms::seo('robots') }}">
@@ -36,13 +35,11 @@
          <meta name="twitter:site" content="{{ Lochlitecms::seo('twitter:site') }}">
 	     <meta name="msapplication-TileColor" content="{{ Lochlitecms::pwa('msapplicationtilecolor') }}">
 	     <meta name="theme-color" content="{{ Lochlitecms::pwa('theme_color') }}">
-         @include('feed::links')
 	     <link rel="shortcut icon" href="{{ Lochlitecms::seo('icon') }}">
          <link rel="manifest" href="/manifest.webmanifest">
-         <link rel="stylesheet" href="/sass/main.css">
          {!! Lochlitecms::appendCoding('head') !!}
         @routes
-        <script src="/js/app.js" defer></script>
+		@vite(['resources/css/app.css', 'resources/sass/main.scss', 'resources/js/app.js'])
         @inertiaHead
     </head>
     <body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0" data-mode="web">

@@ -150,7 +150,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function setDefaultHeaderResponse()
     {
-        header('Link: <https://fonts.gstatic.com>; rel="preconnect", <https://fonts.googleapis.com>; rel="preconnect", <'. request()->getSchemeAndHttpHost() .'/css/app.css>; rel="preload"; as="style"; type="text/css"');
+        header('Link: <https://fonts.gstatic.com>; rel="preconnect", <https://fonts.googleapis.com>; rel="preconnect"');
         header('X-lly-visitor: '. Lochlitecms::visitorID());
 		return;
     }

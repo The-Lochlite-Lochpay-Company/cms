@@ -39,10 +39,8 @@
   
 	     <link rel="shortcut icon" href="{{ Lochlitecms::seo('icon') }}">
          <link rel="manifest" href="/manifest.webmanifest">
-         <link rel="stylesheet" href="/css/app.css">
-         <link rel="stylesheet" href="/sass/main.css">
         @routes
-        <script src="/js/app.js" defer></script>
+		@vite(['resources/css/app.css', 'resources/sass/main.scss', 'resources/js/app.js'])
         @inertiaHead
 </head>
 <body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0 sidebar-icon-only" data-base-url="{{url('/')}}" data-mode="dashboard">
