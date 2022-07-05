@@ -40,8 +40,6 @@ class User extends Authenticatable implements MustVerifyEmail
     use TwoFactorAuthenticatable;
 	use HasRoles;
 
-    protected $guard_name = 'sanctum'; 
-
     /**
      * The attributes that are mass assignable.
      *
