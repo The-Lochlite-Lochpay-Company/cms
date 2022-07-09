@@ -16,11 +16,7 @@ class MainMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        Gate::before(function ($user, $ability) {
-            if ($user->hasRole('Admin')) {
-                return true;
-            }
-        });
+ 
         return $next($request);
     }
 }

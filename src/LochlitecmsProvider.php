@@ -24,15 +24,17 @@ namespace Lochlite\cms;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Routing\Router;
 use Illuminate\Console\Scheduling\Schedule;
 use Lochlite\cms\Providers\MainServiceProvider;
 use Lochlite\cms\Providers\EventServiceProvider;
 use Lochlite\cms\Providers\RouteServiceProvider;
+use Lochlite\cms\Middleware\Authenticate;
+use Lochlite\cms\Middleware\RedirectIfAuthenticated;
 use Lochlite\cms\Middleware\MainMiddleware;
 use Spatie\Sitemap\SitemapGenerator;
 use Lochlite\cms\Jobs\UpdateJob;
 use Lochlite\cms\Events\RegisterPlugins;
-use Laravel\Fortify\Fortify;
 use Gate;
 
 class LochlitecmsProvider extends ServiceProvider
@@ -68,6 +70,14 @@ class LochlitecmsProvider extends ServiceProvider
      */
     public function boot(Kernel $kernel)
     {
+     $router = $this->app->make(Router::class);
+     $router->aliasMiddleware('auth', Authenticate::class);
+     $router->aliasMiddleware('auth.basic', \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class);
+     $router->aliasMiddleware('auth.session', \Illuminate\Session\Middleware\AuthenticateSession::class);
+     $router->aliasMiddleware('can', \Illuminate\Auth\Middleware\Authorize::class);
+     $router->aliasMiddleware('guest', RedirectIfAuthenticated::class);
+     $router->aliasMiddleware('password.confirm', \Illuminate\Auth\Middleware\RequirePassword::class);
+     $router->aliasMiddleware('verified', \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class);
      $kernel->pushMiddleware(MainMiddleware::class);
      $this->loadMigrationsFrom(__DIR__ . '/Migrations');
      $this->loadViewsFrom(__DIR__ . '/Views', 'lochlitecms');
@@ -76,27 +86,26 @@ class LochlitecmsProvider extends ServiceProvider
 	 $instanceCMS = Lochlitecms::setStaticInstance();	
      $instanceCMS->setChangesVersion();
      $instanceCMS->setDefaultHeaderResponse();
-     $instanceCMS->startConfig();
      $instanceCMS->defaultRoutes();
      $instanceCMS->startPlugins(app());
      $instanceCMS->getRoutes();
-     Fortify::loginView(function (\Illuminate\Http\Request $request) {
-         return Lochlitecms::login();
-     });
-     Fortify::registerView(function (\Illuminate\Http\Request $request) {
-         return Lochlitecms::register();
-     });
-     Fortify::requestPasswordResetLinkView(function (\Illuminate\Http\Request $request) {
-         return Lochlitecms::forgotpassword();
-     });
-     Fortify::resetPasswordView(function (\Illuminate\Http\Request $request) {
-         return Lochlitecms::resetpassword($request);
-     });
-     Fortify::verifyEmailView(function (\Illuminate\Http\Request $request) {
-         return Lochlitecms::emailverified();
-     });
-     Fortify::confirmPasswordView(function (\Illuminate\Http\Request $request) {
-         return Lochlitecms::confirmpassword();
-     });
+     //Fortify::loginView(function (\Illuminate\Http\Request $request) {
+     //    return Lochlitecms::login();
+     //});
+     //Fortify::registerView(function (\Illuminate\Http\Request $request) {
+     //    return Lochlitecms::register();
+     //});
+     //Fortify::requestPasswordResetLinkView(function (\Illuminate\Http\Request $request) {
+     //    return Lochlitecms::forgotpassword();
+     //});
+     //Fortify::resetPasswordView(function (\Illuminate\Http\Request $request) {
+     //    return Lochlitecms::resetpassword($request);
+     //});
+     //Fortify::verifyEmailView(function (\Illuminate\Http\Request $request) {
+     //    return Lochlitecms::emailverified();
+     //});
+     //Fortify::confirmPasswordView(function (\Illuminate\Http\Request $request) {
+     //    return Lochlitecms::confirmpassword();
+     //});
     }
 }

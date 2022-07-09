@@ -23,7 +23,6 @@
 namespace Lochlite\cms\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Laravel\Jetstream\Jetstream;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use Lochlite\cms\Models\Settings;
@@ -48,9 +47,7 @@ class MainServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-    {
-		@Jetstream::ignoreRoutes();
-	   
+    {	   
         Carbon::setLocale('pt_BR'); 
         Inertia::share([
             'appname' => Config::get('app.name'),
