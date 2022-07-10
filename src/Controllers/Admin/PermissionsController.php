@@ -37,7 +37,6 @@ class PermissionsController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish permissions|edit permissions|delete permissions', ['only' => ['index','show']]);
          $this->middleware('permission:publish permissions', ['only' => ['create','store']]);
          $this->middleware('permission:edit permissions', ['only' => ['edit','update']]);

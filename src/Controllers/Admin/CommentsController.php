@@ -39,7 +39,6 @@ class CommentsController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish comments|edit comments|delete comments', ['only' => ['index','show']]);
          $this->middleware('permission:publish comments', ['only' => ['create','store']]);
          $this->middleware('permission:edit comments', ['only' => ['edit','update']]);

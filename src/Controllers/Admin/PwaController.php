@@ -41,7 +41,6 @@ class PwaController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish pwa|edit pwa|delete pwa', ['only' => ['index','show']]);
          $this->middleware('permission:publish pwa', ['only' => ['create','store']]);
          $this->middleware('permission:edit pwa', ['only' => ['edit','update']]);

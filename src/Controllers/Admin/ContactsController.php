@@ -39,7 +39,6 @@ class ContactsController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish ombudsman|edit ombudsman|delete ombudsman', ['only' => ['index','show']]);
          $this->middleware('permission:publish ombudsman', ['only' => ['create','store']]);
          $this->middleware('permission:edit ombudsman', ['only' => ['edit','update']]);

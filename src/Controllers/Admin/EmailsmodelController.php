@@ -38,7 +38,6 @@ class EmailsmodelController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish articles|edit articles|delete articles', ['only' => ['index','show']]);
          $this->middleware('permission:publish articles', ['only' => ['create','store']]);
          $this->middleware('permission:edit articles', ['only' => ['edit','update']]);

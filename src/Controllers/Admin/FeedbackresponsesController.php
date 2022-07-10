@@ -39,7 +39,6 @@ class FeedbackresponsesController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish feedbacks|edit feedbacks|delete feedbacks', ['only' => ['index','show']]);
          $this->middleware('permission:publish feedbacks', ['only' => ['create','store']]);
          $this->middleware('permission:edit feedbacks', ['only' => ['edit','update']]);

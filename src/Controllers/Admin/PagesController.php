@@ -39,7 +39,6 @@ class PagesController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish pages|edit pages|delete pages', ['only' => ['index','show']]);
          $this->middleware('permission:publish pages', ['only' => ['create','store']]);
          $this->middleware('permission:edit pages', ['only' => ['edit','update']]);

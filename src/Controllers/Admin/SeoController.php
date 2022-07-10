@@ -38,7 +38,6 @@ class SeoController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish seo|edit seo|delete seo', ['only' => ['index','show']]);
          $this->middleware('permission:publish seo', ['only' => ['create','store']]);
          $this->middleware('permission:edit seo', ['only' => ['edit','update']]);

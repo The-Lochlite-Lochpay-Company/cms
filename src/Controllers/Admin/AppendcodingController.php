@@ -36,6 +36,19 @@ class AppendcodingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    function __construct()
+    {
+         $this->middleware('permission:publish system|edit system|delete system', ['only' => ['index','show']]);
+         $this->middleware('permission:publish system', ['only' => ['create','store']]);
+         $this->middleware('permission:edit system', ['only' => ['edit','update','cleandata']]);
+         $this->middleware('permission:delete system', ['only' => ['destroy']]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $appendcoding = Appendcoding::paginate(15);

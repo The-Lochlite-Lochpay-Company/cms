@@ -37,7 +37,6 @@ class PluginsController extends Controller
      */
     function __construct()
     {
-         $this->middleware('auth:sanctum');
          $this->middleware('permission:publish plugins|edit plugins|delete plugins', ['only' => ['index','show']]);
          $this->middleware('permission:publish plugins', ['only' => ['create','store']]);
          $this->middleware('permission:edit plugins', ['only' => ['edit','update']]);
