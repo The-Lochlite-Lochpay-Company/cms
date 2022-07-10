@@ -78,6 +78,9 @@ class LochlitecmsProvider extends ServiceProvider
      $router->aliasMiddleware('guest', RedirectIfAuthenticated::class);
      $router->aliasMiddleware('password.confirm', \Illuminate\Auth\Middleware\RequirePassword::class);
      $router->aliasMiddleware('verified', \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class);
+     $router->aliasMiddleware('role', \Spatie\Permission\Middlewares\RoleMiddleware::class);
+     $router->aliasMiddleware('permission', \Spatie\Permission\Middlewares\PermissionMiddleware::class);
+     $router->aliasMiddleware('role_or_permission', \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class);
      $kernel->pushMiddleware(MainMiddleware::class);
      $this->loadMigrationsFrom(__DIR__ . '/Migrations');
      $this->loadViewsFrom(__DIR__ . '/Views', 'lochlitecms');

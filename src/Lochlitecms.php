@@ -511,7 +511,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function renderAuth(String $view = 'Welcome', Array $data = [], String $layout = 'lochlitecms::admin')
     {
-		 if(Auth()->guard('sanctum')->check() || Auth()->check()){
+		 if(Auth()->check() || Auth()->check()){
             return Inertia::render($view, $data)->rootview($layout);
 	     } else {
             session()->flash('flash.banner', 'Você precisa fazer login ou registrar-se antes de continuar.');
@@ -522,7 +522,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function renderPanelCMS(String $view = 'Welcome', Array $data = [])
     {
-		 if(Auth()->guard('sanctum')->check() || Auth()->check()){
+		 if(Auth()->check() || Auth()->check()){
             return Inertia::render($view, array_merge(['menuitems' => Lochlitecms::generateSidebar()], $data))->rootview('lochlitecms::admin');
 	     } else {
             session()->flash('flash.banner', 'Você precisa fazer login ou registrar-se antes de continuar.');
@@ -580,7 +580,7 @@ class Lochlitecms implements LochlitecmsInterface
     public static function forgotpassword()
     {    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/forgotpassword', ['title' => 'Forgot Password', 'description' => $login->description, 'login' => $login]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/forgotpassword', ['status' => session('status'), 'title' => 'Forgot Password', 'description' => $login->description, 'login' => $login]);
     }
 
     public static function resetpassword(Request $request)
@@ -600,7 +600,7 @@ class Lochlitecms implements LochlitecmsInterface
     public static function emailverified()
     {    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/emailverified', ['title' => $login->title, 'description' => $login->description, 'login' => $login]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/emailverified', ['status' => session('status'), 'title' => $login->title, 'description' => $login->description, 'login' => $login]);
     }
 
     public static function confirmpassword()
@@ -949,10 +949,14 @@ class Lochlitecms implements LochlitecmsInterface
          lochlitecms::addRoutes([
          ['system' => true, 'type' => 'resource', 'url' => '/register', 'controller' => \Lochlite\cms\Controllers\Auth\RegisterAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'register'],
          ['system' => true, 'type' => 'resource', 'url' => '/login', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'login'],
-         ['system' => true, 'type' => 'resource', 'url' => '/forgot-password', 'controller' => \Lochlite\cms\Controllers\Auth\ForgotPasswordAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'password.request'],
-         ['system' => true, 'type' => 'resource', 'url' => '/confirm-password', 'controller' => \Lochlite\cms\Controllers\Auth\ConfirmablePasswordController::class, 'middleware' => ['web', 'guest'], 'name' => 'password.confirm'],
-         ['system' => true, 'type' => 'get', 'url' => '/verify-email', 'action' => '__invoke', 'controller' => \Lochlite\cms\Controllers\Auth\EmailVerificationPromptController::class, 'middleware' => ['web', 'guest'], 'name' => 'verification.notice'],
-         ['system' => true, 'type' => 'post', 'url' => '/logout', 'action' => 'destroy', 'controller' => \Lochlite\cms\Controllers\Auth\AuthenticatedSessionController::class, 'middleware' => ['web', 'guest'], 'name' => 'logout'],
+         ['system' => true, 'type' => 'resource', 'url' => '/forgot-password', 'controller' => \Lochlite\cms\Controllers\Auth\ForgotPasswordAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'password.request', 'except' => ['create']],
+         ['system' => true, 'type' => 'get', 'url' => '/confirm-password', 'action' => 'show', 'controller' => \Lochlite\cms\Controllers\Auth\ConfirmablePasswordController::class, 'middleware' => ['web', 'auth'], 'name' => 'password.confirm'],
+         ['system' => true, 'type' => 'post', 'url' => '/confirm-password/store', 'action' => 'store', 'controller' => \Lochlite\cms\Controllers\Auth\ConfirmablePasswordController::class, 'middleware' => ['web', 'auth'], 'name' => 'password.confirm.store'],
+         ['system' => true, 'type' => 'get', 'url' => '/reset-password/{token}', 'action' => 'create', 'controller' => \Lochlite\cms\Controllers\Auth\ForgotPasswordAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'password.reset'],
+         ['system' => true, 'type' => 'get', 'url' => '/verify-email', 'action' => '__invoke', 'controller' => \Lochlite\cms\Controllers\Auth\EmailVerificationPromptController::class, 'middleware' => ['web', 'auth'], 'name' => 'verification.notice'],
+         ['system' => true, 'type' => 'get', 'url' => '/verify-email/{id}/{hash}', 'action' => '__invoke', 'controller' => \Lochlite\cms\Controllers\Auth\VerifyEmailController::class, 'middleware' => ['web', 'auth', 'signed', 'throttle:6,1'], 'name' => 'verification.verify'],
+         ['system' => true, 'type' => 'post', 'url' => '/email/verification-notification', 'action' => 'store', 'controller' => \Lochlite\cms\Controllers\Auth\EmailVerificationNotificationController::class, 'middleware' => ['web', 'auth', 'throttle:6,1'], 'name' => 'verification.send'],
+         ['system' => true, 'type' => 'post', 'url' => '/logout', 'action' => 'destroy', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'logout'],
          ['system' => true, 'type' => 'resource', 'url' => '/blog', 'controller' => \Lochlite\cms\Controllers\WelcomeBlogController::class, 'middleware' => ['web'], 'name' => 'blog'],
          ['system' => true, 'type' => 'get', 'url' => '/page/{id}', 'action' => 'index', 'controller' => \Lochlite\cms\Controllers\WelcomePagesController::class, 'middleware' => ['web'], 'name' => 'page.index'],
          ['system' => true, 'type' => 'resource', 'url' => '/dashboard', 'controller' => \Lochlite\cms\Controllers\HomeController::class, 'middleware' => ['web', 'auth'], 'name' => 'dashboard', 'only' => ['index']],
@@ -1162,9 +1166,10 @@ class Lochlitecms implements LochlitecmsInterface
 		     ['url' => route('managercomments.index'), 'name' => 'Todos os comentários'],
 			 ]
 		 ],
-		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.create')), 'id' => 'plugins', 'url' => '#plugins', 'icon' => 'menu-icon mdi mdi-apps', 'name' => 'Plugins',
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.create')), 'id' => 'plugins', 'url' => '#plugins', 'icon' => 'menu-icon mdi mdi-apps', 'name' => 'Plugins & Serviços',
 		     'subitems' => [
 		     ['url' => route('managerplugins.index'), 'name' => 'Gerenciar plugins'],
+		     ['url' => route('managerplugins.index'), 'name' => 'Gerenciar serviços'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.cleandata') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersystem.index')), 'id' => 'manager', 'url' => '#manager', 'icon' => 'menu-icon mdi mdi-security', 'name' => 'Administração do site',
