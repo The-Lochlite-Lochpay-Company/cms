@@ -23,8 +23,8 @@
 namespace Lochlite\cms\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
+use Lochlite\cms\App\Requests\Auth\LoginRequest;
+use Lochlite\cms\Providers\RouteServiceProvider;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
@@ -34,13 +34,14 @@ use Lochlitecms;
 class LoginAuthController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Handle an incoming authentication request.
      *
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\Auth\LoginRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function index(Request $request)
     {
-         return Lochlitecms::login();
+         return Lochlitecms::login($request);
     }
 
     /**
@@ -108,8 +109,14 @@ class LoginAuthController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }
