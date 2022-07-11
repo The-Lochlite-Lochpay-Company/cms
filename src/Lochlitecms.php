@@ -574,13 +574,13 @@ class Lochlitecms implements LochlitecmsInterface
     public static function login()
     {    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/login', ['canResetPassword' => Route::has('password.request.index'), 'status' => session('status'), 'title' => $login->title, 'description' => $login->description, 'login' => $login]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/login', ['canResetPassword' => Route::has('password.request.index'), 'status' => session('status'), 'title' => $login->title, 'description' => $login->description, 'login' => $login]);
     }
 
     public static function forgotpassword()
     {    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/forgotpassword', ['status' => session('status'), 'title' => 'Forgot Password', 'description' => $login->description, 'login' => $login]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/forgotpassword', ['status' => session('status'), 'title' => 'Forgot Password', 'description' => $login->description, 'login' => $login]);
     }
 
     public static function resetpassword(Request $request)
@@ -588,25 +588,25 @@ class Lochlitecms implements LochlitecmsInterface
 		 $token = $request->route('token');    
 		 $email = $request->query('email');    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/resetpassword', ['title' => 'Forgot Password', 'description' => $login->description, 'email' => $email, 'token' => $token, 'login' => $login]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/resetpassword', ['title' => 'Forgot Password', 'description' => $login->description, 'email' => $email, 'token' => $token, 'login' => $login]);
     }
 
     public static function register()
     {    
 	     $register = Lochlitecms::registerDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/register', ['title' => $register->title, 'description' => $register->description, 'register' => $register]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/register', ['title' => $register->title, 'description' => $register->description, 'register' => $register]);
     }
 
     public static function emailverified()
     {    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/emailverified', ['status' => session('status'), 'title' => $login->title, 'description' => $login->description, 'login' => $login]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/emailverified', ['status' => session('status'), 'title' => $login->title, 'description' => $login->description, 'login' => $login]);
     }
 
     public static function confirmpassword()
     {    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('Lochlite/Auth/confirmpassword', ['title' => $login->title, 'description' => $login->description, 'login' => $login]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/confirmpassword', ['title' => $login->title, 'description' => $login->description, 'login' => $login]);
     }
 
     public function isFile($path)
@@ -1140,7 +1140,7 @@ class Lochlitecms implements LochlitecmsInterface
     public function generateSidebar()
     {
          return collect([
-		 ['dropdown' => false, 'active' => request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('index.index'), 'id' => 'dashboard', 'url' => route('index.index'), 'icon' => 'menu-icon mdi mdi-television', 'name' => 'Dashboard'],
+		 ['dropdown' => false, 'active' => request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('index.index'), 'id' => 'dashboard', 'url' => route('managerdashboard.index'), 'icon' => 'menu-icon mdi mdi-television', 'name' => 'Dashboard'],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerposts.create') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerposts.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerpages.create') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerpages.index')), 'id' => 'pages', 'url' => '#pages', 'icon' => 'menu-icon mdi mdi-newspaper', 'name' => 'Páginas & Artigos',
 		     'subitems' => [
 		     ['url' => route('managerposts.create'), 'name' => 'Criar artigo'],
