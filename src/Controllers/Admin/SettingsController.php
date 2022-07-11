@@ -55,7 +55,7 @@ class SettingsController extends Controller
 		 if (request()->wantsJson()) {
            return $posts;
          }
-         return Lochlitecms::renderPanelCMS('Panel/settings/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/settings/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Configurações do sistema | Lochlite CMS',
@@ -77,7 +77,7 @@ class SettingsController extends Controller
      */
     public function cleandata()
     {
-         return Lochlitecms::renderPanelCMS('Panel/settings/cleandata', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/settings/cleandata', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Configurações do sistema | Lochlite CMS',

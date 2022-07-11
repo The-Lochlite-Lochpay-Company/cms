@@ -54,7 +54,7 @@ class PwaController extends Controller
      */
     public function index()
     {
-         return Lochlitecms::renderPanelCMS('Panel/pwa/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/pwa/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Configurações de PWA | Lochlite CMS',

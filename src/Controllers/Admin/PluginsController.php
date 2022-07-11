@@ -50,7 +50,7 @@ class PluginsController extends Controller
      */
     public function index()
     {
-         return Lochlitecms::renderPanelCMS('Panel/plugins/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/plugins/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gerenciamento de rotas | Lochlite CMS',

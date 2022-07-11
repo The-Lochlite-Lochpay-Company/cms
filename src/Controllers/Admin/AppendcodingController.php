@@ -55,7 +55,7 @@ class AppendcodingController extends Controller
 		if (request()->wantsJson()) {
            return $appendcoding;
          }
-         return Lochlitecms::renderPanelCMS('Panel/appendcoding/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/appendcoding/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Appendcoding | Lochlite CMS',
@@ -76,7 +76,7 @@ class AppendcodingController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/appendcoding/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/appendcoding/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Appendcoding | Lochlite CMS',
@@ -123,7 +123,7 @@ class AppendcodingController extends Controller
     {
          if(Appendcoding::where('id', $id)->exists()){
  		 $appendcoding = Appendcoding::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('Panel/appendcoding/show', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/appendcoding/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Appendcoding | Lochlite CMS',
@@ -149,7 +149,7 @@ class AppendcodingController extends Controller
     {
          if(Appendcoding::where('id', $id)->exists()){
  		 $appendcoding = Appendcoding::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('Panel/appendcoding/edit', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/appendcoding/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Appendcoding | Lochlite CMS',

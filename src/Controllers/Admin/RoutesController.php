@@ -55,7 +55,7 @@ class RoutesController extends Controller
 		 if (request()->wantsJson()) {
            return $routes;
          }
-         return Lochlitecms::renderPanelCMS('Panel/routes/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/routes/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gerenciamento de rotas | Lochlite CMS',
@@ -77,7 +77,7 @@ class RoutesController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/routes/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/routes/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Criar rota | Lochlite CMS',
@@ -124,7 +124,7 @@ class RoutesController extends Controller
     {
          if(Routes::where('id', $id)->exists()){
  		 $routes = Routes::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('Panel/routes/show', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/routes/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gerenciamento de rotas | Lochlite CMS',
@@ -151,7 +151,7 @@ class RoutesController extends Controller
     {
          if(Routes::where('id', $id)->exists()){
  		 $routes = Routes::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('Panel/routes/edit', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/routes/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gerenciamento de rotas | Lochlite CMS',

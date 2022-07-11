@@ -43,7 +43,7 @@ class LoginController extends Controller
 		if (request()->wantsJson()) {
            return $login;
          }
-         return Lochlitecms::renderPanelCMS('Panel/login/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/login/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -65,7 +65,7 @@ class LoginController extends Controller
     public function create()
     {
 		 $services = Services::all();
-         return Lochlitecms::renderPanelCMS('Panel/login/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/login/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -120,7 +120,7 @@ class LoginController extends Controller
     {
 		 $login = Login::where('id', $id)->first();
 		 $services = Services::all();
-         return Lochlitecms::renderPanelCMS('Panel/login/edit', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/login/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',

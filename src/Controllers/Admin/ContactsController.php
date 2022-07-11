@@ -56,7 +56,7 @@ class ContactsController extends Controller
 		 if (request()->wantsJson()) {
            return $contacts;
          }
-         return Lochlitecms::renderPanelCMS('Panel/contacts/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/contacts/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de chamados | Lochlite CMS',
@@ -77,7 +77,7 @@ class ContactsController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/contacts/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/contacts/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de chamados | Lochlite CMS',
@@ -134,7 +134,7 @@ class ContactsController extends Controller
         try{
 		if(Contacts::where('id', $id)->exists()){	
         $contact = Contacts::find($id);
-         return Lochlitecms::renderPanelCMS('Panel/contacts/show', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/contacts/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de chamados | Lochlite CMS',
@@ -170,7 +170,7 @@ class ContactsController extends Controller
 		if(Contacts::where('id', $id)->exists()){	
         $contact = Contacts::find($id);
     
-         return Lochlitecms::renderPanelCMS('Panel/contacts/edit', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/contacts/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de chamados | Lochlite CMS',

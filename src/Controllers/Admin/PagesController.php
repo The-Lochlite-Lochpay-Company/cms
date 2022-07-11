@@ -56,7 +56,7 @@ class PagesController extends Controller
 		 if (request()->wantsJson()) {
            return $pages;
          }
-         return Lochlitecms::renderPanelCMS('Panel/pages/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/pages/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de pagínas | Lochlite CMS',
@@ -77,7 +77,7 @@ class PagesController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/pages/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/pages/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de pagínas | Lochlite CMS',
@@ -140,7 +140,7 @@ class PagesController extends Controller
         try{
 		if(Pages::where('id', $id)->exists()){	
          $page = Pages::find($id);
-         return Lochlitecms::renderPanelCMS('Panel/pages/show', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/pages/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de pagínas | Lochlite CMS',
@@ -177,7 +177,7 @@ class PagesController extends Controller
         $page = Pages::find($id);
         $pagebody = Pagesbody::where('page_id', $page->id)->first();
 
-         return Lochlitecms::renderPanelCMS('Panel/pages/edit', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/pages/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de pagínas | Lochlite CMS',

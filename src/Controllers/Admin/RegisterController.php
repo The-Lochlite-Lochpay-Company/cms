@@ -43,7 +43,7 @@ class RegisterController extends Controller
 		if (request()->wantsJson()) {
            return $register;
          }
-         return Lochlitecms::renderPanelCMS('Panel/register/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/register/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -65,7 +65,7 @@ class RegisterController extends Controller
     public function create()
     {
 		 $services = Services::all();
-         return Lochlitecms::renderPanelCMS('Panel/register/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/register/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -120,7 +120,7 @@ class RegisterController extends Controller
     {
 		 $register = Register::where('id', $id)->first();
 		 $services = Services::all();
-         return Lochlitecms::renderPanelCMS('Panel/register/edit', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/register/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',

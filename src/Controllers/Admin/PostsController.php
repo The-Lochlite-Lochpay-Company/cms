@@ -58,7 +58,7 @@ class PostsController extends Controller
 		 if (request()->wantsJson()) {
            return $posts;
          }
-         return Lochlitecms::renderPanelCMS('Panel/posts/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/posts/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de artigos | Lochlite CMS',
@@ -79,7 +79,7 @@ class PostsController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/posts/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/posts/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de artigos | Lochlite CMS',
@@ -147,7 +147,7 @@ class PostsController extends Controller
         try{
 		if(Posts::where('id', $id)->exists()){	
         $post = Posts::find($id);
-         return Lochlitecms::renderPanelCMS('Panel/posts/show', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/posts/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de artigos | Lochlite CMS',
@@ -184,7 +184,7 @@ class PostsController extends Controller
         $post = Posts::find($id);
         $postbody = Postsbody::where('post_id', $post->id)->first();
     
-         return Lochlitecms::renderPanelCMS('Panel/posts/edit', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/posts/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de artigos | Lochlite CMS',

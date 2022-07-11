@@ -55,7 +55,7 @@ class StorangeController extends Controller
 		 if (request()->wantsJson()) {
            return $files;
          }
-         return Lochlitecms::renderPanelCMS('Panel/fileupload/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/fileupload/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Armazenamento de arquivos | Lochlite CMS',
@@ -76,7 +76,7 @@ class StorangeController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/fileupload/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/fileupload/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Armazenamento de arquivos | Lochlite CMS',
@@ -132,7 +132,7 @@ class StorangeController extends Controller
         try{
 		if(Fileupload::where('id', $id)->exists()){	
         $file = Fileupload::find($id);
-         return Lochlitecms::renderPanelCMS('Panel/fileupload/show', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/fileupload/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Armazenamento de arquivos | Lochlite CMS',

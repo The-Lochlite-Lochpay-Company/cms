@@ -44,7 +44,7 @@ class NotificationsController extends Controller
 		 if (request()->wantsJson()) {
            return $notifications;
          }
-         return Lochlitecms::renderPanelCMS('Panel/notifications/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/notifications/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de notificações | Lochlite CMS',
@@ -65,7 +65,7 @@ class NotificationsController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('Panel/notifications/create', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/notifications/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de notificações | Lochlite CMS',

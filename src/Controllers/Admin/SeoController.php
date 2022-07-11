@@ -51,7 +51,7 @@ class SeoController extends Controller
      */
     public function index()
     {
-         return Lochlitecms::renderPanelCMS('Panel/seo/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/seo/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Configurações de Search Engine Optimization | Lochlite CMS',

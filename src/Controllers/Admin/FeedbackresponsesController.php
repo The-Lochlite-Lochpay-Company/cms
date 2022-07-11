@@ -56,7 +56,7 @@ class FeedbackresponsesController extends Controller
 		 if (request()->wantsJson()) {
            return $feedbacksresponses;
          }
-         return Lochlitecms::renderPanelCMS('Panel/feedbacks/responses/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/feedbacks/responses/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -102,7 +102,7 @@ class FeedbackresponsesController extends Controller
         try{
 		if(Feedbacksresponses::where('id', $id)->exists()){	
          $feedback = Feedbacksresponses::find($id);
-         return Lochlitecms::renderPanelCMS('Panel/feedbacks/responses/show', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/feedbacks/responses/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',

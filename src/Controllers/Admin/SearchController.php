@@ -44,7 +44,7 @@ class SearchController extends Controller
     public function index(Request $request)
     {
 		 if(!$request->query('inlinesearch') == true){
-         return Lochlitecms::renderPanelCMS('Panel/search/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/search/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Search | Lochlite CMS',
@@ -77,7 +77,7 @@ class SearchController extends Controller
 		 else if($type == 'users'){
 			 $search = User::where('id', $query)->orWhere('name', 'like', '%'.  $query .'%')->orWhere('email', 'like', '%'.  $query .'%')->orWhere('phone', 'like', '%'.  $query .'%')->paginate();
 		 }
-         return Lochlitecms::renderPanelCMS('Panel/search/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/search/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Search | Lochlite CMS',
@@ -133,7 +133,7 @@ class SearchController extends Controller
 		 else if($type == 'users'){
 			 $search = User::where('id', $query)->orWhere('name', 'like', '%'.  $query .'%')->orWhere('email', 'like', '%'.  $query .'%')->orWhere('phone', 'like', '%'.  $query .'%')->paginate();
 		 }
-         return Lochlitecms::renderPanelCMS('Panel/search/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/search/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Search | Lochlite CMS',
