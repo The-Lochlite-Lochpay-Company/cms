@@ -4,7 +4,7 @@ import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 import JetDialogModal from '@/Jetstream/DialogModal.vue';
 import JetButton from '@/Jetstream/Button.vue';
 import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
-import AppLayout from '@/Pages/Panel/AppLayout.vue';
+import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
 import LoadingComponent from '@/Pages/LoadingComponent.vue';
 import ErrorComponent from '@/Pages/ErrorComponent.vue';
 

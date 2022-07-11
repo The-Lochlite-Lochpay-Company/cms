@@ -8,7 +8,7 @@ import JetInput from '@/Jetstream/Input.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetButton from '@/Jetstream/Button.vue';
 import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
-import AppLayout from '@/Pages/Panel/AppLayout.vue';
+import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
 
 const props = defineProps({
     canLogin: Boolean,

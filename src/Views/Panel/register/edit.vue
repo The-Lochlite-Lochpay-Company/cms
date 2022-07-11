@@ -10,7 +10,7 @@ import JetCheckbox from '@/Jetstream/Checkbox.vue';
 import JetLabel from '@/Jetstream/Label.vue';
 import JetSelect from '@/Jetstream/Select.vue';
 import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
-import AppLayout from '@/Pages/Panel/AppLayout.vue';
+import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
 import MylochiTinyEditor from  '@/Components/MylochiTinyEditor.vue';
 import DOMPurify from 'dompurify';
 

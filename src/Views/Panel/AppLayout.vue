@@ -8,18 +8,18 @@ import JetDropdown from '@/Jetstream/Dropdown.vue';
 import JetDropdownLink from '@/Jetstream/DropdownLink.vue';
 import JetNavLink from '@/Jetstream/NavLink.vue';
 import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue';
-import '@/lib/settings.js';
-import '@/lib/sparkline.js';
-import '@/lib/todo.js';
-import '@/lib/todolist.js';
-import '@/lib/misc.js';
-import '@/lib/hoverable-collapse.js';
-import '@/lib/off-canvas.js';
-import '@/lib/bootstrap-table.js';
-import '@/lib/calendar.js';
-import '@/lib/dashboard.js';
-import Navbarpanel from '@/Pages/Panel/navbar.vue';
-import Sidebarpanel from '@/Pages/Panel/sidebar.vue';
+import 'lochlitecms/Views/Panel/dist/settings.js';
+import 'lochlitecms/Views/Panel/dist/sparkline.js';
+import 'lochlitecms/Views/Panel/dist/todo.js';
+import 'lochlitecms/Views/Panel/dist/todolist.js';
+import 'lochlitecms/Views/Panel/dist/misc.js';
+import 'lochlitecms/Views/Panel/dist/hoverable-collapse.js';
+import 'lochlitecms/Views/Panel/dist/off-canvas.js';
+import 'lochlitecms/Views/Panel/dist/bootstrap-table.js';
+import 'lochlitecms/Views/Panel/dist/calendar.js';
+import 'lochlitecms/Views/Panel/dist/dashboard.js';
+import Navbarpanel from 'lochlitecms/Views/Panel/navbar.vue';
+import Sidebarpanel from 'lochlitecms/Views/Panel/sidebar.vue';
 
 defineProps({
     title: String,
