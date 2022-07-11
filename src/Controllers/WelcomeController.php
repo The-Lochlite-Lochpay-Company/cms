@@ -57,14 +57,14 @@ class WelcomeController extends Controller
              Cache::put('welcomebody', $welcomebody);
 			 return $welcomebody;
         });
-        return Inertia::render('pagerendering', [
+        return Inertia::render('vendor/lochlite/cms/src/Views/Components/pagerendering', [
 		     'page' => $page,
 		     'pagebody' => $pagebody,
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
 		])->rootview('lochlitecms::app');
         } else {
-        return Inertia::render('Welcome', [
+        return Inertia::render('resources/js/Pages/Welcome', [
              'title' => Lochlitecms::seo('title'),
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
