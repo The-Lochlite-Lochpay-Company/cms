@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
 use Lochlite\cms\Models\User;
 use Lochlite\cms\Models\Plugins;
 use Lochlite\cms\Models\Settings;
+use Lochlite\cms\Models\Domains;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
@@ -57,7 +58,7 @@ class AdminController extends Controller
              $symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
              $exp = floor(log($bytes)/log(1024));
          
-             return sprintf('%.2f '.$symbols[$exp], ($bytes/pow(1024, floor($exp))));
+             return sprintf('%.2f '.$symbols[$exp], ($bytes == 0 ? 0 : ($bytes/pow(1024, floor($exp))) ));
          }
          return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/dashboard', [
              'canLogin' => Route::has('login'),
@@ -68,9 +69,10 @@ class AdminController extends Controller
              'name' => Auth::User()->name ?? 'User Name',
              'breadcrumbCurrentTitle' => 'Login & Registro',
              'breadcrumbCurrentSection' => 'Aparência',
-             'users' => User::all()->count(),
+             'users' => User::count(),
              'plugins' => Plugins::where('status', 'installed')->count(),
-             'settings' => Settings::all()->count(),
+             'settings' => Settings::count(),
+             'domains' => Domains::all(),
              'disk' => getSymbolByQuantity(disk_total_space("/")),
              'diskfreespace' => getSymbolByQuantity(disk_free_space("/")),
              'version' => Lochlitecms::application()->get('version')

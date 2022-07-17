@@ -64,7 +64,7 @@ class WelcomeController extends Controller
              'canRegister' => Route::has('register'),
 		])->rootview('lochlitecms::app');
         } else {
-        return Inertia::render('resources/js/Pages/Welcome', [
+        return Inertia::render('vendor/lochlite/cms/src/Views/Web/Welcome', [
              'title' => Lochlitecms::seo('title'),
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),

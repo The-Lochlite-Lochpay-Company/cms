@@ -75,6 +75,22 @@ class RoutesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function resetroutes()
+    {
+		 Routes::query()->truncate();
+		 cache()->forget('routes');
+         $addsystemroutes = Lochlitecms::defaultRoutes();
+         $getallroutes = Lochlitecms::getRoutes();
+		 session()->flash('flash.banner', 'As rotas foram resetadas com sucesso.');
+         session()->flash('flash.bannerStyle', 'success');    
+         return redirect()->route('managerroutes.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
          return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/routes/create', [

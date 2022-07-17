@@ -5,7 +5,7 @@
 * (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
 *
 * Software: LOCHLITE CMS
-* Version: 2.0.7  
+* Version: 2.0.10  
 * License: Proprietary
 * Made in: Brazil
 * Author: The Lochlite & Lochpay Company
@@ -23,13 +23,14 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Lochlite\cms\Models\Services; 
+use Lochlite\cms\Models\Menu; 
+use Lochlite\cms\Models\Menuitem; 
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class ServicesController extends Controller
+class MainmenuitemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -51,20 +52,20 @@ class ServicesController extends Controller
      */
     public function index()
     {
-        $services = Services::paginate(15);
+        $mainmenuitem = Menuitem::paginate(15);
 		if (request()->wantsJson()) {
-           return $services;
+           return $mainmenuitem;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/services/index', [
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/mainmenuitem/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
-             'title' => 'Gerenciar Serviços | Lochlite CMS',
+             'title' => 'Gerenciar menu | Lochlite CMS',
              'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
              'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
              'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Gerenciar Serviços',
-             'breadcrumbCurrentSection' => 'Plugins & Serviços',
-             'services' => $services,
+             'breadcrumbCurrentTitle' => 'Gerenciar menu',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'mainmenuitem' => $mainmenuitem,
              'version' => Lochlitecms::application()->get('version'),
          ]);
     }
@@ -74,17 +75,20 @@ class ServicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/services/create', [
+         $mainmenu = Menu::all();
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/mainmenuitem/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
-             'title' => 'Criar Services | Lochlite CMS',
+             'title' => 'Adicionar ao menu | Lochlite CMS',
              'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
              'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
              'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Criar Services',
+             'breadcrumbCurrentTitle' => 'Adicionar ao menu',
              'breadcrumbCurrentSection' => 'Aparência',
+             'menuid' => $request->query('id'),
+             'mainmenu' => $mainmenu,
              'version' => Lochlitecms::application()->get('version'),
          ]);
     }
@@ -98,30 +102,20 @@ class ServicesController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-         'domain' => 'string|required',
-         'name' => 'string|required',
-         'host' => 'string|required',
-         'callback' => 'string|required',
-         'query' => 'string|nullable',
-         'type' => 'string|required',
-         'datatype' => 'string|required',
+         'menu' => 'string|required',
          'items' => 'array|required',
-         'status' => 'string|nullable',
         ]);
-        Services::create([
-         'domain' => $request->get('domain'),
-         'name' => $request->get('name'),
-         'host' => $request->get('host'),
-         'callback' => $request->get('callback'),
-         'query' => $request->get('query'),
-         'type' => $request->get('type'),
-         'data' => $request->get('datatype'),
-         'api' => $request->input('items'),
-         'status' => $request->get('status'),
-	     ]);
-        session()->flash('flash.banner', 'Um novo serviço foi registrado com sucesso.');
+		 foreach($request->get('items') as $row){
+		     Menuitem::create([
+             'menuid' => $request->get('menu'),
+             'name' => $row['text'],
+             'url' => $row['link'],
+	         ])->save();
+		 }
+		 
+        session()->flash('flash.banner', 'Um novo item foi adicionado ao menu com sucesso.');
         session()->flash('flash.bannerStyle', 'success');    
-		return redirect()->route('managerservices.index');
+		return redirect()->route('managermainmenuitem.index');
 	}
 
     /**
@@ -143,17 +137,17 @@ class ServicesController extends Controller
      */
     public function edit($id)
     {
-         $service = Services::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/services/edit', [
+         $mainmenuitem = Menuitem::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/mainmenuitem/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
-             'title' => 'Criar Services | Lochlite CMS',
+             'title' => 'Criar menu | Lochlite CMS',
              'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
              'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
              'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Criar Services',
+             'breadcrumbCurrentTitle' => 'Criar menu',
              'breadcrumbCurrentSection' => 'Aparência',
-             'service' => $service,
+             'mainmenuitem' => $mainmenuitem,
              'version' => Lochlitecms::application()->get('version'),
          ]);
     }
@@ -167,32 +161,76 @@ class ServicesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $service = Services::where('id', $id)->first();
         request()->validate([
          'domain' => 'string|required',
+         'menuclass' => 'string|required',
+         'menuid' => 'string|required',
          'name' => 'string|required',
-         'host' => 'string|required',
-         'callback' => 'string|required',
-         'query' => 'string|nullable',
+         'brand' => 'string|required',
+         'brandtype' => 'string|required',
+         'button1' => 'string|nullable',
+         'button1id' => 'string|nullable',
+         'button1class' => 'string|nullable',
+         'button1route' => 'string|nullable',
+         'button1status' => 'string|nullable',
+         'button2' => 'string|nullable',
+         'button2id' => 'string|nullable',
+         'button2class' => 'string|nullable',
+         'button2route' => 'string|nullable',
+         'button2status' => 'string|nullable',
+         'facebook' => 'string|nullable',
+         'twitter' => 'string|nullable',
+         'linkedin' => 'string|nullable',
+         'pinterest' => 'string|nullable',
+         'instagram' => 'string|nullable',
+         'tiktok' => 'string|nullable',
+         'whatsapp' => 'string|nullable',
+         'youtube' => 'string|nullable',
+         'search' => 'numeric|required',
+         'searchroute' => 'string|required',
+         'stickytop' => 'numeric|required',
+         'itemscenter' => 'numeric|required',
          'type' => 'string|required',
-         'datatype' => 'string|required',
-         'items' => 'array|required',
-         'status' => 'string|nullable',
+         'default' => 'numeric|required',
+         'status' => 'string|required',
         ]);
-        $service->update([
+        $mainmenuitem = Menuitem::where('id', $id)->first();
+        $mainmenuitem->update([
          'domain' => $request->get('domain'),
+         'menuclass' => $request->get('menuclass'),
+         'menuid' => $request->get('menuid'),
          'name' => $request->get('name'),
-         'host' => $request->get('host'),
-         'callback' => $request->get('callback'),
-         'query' => $request->get('query'),
+         'brand' =>  $request->get('brand'),
+         'brandtype' => $request->get('brandtype'),
+         'button1' => $request->get('button1'),
+         'button1id' => $request->get('button1id'),
+         'button1class' => $request->get('button1class'),
+         'button1route' => $request->get('button1route'),
+         'button1status' => $request->get('button1status'),
+         'button2' => $request->get('button2'),
+         'button2id' => $request->get('button2id'),
+         'button2class' => $request->get('button2class'),
+         'button2route' => $request->get('button2route'),
+         'button2status' => $request->get('button2status'),
+         'facebook' => $request->get('facebook'),
+         'twitter' => $request->get('twitter'),
+         'linkedin' => $request->get('linkedin'),
+         'pinterest' => $request->get('pinterest'),
+         'instagram' => $request->get('instagram'),
+         'tiktok' => $request->get('tiktok'),
+         'whatsapp' => $request->get('whatsapp'),
+         'youtube' => $request->get('youtube'),
+         'search' => $request->get('search'),
+         'searchroute' => $request->get('searchroute'),
+         'stickytop' => $request->get('stickytop'),
+         'itemscenter' => $request->get('itemscenter'),
          'type' => $request->get('type'),
-         'data' => $request->get('datatype'),
-         'api' => $request->input('items'),
+         'default' => $request->get('default'),
          'status' => $request->get('status'),
 	     ]);
-        session()->flash('flash.banner', 'O serviço selecionado foi atualizado com sucesso.');
-        session()->flash('flash.bannerStyle', 'success');    
-		return redirect()->route('managerservices.index');
+        session()->flash('flash.banner', 'O menu selecionado foi atualizado com sucesso.');
+        session()->flash('flash.bannerStyle', 'danger');    
+		return redirect()->route('managermainmenu.index');
     }
 
     /**
@@ -203,10 +241,10 @@ class ServicesController extends Controller
      */
     public function destroy($id)
     {
-        $services = Services::where('id', $id)->first();
-		$services->delete();
-        session()->flash('flash.banner', 'O serviço selecionado foi excluido com sucesso.');
+        $mainmenuitem = Menuitem::where('id', $id)->first();
+		$mainmenuitem->delete();
+        session()->flash('flash.banner', 'O item selecionado foi excluido do menu com sucesso.');
         session()->flash('flash.bannerStyle', 'success');    
-		return redirect()->route('managerservices.index');
+		return redirect()->back();
     }
 }

@@ -23,8 +23,7 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Lochlite\cms\Models\Posts;
-use Lochlite\cms\Models\Comments;
+use Lochlite\cms\Models\Recoverypassword;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
@@ -39,7 +38,22 @@ class RecoverypasswordController extends Controller
      */
     public function index()
     {
-        //
+        $recoverypassword = Recoverypassword::paginate(15);
+		if (request()->wantsJson()) {
+           return $recoverypassword;
+         }
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/recoverypassword/index', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Login & Registro | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Recuperação de senha',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'recoverypassword' => $recoverypassword,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -49,7 +63,17 @@ class RecoverypasswordController extends Controller
      */
     public function create()
     {
-        //
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/recoverypassword/create', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Login & Registro | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Login & Registro',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -60,8 +84,23 @@ class RecoverypasswordController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        Recoverypassword::create([
+		'domain' => $request->get('domain'),
+		'default' => $request->get('default'),
+		'image' => $request->get('image'),
+		'imagevisible' => $request->get('imagevisible'),
+		'logo' => $request->get('logo'),
+		'emphasis' => $request->get('emphasis'),
+		'instruction' => $request->get('instruction'),
+		'title' => $request->get('title'),
+		'description' => $request->get('description'),
+		'logintext' => $request->get('logintext'),
+		'buttontext' => $request->get('buttontext'),
+		'buttoncolor' => $request->get('buttoncolor'),
+		'buttontextcolor' => $request->get('buttontextcolor'),
+		]);
+		return redirect()->route('managerrecoverypassword.index');
+	}
 
     /**
      * Display the specified resource.
@@ -82,7 +121,19 @@ class RecoverypasswordController extends Controller
      */
     public function edit($id)
     {
-        //
+		 $recoverypassword = Recoverypassword::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/recoverypassword/edit', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Login & Registro | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Login & Registro',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'recoverypassword' => $recoverypassword,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -94,7 +145,23 @@ class RecoverypasswordController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+		 $recoverypassword = Recoverypassword::where('id', $id)->first();
+        $recoverypassword->update([
+		'domain' => $request->get('domain'),
+		'default' => $request->get('default'),
+		'image' => $request->get('image'),
+		'imagevisible' => $request->get('imagevisible'),
+		'logo' => $request->get('logo'),
+		'emphasis' => $request->get('emphasis'),
+		'instruction' => $request->get('instruction'),
+		'title' => $request->get('title'),
+		'description' => $request->get('description'),
+		'logintext' => $request->get('logintext'),
+		'buttontext' => $request->get('buttontext'),
+		'buttoncolor' => $request->get('buttoncolor'),
+		'buttontextcolor' => $request->get('buttontextcolor'),
+		]);
+		return redirect()->route('managerrecoverypassword.index');
     }
 
     /**
@@ -105,6 +172,7 @@ class RecoverypasswordController extends Controller
      */
     public function destroy($id)
     {
-        //
+		$recoverypassword = Recoverypassword::where('id', $id)->first();
+		$recoverypassword->delete();
     }
 }

@@ -22,10 +22,16 @@
 
 namespace Lochlite\cms\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use Illuminate\Http\Request;
+use Lochlite\cms\Models\User;
+use Lochlite\cms\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
+use Lochlite\cms\Controllers\Controller;
+use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
+use Carbon\Carbon; use Inertia\Inertia; use Response; use Cache; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
+use Lochlitecms;
 
 class VerifyEmailController extends Controller
 {
@@ -47,4 +53,20 @@ class VerifyEmailController extends Controller
 
         return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
     }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function changeemail(Request $request)
+    {
+        $user = Auth()->User();
+		$user->update(['email' => $request->get('email')]);
+		session(['status' => 'Email successfully updated.']);
+		return redirect()->back();
+    }
+
 }

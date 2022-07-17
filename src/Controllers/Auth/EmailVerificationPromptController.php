@@ -22,10 +22,13 @@
 
 namespace Lochlite\cms\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use Lochlite\cms\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+
+use Lochlite\cms\Controllers\Controller;
+use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
+use Carbon\Carbon; use Inertia\Inertia; use Response; use Cache; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
+use Lochlitecms;
 
 class EmailVerificationPromptController extends Controller
 {

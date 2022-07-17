@@ -23,8 +23,10 @@
 namespace Lochlite\cms\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use Lochlite\cms\Models\User;
 use Lochlite\cms\App\Requests\Auth\LoginRequest;
 use Lochlite\cms\Providers\RouteServiceProvider;
+use Laravel\Socialite\Facades\Socialite;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
@@ -42,6 +44,100 @@ class LoginAuthController extends Controller
     public function index(Request $request)
     {
          return Lochlitecms::login($request);
+    }
+	
+    public function google()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+	
+    public function facebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+	
+    public function twitter()
+    {
+        return Socialite::driver('twitter')->redirect();
+    }
+	
+    public function gameloch()
+    {
+        return;
+    }
+	
+    public function googlecallback()
+    {
+        try {
+            $drive = Socialite::driver('google')->user();
+            if(User::where('google_id', $drive->id)->orWhere('email', $drive->email)->exists()){
+                $user = User::where('google_id', $drive->id)->orWhere('email', $drive->email)->first();
+                if(!$user->google_id == $drive->id){$user->update(['google_id' => $drive->id]); $user->save();}
+				Auth::login($user);
+                return redirect()->intended('dashboard');
+            }else{
+                $user = User::create([
+				    'email' => $drive->email,
+                    'name' => $drive->name,
+                    'google_id'=> $drive->id,
+                ]);
+                Auth::login($user);
+                return redirect()->intended('dashboard');
+            }
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+	}
+	
+    public function facebookcallback()
+    {
+        try {
+            $drive = Socialite::driver('facebook')->user();
+            if(User::where('facebook_id', $drive->id)->orWhere('email', $drive->email)->exists()){
+                $user = User::where('facebook_id', $drive->id)->orWhere('email', $drive->email)->first();
+                if(!$user->facebook_id == $drive->id){$user->update(['facebook_id' => $drive->id]); $user->save();}
+				Auth::login($user);
+                return redirect()->intended('dashboard');
+            }else{
+                $user = User::create([
+				    'email' => $drive->email,
+                    'name' => $drive->name,
+                    'facebook_id'=> $drive->id,
+                ]);
+                Auth::login($user);
+                return redirect()->intended('dashboard');
+            }
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+    }
+	
+    public function twittercallback()
+    {
+        try {
+            $drive = Socialite::driver('twitter')->user();
+            if(User::where('twitter_id', $drive->id)->orWhere('email', $drive->email)->exists()){
+                $user = User::where('twitter_id', $drive->id)->orWhere('email', $drive->email)->first();
+                if(!$user->twitter_id == $drive->id){$user->update(['twitter_id' => $drive->id]); $user->save();}
+				Auth::login($user);
+                return redirect()->intended('dashboard');
+            }else{
+                $user = User::create([
+				    'email' => $drive->email,
+                    'name' => $drive->name,
+                    'twitter_id'=> $drive->id,
+                ]);
+                Auth::login($user);
+                return redirect()->intended('dashboard');
+            }
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+    }
+	
+    public function gamelochcallback()
+    {
+        return;
     }
 
     /**

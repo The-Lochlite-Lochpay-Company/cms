@@ -23,8 +23,7 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Lochlite\cms\Models\Posts;
-use Lochlite\cms\Models\Comments;
+use Lochlite\cms\Models\Emailverify;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
@@ -39,7 +38,22 @@ class EmailverifyController extends Controller
      */
     public function index()
     {
-        //
+        $emailverify = Emailverify::paginate(15);
+		if (request()->wantsJson()) {
+           return $emailverify;
+         }
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emailverify/index', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Login & Registro | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Login & Registro',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'emailverify' => $emailverify,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -49,7 +63,46 @@ class EmailverifyController extends Controller
      */
     public function create()
     {
-        //
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emailverify/create', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Login & Registro | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Verificação de email',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
+	 }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function reverseresettestsend(Request $request)
+    {
+		$user = Auth()->User();   
+        $user->update(['email_verified_at' => now()]);		
+		session()->flash('flash.banner', 'O teste de validação de email foi revertido com sucesso.');
+        session()->flash('flash.bannerStyle', 'success');    
+        return redirect()->route('manageremailverify.index');
+    }
+	
+    public function resettestsend(Request $request)
+    {
+		$user = Auth()->User();   
+        $user->update(['email_verified_at' => null]);		
+        return redirect()->route('manageremailverify.test');
+    }
+
+    public function testsend(Request $request)
+    {
+		session()->flash('flash.banner', 'A validação de email foi concluida com sucesso.');
+        session()->flash('flash.bannerStyle', 'success');    
+        return redirect()->route('manageremailverify.index');
     }
 
     /**
@@ -60,7 +113,23 @@ class EmailverifyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Emailverify::create([
+		'domain' => $request->get('domain'),
+		'default' => $request->get('default'),
+		'image' => $request->get('image'),
+		'imagevisible' => $request->get('imagevisible'),
+		'logo' => $request->get('logo'),
+		'emphasis' => $request->get('emphasis'),
+		'instruction' => $request->get('instruction'),
+		'title' => $request->get('title'),
+		'description' => $request->get('description'),
+		'changeemailtext' => $request->get('changeemailtext'),
+		'confirmationsend' => $request->get('confirmationsend'),
+		'buttontext' => $request->get('buttontext'),
+		'buttoncolor' => $request->get('buttoncolor'),
+		'buttontextcolor' => $request->get('buttontextcolor'),
+		]);
+		return redirect()->route('manageremailverify.index');
     }
 
     /**
@@ -82,7 +151,19 @@ class EmailverifyController extends Controller
      */
     public function edit($id)
     {
-        //
+         $emailverify = Emailverify::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emailverify/edit', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Login & Registro | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'emailverify' => $emailverify,
+             'breadcrumbCurrentTitle' => 'Verificação de email',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -94,7 +175,24 @@ class EmailverifyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+         $emailverify = Emailverify::where('id', $id)->first();
+        $emailverify->update([
+		'domain' => $request->get('domain'),
+		'default' => $request->get('default'),
+		'image' => $request->get('image'),
+		'imagevisible' => $request->get('imagevisible'),
+		'logo' => $request->get('logo'),
+		'emphasis' => $request->get('emphasis'),
+		'instruction' => $request->get('instruction'),
+		'title' => $request->get('title'),
+		'description' => $request->get('description'),
+		'changeemailtext' => $request->get('changeemailtext'),
+		'confirmationsend' => $request->get('confirmationsend'),
+		'buttontext' => $request->get('buttontext'),
+		'buttoncolor' => $request->get('buttoncolor'),
+		'buttontextcolor' => $request->get('buttontextcolor'),
+		]);
+		return redirect()->route('manageremailverify.index');
     }
 
     /**
