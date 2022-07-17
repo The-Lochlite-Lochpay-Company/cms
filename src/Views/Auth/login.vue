@@ -38,14 +38,15 @@ const submit = () => {
 
 <template>
     <Head :title="title ?? appname" :description="description" />
-        <div class="d-md-flex tems-center min-h-screen h-full bg-white rounded-lg shadow-xl">
-                <div class="w-100 d-md-flex flex-md-col flex-md-row">
-                    <div class="d-none d-md-block hidden md:block h-32 md:h-auto md:w-1/2">
-                        <img v-if="login.imagevisible" class="object-cover w-full h-full" :src="login.image" alt="img" />
+        <div class="flex items-center bg-gray-50" :class="{'min-h-screen': login.centered == 1, 'h-screen': login.centered == 0}">
+            <div class="flex-1 h-full mx-auto bg-white" :class="{'rounded-lg': login.rounded == 1, 'shadow-xl': login.shadow == 1, 'max-w-4xl': login.centered == 1, 'w-full': login.centered == 0}">
+                <div class="flex flex-col md:flex-row">
+                    <div v-if="login.imagevisible" class="hidden md:block h-32 md:h-auto md:w-1/2">
+					<img class="object-cover w-full h-full" :class="{'h-screen': login.centered == 0}" :src="login.image" alt="img" />
                     </div>
-                    <div class="d-md-flex items-center justify-center p-8 sm:p-12 mx-auto md:mx-0 md:w-1/2">
-                        <div class="w-full h-full">
-                            <div class="flex justify-center">
+                    <div class="flex items-center justify-center p-6 sm:p-12" :class="{'md:w-1/2': login.imagevisible == 1, 'w-full': login.imagevisible == 0}">
+                        <div class="h-full w-full">
+                             <div class="flex justify-center">
                              <img v-if="login.logo" width="72" height="72" class="responsive-image" :src="login.logo" alt="img" />
                             </div>
                             <h1 class="mb-4 mt-2 text-2xl font-bold text-center text-gray-700">
@@ -92,7 +93,7 @@ const submit = () => {
 
                             <hr v-if="login.facebook || login.twitter || login.google" class="my-8 px-0 px-md-3" />
 
-                            <div class="d-md-flex items-center justify-center gap-4">
+                            <div class="flex items-center justify-center gap-4">
                                 <a v-if="login.facebook" class="flex items-center justify-center w-full mb-4 px-4 py-2 text-sm text-primary text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 focus:border-gray-500" href="/oauth/facebook">
                                     <i class="fa-brands fa-facebook mr-2"></i>
                                     Facebook
@@ -122,5 +123,5 @@ const submit = () => {
                     </div>
                 </div>
         </div>
-
+        </div>
 </template>

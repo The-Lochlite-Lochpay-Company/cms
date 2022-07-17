@@ -4,8 +4,8 @@
          <meta charset="utf-8">
          <meta http-equiv="X-UA-Compatible" content="IE=edge">
          <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="application-name" content="{{ Lochlitecms::config('appname') }}">
-        <meta name="generator" content="Lochlite CMS">
+         <meta name="application-name" content="{{ Lochlitecms::config('appname') }}">
+         <meta name="generator" content="Lochlite CMS">
 	     <meta name="robots" content="{{ Lochlitecms::seo('robots') }}">
   
         <!-- CSRF Token -->
@@ -40,7 +40,7 @@
 	     <link rel="shortcut icon" href="{{ Lochlitecms::seo('icon') }}">
          <link rel="manifest" href="/manifest.webmanifest">
         @routes
-		@vite(['resources/css/app.css', 'resources/sass/main.scss', 'resources/js/app.js'])
+		@vite(['resources/css/app.css', 'resources/css/dashboard.css', 'resources/sass/main.scss', 'resources/js/app.js'])
         @inertiaHead
 </head>
 <body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0 sidebar-icon-only" data-base-url="{{url('/')}}" data-mode="dashboard">

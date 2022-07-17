@@ -38,12 +38,13 @@ const submit = () => {
 
 <template>
     <Head :title="title ?? appname" :description="description" />
-        <div class="d-md-flex tems-center min-h-screen h-full bg-white rounded-lg shadow-xl">
-                <div class="w-100 d-md-flex flex-md-col flex-md-row">
-                    <div class="d-none d-md-block hidden md:block h-32 md:h-auto md:w-1/2">
-                        <img v-if="register.imagevisible" class="object-cover w-full h-full" :src="register.image" alt="img" />
+        <div class="flex items-center bg-gray-50" :class="{'min-h-screen': register.centered == 1, 'h-screen': register.centered == 0}">
+            <div class="flex-1 h-full mx-auto bg-white" :class="{'rounded-lg': register.rounded == 1, 'shadow-xl': register.shadow == 1, 'max-w-4xl': register.centered == 1, 'w-full': register.centered == 0}">
+                <div class="flex flex-col md:flex-row">
+                    <div v-if="register.imagevisible" class="hidden md:block h-32 md:h-auto md:w-1/2">
+					<img class="object-cover w-full h-full" :class="{'h-screen': register.centered == 0}" :src="register.image" alt="img" />
                     </div>
-                    <div class="d-md-flex items-center justify-center p-8 sm:p-12 mx-auto md:mx-0 md:w-1/2">
+                    <div class="flex items-center justify-center p-6 sm:p-12" :class="{'md:w-1/2': register.imagevisible == 1, 'w-full': register.imagevisible == 0}">
                         <div class="w-full h-full">
                             <div class="flex justify-center">
                              <img v-if="register.logo" width="72" height="72" class="responsive-image" :src="register.logo" alt="img" />
@@ -155,6 +156,7 @@ const submit = () => {
                         </div>
                     </div>
                 </div>
+        </div>
         </div>
 
 </template>

@@ -13,10 +13,10 @@ defineProps({
     appname: String,
     title: String,
     description: String,
-    canLogin: Boolean,
+    canrecoverypassword: Boolean,
     canRegister: Boolean,
     canResetPassword: Boolean,
-    login: Object,
+    recoverypassword: Object,
     status: String,
 });
 
@@ -31,20 +31,21 @@ const submit = () => {
 
 <template>
     <Head :title="title ?? appname" :description="description" />
-        <div class="d-md-flex tems-center min-h-screen h-full bg-white rounded-lg shadow-xl">
-                <div class="w-100 d-md-flex flex-md-col flex-md-row">
-                    <div class="d-none d-md-block hidden md:block h-32 md:h-auto md:w-1/2">
-                        <img v-if="login.imagevisible" class="object-cover w-full h-full" :src="login.image" alt="img" />
+        <div class="flex items-center bg-gray-50" :class="{'min-h-screen': recoverypassword.centered == 1, 'h-screen': recoverypassword.centered == 0}">
+            <div class="flex-1 h-full mx-auto bg-white" :class="{'rounded-lg': recoverypassword.rounded == 1, 'shadow-xl': recoverypassword.shadow == 1, 'max-w-4xl': recoverypassword.centered == 1, 'w-full': recoverypassword.centered == 0}">
+                <div class="flex flex-col md:flex-row">
+                    <div v-if="recoverypassword.imagevisible" class="hidden md:block h-32 md:h-auto md:w-1/2">
+					<img class="object-cover w-full h-full" :class="{'h-screen': recoverypassword.centered == 0}" :src="recoverypassword.image" alt="img" />
                     </div>
-                    <div class="d-md-flex items-center justify-center p-8 sm:p-12 mx-auto md:mx-0 md:w-1/2">
+                    <div class="flex items-center justify-center p-6 sm:p-12" :class="{'md:w-1/2': recoverypassword.imagevisible == 1, 'w-full': recoverypassword.imagevisible == 0}">
                         <div class="w-full h-full">
                             <div class="flex justify-center">
-                             <img v-if="login.logo" width="72" height="72" class="responsive-image" :src="login.logo" alt="img" />
+                             <img v-if="recoverypassword.logo" width="72" height="72" class="responsive-image" :src="recoverypassword.logo" alt="img" />
                             </div>
                             <h1 class="mb-4 mt-2 text-2xl font-bold text-center text-gray-700">
-                                Forgot your password? No problem.
+                                {{ recoverypassword.emphasis ?? 'Forgot your password? No problem.' }}
                             </h1>
-                            <p>Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.</p>
+                            <p>{{ recoverypassword.instruction ?? 'Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.' }}</p>
                             <JetValidationErrors class="mb-4" />
 		                    
                             <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -62,14 +63,20 @@ const submit = () => {
                                     class="w-full px-4 py-2 text-sm border rounded-md focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-600"
                                     placeholder="" required />
                             </div>
+                            <p class="mt-4">
+                                <Link :href="route('login.index')" class="text-sm text-blue-600 hover:underline" href="#login">
+                                   {{ recoverypassword.logintext ?? 'Did you remember your password?' }}
+                                </Link>
+                            </p>
 
-                            <button :disabled="form.processing" :class="[{'opacity-25': form.processing}, login.buttoncolor, login.buttontextcolor]" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue" type="submit">
-                                EMAIL PASSWORD RESET LINK
+                            <button :disabled="form.processing" :class="[{'opacity-25': form.processing}, recoverypassword.buttoncolor, recoverypassword.buttontextcolor]" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue" type="submit">
+                                {{ recoverypassword.buttontext ?? 'EMAIL PASSWORD RESET LINK' }}
                             </button>
                             </form>
                         </div>
                     </div>
                 </div>
+        </div>
         </div>
 
 </template>
