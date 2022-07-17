@@ -20,14 +20,19 @@ defineProps({
     users: Number,
     plugins: Number,
     settings: Number,
+    domains: Object,
     breadcrumbCurrentTitle: String,
     breadcrumbCurrentSection: String,
     menuitems: Object,
 });
-const form = useForm();
+const form = useForm({});
 const submit = (event) => {
-    form.delete(route('managerusers.destroy', {id: event.submitter.dataset.user}));
+  form.transform((data) => ({
+   module: event.submitter.dataset.module
+  }))	
+  .post(route('managersettings.store'));
 };
+
 </script>
 
 <template>
@@ -37,10 +42,10 @@ const submit = (event) => {
      <div class="col">
      <div class="card shadow-none my-2">
      <div class="row">
-         <div class="col-3 py-1 text-center mx-auto align-self-center border-0 bg-primary">
+         <div class="col-12 col-md-3 py-1 text-center mx-auto align-self-center border-0 bg-primary">
          <i class="fa-solid fa-compact-disc h3 align-self-center text-white"></i>
          </div>   
-         <div class="col-9 py-1 px-4 align-self-center border-0 bg-transparent">
+         <div class="col-12 col-md-9 py-1 px-4 align-self-center border-0 bg-transparent">
          <div class="fw-bold font-bold pt-3 align-self-center">Espaço em disco</div>
 		 <p>{{ diskfreespace }}/{{ disk }}</p>
          </div>   
@@ -51,10 +56,10 @@ const submit = (event) => {
      <div class="col">
      <div class="card shadow-none my-2">
      <div class="row">
-         <div class="col-3 py-1 text-center mx-auto align-self-center border-0 bg-warning">
+         <div class="col-12 col-md-3 py-1 text-center mx-auto align-self-center border-0 bg-warning">
          <i class="fa-solid fa-users h3 align-self-center text-white"></i>
          </div>   
-         <div class="col-9 py-1 px-4 align-self-center border-0 bg-transparent">
+         <div class="col-12 col-md-9 py-1 px-4 align-self-center border-0 bg-transparent">
          <div class="fw-bold font-bold pt-3 mt-1 align-self-center">Total de usuários</div>
 		 <p>{{ users }}</p>
          </div>   
@@ -64,10 +69,10 @@ const submit = (event) => {
      <div class="col">
      <div class="card shadow-none my-2">
      <div class="row">
-         <div class="col-3 py-1 text-center mx-auto align-self-center border-0 bg-success">
+         <div class="col-12 col-md-3 py-1 text-center mx-auto align-self-center border-0 bg-success">
          <i class="fa-solid fa-plug-circle-check h3 align-self-center text-white"></i>
          </div>   
-         <div class="col-9 py-1 px-4 align-self-center border-0 bg-transparent">
+         <div class="col-12 col-md-9 py-1 px-4 align-self-center border-0 bg-transparent">
          <div class="fw-bold font-bold pt-3 mt-1 align-self-center">Plugins ativos</div>
 		 <p>{{ plugins }}</p>
          </div>   
@@ -77,12 +82,12 @@ const submit = (event) => {
      <div class="col">
      <div class="card shadow-none my-2">
      <div class="row">
-         <div class="col-3 py-1 text-center mx-auto align-self-center border-0 bg-danger">
+         <div class="col-12 col-md-3 py-1 text-center mx-auto align-self-center border-0 bg-danger">
          <i class="fa-solid fa-globe h3 align-self-center text-white"></i>
          </div>   
-         <div class="col-9 py-1 px-4 align-self-center border-0 bg-transparent">
+         <div class="col-12 col-md-9 py-1 px-4 align-self-center border-0 bg-transparent">
          <div class="fw-bold font-bold pt-3 mt-1 align-self-center">Dominios ativos</div>
-		 <p>{{ settings }}</p>
+		 <p>{{ domains.length }}</p>
          </div>   
      </div>
      </div>
@@ -134,6 +139,67 @@ const submit = (event) => {
          </div>   
      </Link>   
      </div>   
+     </div> 
+
+     <div class="row bg-light py-4 px-3 mt-4">
+         <div class="col-12 col-md-6">
+             <div class="card shadow-none h-100">
+                 <div class="card-header border-0 bg-white">
+				 <div class="h4">Domains</div>
+				 </div>
+                 <div class="card-body table-responsive">
+	                 <table class="table table-hover">
+                     <thead>
+                       <tr>
+                         <th scope="col">#</th>
+                         <th scope="col">Domain</th>
+                         <th scope="col">Status</th>
+                         <th scope="col">Atualizado em</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       <tr v-for="(row,index) in domains">
+                         <th scope="row">{{ row.id }}</th>
+                         <td>{{ row.domain }}</td>
+                         <td>{{ row.status }}</td>
+                         <td>{{ new Date(row.updated_at).toLocaleString() }}</td>
+                       </tr>
+                     </tbody>
+                     </table>
+                 </div>   
+             </div>   
+         </div>   
+         <div class="col-12 col-md-6">
+             <div class="card shadow-none h-100">
+                 <div class="card-header border-0 bg-white">
+				 <div class="h4">Shortcuts</div>
+				 </div>
+                 <div class="card-body">
+                     <ul class="list-group">
+                       <li class="list-group-item list-group-item-action border-light d-flex justify-content-between align-items-center">
+                         Otimizar o site
+                        <form id="optimize" method="POST" @submit.prevent="submit">
+                        <button type="submit" class="btn btn-primary" data-module="optimize" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"><i class="mdi mdi-lightning-bolt"></i></button>
+                        </form>
+                       </li>
+                       <li class="list-group-item list-group-item-action border-light d-flex justify-content-between align-items-center">
+                         Limpar o cache do site
+                         <form id="cleanall" method="POST" @submit.prevent="submit">
+                         <button type="submit" class="btn btn-primary" data-module="cleanall" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"><i class="mdi mdi-vacuum"></i></button>
+                         </form>
+                       </li>
+                       <li class="list-group-item list-group-item-action border-light d-flex justify-content-between align-items-center">
+                         Enviar um email
+                         <Link :href="route('manageremails.create')" class="btn btn-primary"><i class="mdi mdi-button-cursor"></i></Link>
+                       </li>
+                       <li class="list-group-item list-group-item-action border-light d-flex justify-content-between align-items-center">
+                         Criar novo usuário
+                         <Link :href="route('managerusers.create')" class="btn btn-primary"><i class="mdi mdi-account-multiple-plus"></i></Link>
+                       </li>
+                     </ul>	 
+                 </div>   
+             </div>   
+         </div>   
      </div>   
  
 </AppLayout>
