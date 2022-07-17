@@ -1,5 +1,5 @@
 {
-    "version": "2.0.10",
+    "version": "2.0.11",
     "name": "lochlite/cms",
     "description": "Lochlite CMS Update, Management and Maintenance Pack.",
     "type": "library",
@@ -11,6 +11,11 @@
         "update",
         "maintenance",
         "cms",
+        "api",
+        "plugin",
+        "multidomain",
+        "management",
+        "analysis",
         "framework"
     ],
     "require": {
@@ -22,7 +27,7 @@
         "ext-json": "^8.0|^8.1",
         "nesbot/carbon": "^2.59",
         "inertiajs/inertia-laravel": "^0.6",
-        "laravel/framework": "^9.19",
+        "laravel/framework": "^9.20",
         "laravel/tinker": "^2.7",
         "laravel/socialite": "^5.5",
         "guzzlehttp/guzzle": "^7.4.5",
