@@ -40,16 +40,21 @@ return new class extends Migration
             $table->string('description')->default("Thanks for signing up!")->nullable();
             $table->string('emphasis')->default('Thanks for signing up!')->nullable();
             $table->text('instruction')->nullable();
-            $table->string('logintext')->default('Already have an account?')->nullable();
-            $table->string('buttontext')->default('Sign up')->nullable();
+            $table->string('changeemailtext')->default('Need to update email? Click here')->nullable();
+            $table->string('confirmationsend')->default('A new verification link has been sent to the email address you provided during registration.')->nullable();
+            $table->string('buttontext')->default('Resend Verification Email')->nullable();
             $table->string('buttoncolor')->default('bg-blue-600')->nullable();
             $table->string('buttontextcolor')->default('text-white')->nullable();
             $table->string('logo')->default('/application/72x72.png')->nullable();
             $table->string('image')->default('https://source.unsplash.com/user/erondu/1600x900')->nullable();
             $table->json('form')->nullable();
             $table->boolean('imagevisible')->default(true)->nullable();
+            $table->boolean('rounded')->default(true)->nullable();
+            $table->boolean('shadow')->default(false)->nullable();
+            $table->boolean('centered')->default(false)->nullable();
             $table->string('default')->default(false)->nullable();
             $table->string('status')->default('active')->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

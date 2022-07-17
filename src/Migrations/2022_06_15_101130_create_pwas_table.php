@@ -51,6 +51,7 @@ return new class extends Migration
             $table->json('categories')->nullable();
             $table->json('icons')->nullable();
             $table->boolean('default')->default(false)->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

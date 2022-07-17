@@ -35,6 +35,7 @@ return new class extends Migration
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
+			$table->string('domain')->nullable();
 			$table->string('title')->nullable();
 			$table->mediumText('description')->nullable();
 			$table->string('authors')->nullable();
@@ -42,6 +43,7 @@ return new class extends Migration
 			$table->string('url')->nullable();
 			$table->boolean('welcome')->default(false)->nullable();
 			$table->string('status')->default('active')->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

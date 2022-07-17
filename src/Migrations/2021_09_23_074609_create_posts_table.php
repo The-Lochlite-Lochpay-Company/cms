@@ -35,6 +35,7 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+			$table->string('domain')->default('untitled')->nullable();
 			$table->string('title')->default('untitled')->nullable();
 			$table->mediumText('description')->nullable();
 			$table->string('authors')->default('Author name')->nullable();
@@ -47,6 +48,7 @@ return new class extends Migration
 			$table->integer('downvote')->default('0')->nullable();
 			$table->string('views')->default('0')->nullable();
 			$table->string('status')->default('active')->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

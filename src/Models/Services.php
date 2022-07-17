@@ -37,7 +37,13 @@ class Services extends Model
     protected $fillable = [
          'domain',
          'name',
-         'apis',
+         'host',
+         'callback',
+         'query',
+         'type',
+         'data',
+         'api',
+         'system',
          'status',
 	];	
 

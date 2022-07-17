@@ -37,8 +37,15 @@ return new class extends Migration
             $table->id();
             $table->string('domain')->nullable();
             $table->string('name')->default('API Name')->nullable();
+            $table->string('host')->nullable();
+            $table->string('callback')->nullable();
+            $table->string('query')->nullable();
+            $table->string('type')->default('post')->nullable();
+            $table->string('data')->default('json')->nullable();
             $table->json('api')->nullable();
+            $table->boolean('system')->default(false)->nullable();
             $table->string('status')->default('active')->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

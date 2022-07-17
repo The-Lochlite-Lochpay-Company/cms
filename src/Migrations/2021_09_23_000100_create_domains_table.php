@@ -5,7 +5,7 @@
 * (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
 *
 * Software: LOCHLITE CMS
-* Version: 2.0.7  
+* Version: 2.0.10  
 * License: Proprietary
 * Made in: Brazil
 * Author: The Lochlite & Lochpay Company
@@ -33,17 +33,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('domains', function (Blueprint $table) {
             $table->id();
-            $table->string('domain')->nullable();
-            $table->string('type')->nullable();
-            $table->string('title')->nullable();
-            $table->mediumText('body')->nullable();
-            $table->string('image')->default('/assets/img/notify.webp')->nullable();
-            $table->nullableMorphs('notifiable');
-            $table->text('data')->nullable();
-            $table->timestamp('read_at')->nullable();
-            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('domain')->index()->nullable();
+            $table->boolean('installation')->default(false)->nullable();
+            $table->boolean('main')->default(false)->nullable();
+            $table->text('errors')->nullable();
+            $table->string('status')->default('pending')->nullable();
             $table->timestamps();
         });
     }
@@ -55,6 +51,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('domains');
     }
 };

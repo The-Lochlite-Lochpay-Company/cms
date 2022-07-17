@@ -30,6 +30,8 @@ use Illuminate\Support\Facades\Schema;
 use Symfony\Component\Finder\Finder;
 use Lochlite\cms\Jobs\RegisterRouteJob;
 use Lochlite\cms\Models\User;
+use Lochlite\cms\Models\Updates;
+use Lochlite\cms\Models\Domains;
 use Lochlite\cms\Models\Fileupload;
 use Lochlite\cms\Models\Appendcoding;
 use Lochlite\cms\Models\Pwa;
@@ -38,6 +40,9 @@ use Lochlite\cms\Models\Settings;
 use Lochlite\cms\Models\Plugins;
 use Lochlite\cms\Models\Login;
 use Lochlite\cms\Models\Register;
+use Lochlite\cms\Models\Emailverify;
+use Lochlite\cms\Models\Recoverypassword;
+use Lochlite\cms\Models\Services; 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Route; use File;
@@ -54,25 +59,29 @@ class Lochlitecms implements LochlitecmsInterface
          $this->basePath = app()->path();
     }
 
-    public function start($keypass=null) {
+    public function start($keypass=null)
+	{
          return new Lochlitecms($keypass);
     }
 	
-    public function getInstance() {
+    public function getInstance()
+	{
          if(!isset(self::$instance)) {
 		 return false;
          }
 		 return self::$instance;
     }
 	
-    public static function setStaticInstance() {
+    public static function setStaticInstance()
+	{
          if(!isset(self::$instance)) {
 		 self::$instance = new Lochlitecms();
          }
 		 return self::$instance;
     }
 	
-    public function setInstance() {
+    public function setInstance()
+	{
          if(!isset(self::$instance)) {
 		 self::$instance = new Lochlitecms();
          }
@@ -97,7 +106,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function application()
     {
-        return collect(['name' => 'Lochlite CMS', 'version' => '2.0.10', 'madein' => 'Brazil', 'brand' => 'The Lochlite & Lochpay Company', 'manufacturer' => 'Lochlite e Lochpay Softwares e Pagamentos LTDA', 'license' => ['type' => 'private', 'name' => 'Proprietary', 'url' => 'https://djg.gpgic.com'], 'url_product' => 'https://lochlite.com/solutions/cms', 'homepage' => 'https://lochlite.com', 'developer' => ['name' => 'Igor Macedo Montalvão', 'contact' => ['email' => ['igor.macedo@gpgic.com', 'igmacedo01@gmail.com']]], 'support' => ['to' => 'drcg@gpgic.com', 'name' => 'Lochlite Technical Support', 'homepage' => 'https://drcg.gpgic.com']]);
+        return collect(['name' => 'Lochlite CMS', 'version' => '2.0.11', 'madein' => 'Brazil', 'brand' => 'The Lochlite & Lochpay Company', 'manufacturer' => 'Lochlite e Lochpay Softwares e Pagamentos LTDA', 'license' => ['type' => 'private', 'name' => 'Proprietary', 'url' => 'https://djg.gpgic.com'], 'url_product' => 'https://lochlite.com/solutions/cms', 'homepage' => 'https://lochlite.com', 'developer' => ['name' => 'Igor Macedo Montalvão', 'contact' => ['email' => ['igor.macedo@gpgic.com', 'igmacedo01@gmail.com']]], 'support' => ['to' => 'drcg@gpgic.com', 'name' => 'Lochlite Technical Support', 'homepage' => 'https://drcg.gpgic.com']]);
     }
 
     public function listModule()
@@ -136,6 +145,18 @@ class Lochlitecms implements LochlitecmsInterface
 		}
     }
 
+    public function install(String $domain = null)
+    {
+		$host = Lochlitecms::domainsDatabase($domain == null ? request()->getHttpHost() : $domain);
+		if(!$host == false && $host->status == 'pre-installation'){
+        $start = new \Lochlite\cms\Installer\database\Starter();
+		$start->run($host->domain);
+		$host->update(['status' => 'active']);
+		$host->save();
+        cache()->put('domains-'. $host->domain, $host, 15000);
+		}
+    }
+
     public function artisan($command)
     {
         $result = Artisan::call($command);	   
@@ -155,9 +176,54 @@ class Lochlitecms implements LochlitecmsInterface
 		return;
     }
 
+    private function checkVersion()
+    {
+        $newversion = false;
+        $lastversion = '';
+		$version = cache()->get('version', function(){
+			$versionpackage = Lochlitecms::application()->get('version');
+		    if(!Updates::where('version', $versionpackage)->exists()){
+			$current = Updates::latest()->first();
+            $newversion = true;
+			$lastversion = $current == null ? '' : $current->version;
+		    Updates::create(['version' => $versionpackage]);	
+		    }
+			$newversion = Updates::where('version', $versionpackage)->first();
+		    cache()->put('version', $newversion, 10000);
+		    return $newversion;
+		});
+		return (object) array('newversion' => $newversion, 'lastversion' => $lastversion, 'version' => $version, 'status' => $version->status);
+    }
+
     public function setChangesVersion()
     {
-		return;
+		$version = Lochlitecms::checkVersion();
+        if($version->status == "processing"){}
+    }
+
+    private function domainsDatabase($domain)
+    {
+        return cache()->get('domains-'. $domain, function() use ($domain){
+		    if(Schema::hasTable('domains')){
+		        if(Domains::where('domain', $domain)->exists()){
+		        	$databasedomains = Domains::where('domain', $domain)->first();
+		        	cache()->put('domains-'. $domain, $databasedomains, 15000);
+		        	return $databasedomains;
+	            } else if(Domains::count() == 0){
+		        	$databasedomains = Domains::create(['domain' => $domain, 'status' => 'pre-installation', 'main' => true]);
+		        	$databasedomains->save();
+		        	cache()->put('domains-'. $domain, $databasedomains, 15000);
+		        	return $databasedomains;
+	            } else {
+		        	$databasedomains = Domains::create(['domain' => $domain]);
+		        	$databasedomains->save();
+					cache()->put('domains-'. $domain, $databasedomains, 15000);
+		        	return $databasedomains;
+	            }
+			} else {
+		    	return false;
+		    }
+		});	
     }
 
     public function config(String $param = null)
@@ -167,37 +233,37 @@ class Lochlitecms implements LochlitecmsInterface
 
     private function settingsDatabase()
     {
-		if(Schema::hasTable('settings') && Settings::where('default', true)->orWhere('id', 1)->exists()){
         return cache()->get('settings', function(){
-			$setting = Settings::where('default', true)->orWhere('id', 1)->first();
-			cache()->put('settings', $setting, 5000);
-			return $setting;
+		    if(Schema::hasTable('settings') && Settings::where('domain', request()->getHttpHost())->orWhere('default', true)->orWhere('id', 1)->exists()){
+		    	$setting = Settings::where('domain', request()->getHttpHost())->orWhere('default', true)->orWhere('id', 1)->first();
+		    	cache()->put('settings', $setting, 5000);
+		    	return $setting;
+	        } else {
+		    	return (object) array(
+		    	'appname' => 'App Name',
+		    	'language' => 'pt',
+		    	'domain' => request()->getSchemeAndHttpHost(),
+		    	'timezone' => 'America/Sao_Paulo',
+		    	'debug' => (bool) env('APP_DEBUG', true),
+		    	'running' => env('APP_ENV', 'production'),
+		    	'backup_key' => env('BACKUP_ARCHIVE_PASSWORD', null),
+		    	'backup_notify' => env('BACKUP_NOTIFY_mail', null),
+		    	'session_driver' => env('SESSION_DRIVER', 'database'),
+		    	'session_lifetime' => env('SESSION_LIFETIME', 120),
+		    	'broadcast_driver' => env('BROADCAST_DRIVER', 'null'),
+		    	'pusher_app_key' => '',
+		    	'pusher_app_secret' => '',
+		    	'pusher_app_id' => '',
+		    	'pusher_app_cluster' => '',
+		    	'cache_driver' => env('CACHE_DRIVER', 'file'),
+		    	'redis_url' => '',
+		    	'redis_host' => '',
+		    	'redis_port' => '',
+		    	'redis_username' => '',
+		    	'redis_password' => '',
+		    	);
+		    }			
 		});	
-	    } else {
-			return (object) array(
-			'appname' => 'App Name',
-			'language' => 'pt',
-			'domain' => request()->getSchemeAndHttpHost(),
-			'timezone' => 'America/Sao_Paulo',
-			'debug' => (bool) env('APP_DEBUG', true),
-			'running' => env('APP_ENV', 'production'),
-			'backup_key' => env('BACKUP_ARCHIVE_PASSWORD', null),
-			'backup_notify' => env('BACKUP_NOTIFY_mail', null),
-			'session_driver' => env('SESSION_DRIVER', 'database'),
-			'session_lifetime' => env('SESSION_LIFETIME', 120),
-			'broadcast_driver' => env('BROADCAST_DRIVER', 'null'),
-			'pusher_app_key' => '',
-			'pusher_app_secret' => '',
-			'pusher_app_id' => '',
-			'pusher_app_cluster' => '',
-			'cache_driver' => env('CACHE_DRIVER', 'file'),
-			'redis_url' => '',
-			'redis_host' => '',
-			'redis_port' => '',
-			'redis_username' => '',
-			'redis_password' => '',
-			);
-		}
     }
 
     public function startConfig()
@@ -504,6 +570,54 @@ class Lochlitecms implements LochlitecmsInterface
 		 }
     }
 
+    private function servicesDatabase(String $query = null)
+    {
+		if(is_null($query)){
+        return cache()->get('services', function() use ($query){
+		if(Schema::hasTable('services')){
+			$services = Services::all();
+			cache()->put('services', $services, 5000);
+			return $services;
+	    } else {
+			return (object) array();
+		}
+		});	
+        } else {
+        return cache()->get('services-'. $query, function() use ($query){
+		if(Schema::hasTable('services') && Services::where('name', $query)->orWhere('id', $query)->exists()){
+			$services = Services::where('default', true)->orWhere('id', 1)->first();
+			cache()->put('services-'. $query, $services, 5000);
+			return $services;
+	    } else {
+			return (object) array(
+			     'domain' => '',
+                 'name' => '',
+                 'host' => '',
+                 'callback' => '',
+                 'query' => '',
+                 'type' => 'post',
+                 'data' => 'json',
+                 'apis' => (object) array('original' => [], 'api' => []),
+                 'status' => 'disabled',
+			);
+		}
+		});	
+        }
+    }
+
+    public function setServices()
+    {
+        $database = Lochlitecms::servicesDatabase();
+        foreach($database as $row){
+		config()->set('services.'. $row->name, Lochlitecms::serviceData($row));
+        }
+    }
+
+    public function serviceData(Services $service)
+    {
+        return $service->api['api'];
+    }
+
     public function render(String $view = 'Welcome', Array $data = [], String $layout = 'lochlitecms::admin')
     {
          return Inertia::render($view, $data)->rootview($layout);
@@ -571,6 +685,24 @@ class Lochlitecms implements LochlitecmsInterface
          return $register;
     }
 
+    private static function recoverypasswordDatabase(String $param = null)
+    {
+		 if(!Recoverypassword::where('default', true)->orWhere('id', 1)->exists()){
+         Recoverypassword::create(['default' => true]);
+		 }
+		 $recoverypassword = Recoverypassword::where('default', true)->orWhere('id', 1)->first();
+         return $recoverypassword;
+    }
+
+    private static function emailverifyDatabase(String $param = null)
+    {
+		 if(!Emailverify::where('default', true)->orWhere('id', 1)->exists()){
+         Emailverify::create(['default' => true]);
+		 }
+		 $emailverify = Emailverify::where('default', true)->orWhere('id', 1)->first();
+         return $emailverify;
+    }
+
     public static function login()
     {    
 	     $login = Lochlitecms::loginDatabase();
@@ -579,8 +711,8 @@ class Lochlitecms implements LochlitecmsInterface
 
     public static function forgotpassword()
     {    
-	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/forgotpassword', ['status' => session('status'), 'title' => 'Forgot Password', 'description' => $login->description, 'login' => $login]);
+	     $recoverypassword = Lochlitecms::recoverypasswordDatabase();
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/forgotpassword', ['status' => session('status'), 'title' => $recoverypassword->title, 'description' => $recoverypassword->description, 'recoverypassword' => $recoverypassword]);
     }
 
     public static function resetpassword(Request $request)
@@ -588,19 +720,19 @@ class Lochlitecms implements LochlitecmsInterface
 		 $token = $request->route('token');    
 		 $email = $request->query('email');    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/resetpassword', ['title' => 'Forgot Password', 'description' => $login->description, 'email' => $email, 'token' => $token, 'login' => $login]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/resetpassword', ['status' => session('status'), 'title' => 'Forgot Password', 'description' => $login->description, 'email' => $email, 'token' => $token, 'login' => $login]);
     }
 
     public static function register()
     {    
 	     $register = Lochlitecms::registerDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/register', ['title' => $register->title, 'description' => $register->description, 'register' => $register]);
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/register', ['status' => session('status'), 'title' => $register->title, 'description' => $register->description, 'register' => $register]);
     }
 
     public static function emailverified()
     {    
-	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/emailverified', ['status' => session('status'), 'title' => $login->title, 'description' => $login->description, 'login' => $login]);
+	     $emailverify = Lochlitecms::emailverifyDatabase();
+         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/emailverified', ['status' => session('status'), 'title' => $emailverify->title, 'description' => $emailverify->description, 'emailverify' => $emailverify]);
     }
 
     public static function confirmpassword()
@@ -916,9 +1048,13 @@ class Lochlitecms implements LochlitecmsInterface
     {
       try{ 
         $routes = cache()->get('routes', function(){
-		    $database = \Lochlite\cms\Models\Routes::all();
+		    if(Schema::hasTable('routes')){
+            $database = \Lochlite\cms\Models\Routes::all();
 			cache()->put('routes', $database, 1000);
 			return $database;
+			} else {
+				return [];
+			}
 		});
 		
 		foreach($routes as $item){
@@ -949,10 +1085,19 @@ class Lochlitecms implements LochlitecmsInterface
          lochlitecms::addRoutes([
          ['system' => true, 'type' => 'resource', 'url' => '/register', 'controller' => \Lochlite\cms\Controllers\Auth\RegisterAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'register'],
          ['system' => true, 'type' => 'resource', 'url' => '/login', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'login'],
+         ['system' => true, 'type' => 'get', 'url' => '/oauth/google', 'action' => 'google', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'oauth.google'],
+         ['system' => true, 'type' => 'get', 'url' => '/oauth/facebook', 'action' => 'facebook', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'oauth.facebook'],
+         ['system' => true, 'type' => 'get', 'url' => '/oauth/twitter', 'action' => 'twitter', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'oauth.twitter'],
+         ['system' => true, 'type' => 'get', 'url' => '/oauth/gameloch', 'action' => 'gameloch', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'oauth.gameloch'],
+         ['system' => true, 'type' => 'get', 'url' => '/oauth/google/callback', 'action' => 'googlecallback', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'oauth.googlecallback'],
+         ['system' => true, 'type' => 'get', 'url' => '/oauth/facebook/callback', 'action' => 'facebookcallback', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'oauth.facebookcallback'],
+         ['system' => true, 'type' => 'get', 'url' => '/oauth/twitter/callback', 'action' => 'twittercallback', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'oauth.twittercallback'],
+         ['system' => true, 'type' => 'get', 'url' => '/oauth/gameloch/callback', 'action' => 'gamelochcallback', 'controller' => \Lochlite\cms\Controllers\Auth\LoginAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'oauth.gamelochcallback'],
          ['system' => true, 'type' => 'resource', 'url' => '/forgot-password', 'controller' => \Lochlite\cms\Controllers\Auth\ForgotPasswordAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'password.request', 'except' => ['create']],
          ['system' => true, 'type' => 'get', 'url' => '/confirm-password', 'action' => 'show', 'controller' => \Lochlite\cms\Controllers\Auth\ConfirmablePasswordController::class, 'middleware' => ['web', 'auth'], 'name' => 'password.confirm'],
          ['system' => true, 'type' => 'post', 'url' => '/confirm-password/store', 'action' => 'store', 'controller' => \Lochlite\cms\Controllers\Auth\ConfirmablePasswordController::class, 'middleware' => ['web', 'auth'], 'name' => 'password.confirm.store'],
          ['system' => true, 'type' => 'get', 'url' => '/reset-password/{token}', 'action' => 'create', 'controller' => \Lochlite\cms\Controllers\Auth\ForgotPasswordAuthController::class, 'middleware' => ['web', 'guest'], 'name' => 'password.reset'],
+         ['system' => true, 'type' => 'post', 'url' => '/verify-email/update', 'action' => 'changeemail', 'controller' => \Lochlite\cms\Controllers\Auth\VerifyEmailController::class, 'middleware' => ['web', 'auth'], 'name' => 'verification.changeemail'],
          ['system' => true, 'type' => 'get', 'url' => '/verify-email', 'action' => '__invoke', 'controller' => \Lochlite\cms\Controllers\Auth\EmailVerificationPromptController::class, 'middleware' => ['web', 'auth'], 'name' => 'verification.notice'],
          ['system' => true, 'type' => 'get', 'url' => '/verify-email/{id}/{hash}', 'action' => '__invoke', 'controller' => \Lochlite\cms\Controllers\Auth\VerifyEmailController::class, 'middleware' => ['web', 'auth', 'signed', 'throttle:6,1'], 'name' => 'verification.verify'],
          ['system' => true, 'type' => 'post', 'url' => '/email/verification-notification', 'action' => 'store', 'controller' => \Lochlite\cms\Controllers\Auth\EmailVerificationNotificationController::class, 'middleware' => ['web', 'auth', 'throttle:6,1'], 'name' => 'verification.send'],
@@ -962,13 +1107,21 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'resource', 'url' => '/dashboard', 'controller' => \Lochlite\cms\Controllers\HomeController::class, 'middleware' => ['web', 'auth'], 'name' => 'dashboard', 'only' => ['index']],
 
          ['system' => true, 'type' => 'resource', 'url' => '/manager/dashboard', 'controller' => \Lochlite\cms\Controllers\Admin\AdminController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerdashboard'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/domains', 'controller' => \Lochlite\cms\Controllers\Admin\DomainsController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerdomains'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/pages', 'controller' => \Lochlite\cms\Controllers\Admin\PagesController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerpages'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/posts', 'controller' => \Lochlite\cms\Controllers\Admin\PostsController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerposts'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/pwa', 'controller' => \Lochlite\cms\Controllers\Admin\PwaController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerpwa'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/seo', 'controller' => \Lochlite\cms\Controllers\Admin\SeoController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerseo'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/appendcoding', 'controller' => \Lochlite\cms\Controllers\Admin\AppendcodingController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerappendcoding'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/mainmenu', 'controller' => \Lochlite\cms\Controllers\Admin\MainmenuController::class, 'middleware' => ['web', 'auth'], 'name' => 'managermainmenu'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/mainmenuitem', 'controller' => \Lochlite\cms\Controllers\Admin\MainmenuitemController::class, 'middleware' => ['web', 'auth'], 'name' => 'managermainmenuitem'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/login', 'controller' => \Lochlite\cms\Controllers\Admin\LoginController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerlogin'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/register', 'controller' => \Lochlite\cms\Controllers\Admin\RegisterController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerregister'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/recoverypassword', 'controller' => \Lochlite\cms\Controllers\Admin\RecoverypasswordController::class, 'middleware' => ['web', 'auth'], 'name' => 'managerrecoverypassword'],
+         ['system' => true, 'type' => 'get', 'url' => '/manager/test/emailverify/reverse', 'action' => 'reverseresettestsend', 'controller' => \Lochlite\cms\Controllers\Admin\EmailverifyController::class, 'middleware' => ['web', 'auth'], 'name' => 'manageremailverify.reversetest'],
+         ['system' => true, 'type' => 'get', 'url' => '/manager/test/emailverify/start', 'action' => 'resettestsend', 'controller' => \Lochlite\cms\Controllers\Admin\EmailverifyController::class, 'middleware' => ['web', 'auth'], 'name' => 'manageremailverify.resettest'],
+         ['system' => true, 'type' => 'get', 'url' => '/manager/test/emailverify', 'action' => 'testsend', 'controller' => \Lochlite\cms\Controllers\Admin\EmailverifyController::class, 'middleware' => ['web', 'auth', 'verified'], 'name' => 'manageremailverify.test'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/emailverify', 'controller' => \Lochlite\cms\Controllers\Admin\EmailverifyController::class, 'middleware' => ['web', 'auth'], 'name' => 'manageremailverify'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/notifications', 'controller' => \Lochlite\cms\Controllers\Admin\NotificationsController::class, 'middleware' => ['web', 'auth'], 'name' => 'managernotifications'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/search', 'controller' => \Lochlite\cms\Controllers\Admin\SearchController::class, 'middleware' => ['web', 'auth'], 'name' => 'managersearch'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/roles', 'controller' => \Lochlite\cms\Controllers\Admin\PermissionsController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerroles'],
@@ -985,8 +1138,10 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'resource', 'url' => '/manager/emails', 'controller' => \Lochlite\cms\Controllers\Admin\EmailsController::class, 'middleware' => ['web', 'auth'], 'name' => 'manageremails'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/emailsmodel', 'controller' => \Lochlite\cms\Controllers\Admin\EmailsmodelController::class, 'middleware' => ['web', 'auth'], 'name' => 'manageremailsmodel'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/plugins', 'controller' => \Lochlite\cms\Controllers\Admin\PluginsController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerplugins'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/services', 'controller' => \Lochlite\cms\Controllers\Admin\ServicesController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerservices'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/system', 'controller' => \Lochlite\cms\Controllers\Admin\SystemController::class, 'middleware' => ['web', 'auth'], 'name' => 'managersystem'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/routes', 'controller' => \Lochlite\cms\Controllers\Admin\RoutesController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerroutes'],
+         ['system' => true, 'type' => 'get', 'url' => '/manager/resetroutes', 'action' => 'resetroutes', 'controller' => \Lochlite\cms\Controllers\Admin\RoutesController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerroutes.reset'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/settings', 'controller' => \Lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managersettings', 'only' => ['index', 'store', 'update']],
          ['system' => true, 'type' => 'get', 'url' => '/manager/settings/cleandata', 'action' => 'cleandata', 'controller' => \Lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managersettings.cleandata'],
 		   
@@ -1009,6 +1164,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public static function pwa(String $param = null)
     {
+        $manifest = cache()->get('pwa', function(){
 		if(\Schema::hasTable('pwas')){
 		if(!Pwa::where('default', true)->orWhere('id', 1)->exists()){
 			Pwa::create(['default' => true,
@@ -1026,11 +1182,9 @@ class Lochlitecms implements LochlitecmsInterface
 		     ],
 			]);
 		}
-        $manifest = cache()->get('pwa', function(){
 			$pwa = Pwa::where('default', true)->orWhere('id', 1)->first();
 			cache()->put('pwa', $pwa, 5000);
 			return $pwa;
-		});	
 	    } else {
 		$manifest = (object) array(
 		'name' => 'Lochlite CMS',
@@ -1059,6 +1213,7 @@ class Lochlitecms implements LochlitecmsInterface
 		],
 		);
 		}
+		});	
         return $param == null ? $manifest : $manifest->$param;
     }
 
@@ -1069,15 +1224,14 @@ class Lochlitecms implements LochlitecmsInterface
 
     public static function seo(String $param = null)
     {
-		if(\Schema::hasTable('seos')){
-		if(!Seo::where('default', true)->orWhere('id', 1)->exists()){
-			Seo::create(['default' => true]);
-		}
         $opt = cache()->get('seo', function(){
+		if(\Schema::hasTable('seos')){
+		    if(!Seo::where('default', true)->orWhere('id', 1)->exists()){
+		    	Seo::create(['default' => true]);
+		    }
 			$seo = Seo::where('default', true)->orWhere('id', 1)->first();
 			cache()->put('seo', $seo, 5000);
 			return $seo;
-		});	
 		$filter = str_replace(':', '', $param);
         return $param == null ? $opt : $opt->$filter;
 	    } else {
@@ -1104,6 +1258,7 @@ class Lochlitecms implements LochlitecmsInterface
 		);
         return $param == null ? $opt : $opt->$param;
 		}
+		});	
     }
 
     private static function appendCodingRender($list)
@@ -1140,7 +1295,12 @@ class Lochlitecms implements LochlitecmsInterface
     public function generateSidebar()
     {
          return collect([
-		 ['dropdown' => false, 'active' => request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('index.index'), 'id' => 'dashboard', 'url' => route('managerdashboard.index'), 'icon' => 'menu-icon mdi mdi-television', 'name' => 'Dashboard'],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('index.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdashboard.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdomains.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdomains.create')), 'id' => 'dashboard', 'url' => '#dashboard', 'icon' => 'menu-icon mdi mdi-television', 'name' => 'Dashboard & Dominios',
+		     'subitems' => [
+		     ['url' => route('managerdashboard.index'), 'name' => 'Painel principal'],
+		     ['url' => route('managerdomains.index'), 'name' => 'Gerenciar dominios'],
+			 ]
+		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerposts.create') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerposts.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerpages.create') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerpages.index')), 'id' => 'pages', 'url' => '#pages', 'icon' => 'menu-icon mdi mdi-newspaper', 'name' => 'Páginas & Artigos',
 		     'subitems' => [
 		     ['url' => route('managerposts.create'), 'name' => 'Criar artigo'],
@@ -1158,6 +1318,9 @@ class Lochlitecms implements LochlitecmsInterface
 		     ['url' => route('managerappendcoding.index'), 'name' => 'Adicionar codigo'],
 		     ['url' => route('managerlogin.index'), 'name' => 'Página de login'],
 		     ['url' => route('managerregister.index'), 'name' => 'Página de registro'],
+		     ['url' => route('managerrecoverypassword.index'), 'name' => 'Recuperação de senha'],
+		     ['url' => route('manageremailverify.index'), 'name' => 'Verificação de email'],
+		     ['url' => route('managermainmenu.index'), 'name' => 'Menu principal'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'comment', 'url' => '#comment', 'icon' => 'menu-icon mdi mdi-message-text', 'name' => 'Comentários',
@@ -1169,7 +1332,7 @@ class Lochlitecms implements LochlitecmsInterface
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.create')), 'id' => 'plugins', 'url' => '#plugins', 'icon' => 'menu-icon mdi mdi-apps', 'name' => 'Plugins & Serviços',
 		     'subitems' => [
 		     ['url' => route('managerplugins.index'), 'name' => 'Gerenciar plugins'],
-		     ['url' => route('managerplugins.index'), 'name' => 'Gerenciar serviços'],
+		     ['url' => route('managerservices.index'), 'name' => 'Gerenciar serviços'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.cleandata') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersystem.index')), 'id' => 'manager', 'url' => '#manager', 'icon' => 'menu-icon mdi mdi-security', 'name' => 'Administração do site',

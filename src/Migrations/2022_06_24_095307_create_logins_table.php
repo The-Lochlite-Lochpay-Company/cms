@@ -53,8 +53,12 @@ return new class extends Migration
             $table->string('facebookreference')->nullable();
             $table->boolean('twitter')->default(false)->nullable();
             $table->string('twitterreference')->nullable();
+            $table->boolean('rounded')->default(true)->nullable();
+            $table->boolean('shadow')->default(false)->nullable();
+            $table->boolean('centered')->default(false)->nullable();
             $table->string('default')->default(false)->nullable();
             $table->string('status')->default('active')->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

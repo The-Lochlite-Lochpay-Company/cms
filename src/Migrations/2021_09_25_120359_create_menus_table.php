@@ -35,6 +35,7 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
+            $table->string('domain')->nullable();
             $table->string('menuclass')->nullable();
             $table->string('menuid')->nullable();
             $table->string('name')->nullable();
@@ -44,10 +45,12 @@ return new class extends Migration
             $table->string('button1id')->nullable();
             $table->string('button1class')->nullable();
             $table->string('button1route')->nullable();
+            $table->string('button1status')->nullable();
             $table->string('button2')->nullable();
             $table->string('button2id')->nullable();
             $table->string('button2class')->nullable();
             $table->string('button2route')->nullable();
+            $table->string('button2status')->nullable();
             $table->string('facebook')->nullable();
             $table->string('twitter')->nullable();
             $table->string('linkedin')->nullable();
@@ -58,10 +61,12 @@ return new class extends Migration
             $table->string('youtube')->nullable();
             $table->boolean('search')->default(false)->nullable();
             $table->string('searchroute')->nullable();
-            $table->boolean('social')->default(false)->nullable();
             $table->boolean('stickytop')->default(true)->nullable();
             $table->boolean('itemscenter')->default(true)->nullable();
             $table->string('type')->default('navbar')->nullable();
+            $table->boolean('default')->default(false)->nullable();
+            $table->string('status')->default('active')->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

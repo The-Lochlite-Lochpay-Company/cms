@@ -58,6 +58,10 @@ class User extends Authenticatable implements MustVerifyEmail
            'password',
            'avatar',
            'profile_photo_path',
+           'google_id',
+           'facebook_id',
+           'twitter_id',
+           'gameloch_id',
            'status',
     ];
 

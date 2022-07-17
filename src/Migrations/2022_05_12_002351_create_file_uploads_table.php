@@ -35,6 +35,7 @@ return new class extends Migration
     {
         Schema::create('fileuploads', function (Blueprint $table) {
             $table->id();
+			$table->string('domain')->nullable();
 			$table->unsignedBigInteger('user_id')->nullable();
 			$table->string('user_name')->nullable();
             $table->string('visitor');
@@ -46,6 +47,7 @@ return new class extends Migration
 			$table->string('type')->default('public')->nullable();
 			$table->string('status')->default('processing')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -53,6 +53,10 @@ return new class extends Migration
             $table->string('password');
             $table->string('avatar')->default('/assets/img/avatar.webp')->nullable();
             $table->rememberToken();
+            $table->string('google_id')->nullable();
+            $table->string('facebook_id')->nullable();
+            $table->string('twitter_id')->nullable();
+            $table->string('gameloch_id')->nullable();
             $table->string('path')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->string('status')->default('active')->nullable();

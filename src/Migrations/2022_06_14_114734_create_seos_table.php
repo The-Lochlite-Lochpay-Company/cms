@@ -62,6 +62,7 @@ return new class extends Migration
             $table->boolean('default')->default(false)->nullable();
             $table->foreign('post_id')->references('id')->on('posts')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('page_id')->references('id')->on('pages')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

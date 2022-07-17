@@ -35,6 +35,7 @@ return new class extends Migration
     {
         Schema::create('routes', function (Blueprint $table) {
             $table->id();
+            $table->string('domain')->nullable();
             $table->json('type')->nullable();
             $table->string('url')->nullable();
             $table->string('controller')->nullable();
@@ -45,6 +46,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->boolean('system')->default(false)->nullable();
             $table->string('status')->default('active')->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

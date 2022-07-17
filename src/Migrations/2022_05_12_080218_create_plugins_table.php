@@ -35,6 +35,7 @@ return new class extends Migration
     {
         Schema::create('plugins', function (Blueprint $table) {
             $table->id();
+            $table->string('domain')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('namespace')->nullable();
             $table->string('name')->default('unknown')->nullable();
@@ -55,6 +56,7 @@ return new class extends Migration
             $table->string('license')->default('MIT')->nullable();
             $table->string('status')->default('processing')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

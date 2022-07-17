@@ -28,4 +28,22 @@ use Illuminate\Database\Eloquent\Model;
 class Menuitem extends Model
 {
     use HasFactory;
+	
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+         'menuid',
+         'icon',
+         'itemclass',
+         'name',
+         'url',
+         'route',
+         'visible',
+         'active',
+         'onlymobile',
+         'location',
+	];	
 }

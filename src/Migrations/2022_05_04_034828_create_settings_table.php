@@ -100,6 +100,7 @@ return new class extends Migration
 			$table->string('running')->default('production')->nullable();
 			$table->boolean('default')->default(false)->nullable();
 			$table->string('status')->default('active')->nullable();
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

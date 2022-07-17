@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('appendcodings', function (Blueprint $table) {
             $table->id();
+            $table->string('domain')->nullable();
 			$table->unsignedBigInteger('userid');
 			$table->longText('comment')->nullable();
 			$table->longText('body')->nullable();
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->string('position')->default('head')->nullable();
             $table->string('status')->default('disable')->nullable();
             $table->foreign('userid')->references('id')->on('users');
+            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         DB::statement("ALTER TABLE appendcodings MODIFY body LONGBLOB");

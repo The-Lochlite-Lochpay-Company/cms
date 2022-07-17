@@ -28,4 +28,43 @@ use Illuminate\Database\Eloquent\Model;
 class Menu extends Model
 {
     use HasFactory;
+	
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+         'domain',
+         'menuclass',
+         'menuid',
+         'name',
+         'brand',
+         'brandtype',
+         'button1',
+         'button1id',
+         'button1class',
+         'button1route',
+         'button1status',
+         'button2',
+         'button2id',
+         'button2class',
+         'button2route',
+         'button2status',
+         'facebook',
+         'twitter',
+         'linkedin',
+         'pinterest',
+         'instagram',
+         'tiktok',
+         'whatsapp',
+         'youtube',
+         'search',
+         'searchroute',
+         'stickytop',
+         'itemscenter',
+         'type',
+         'default',
+         'status',
+	];	
 }
