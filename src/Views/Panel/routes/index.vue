@@ -24,12 +24,21 @@ const form = useForm();
 const submit = (event) => {
     form.delete(route('managerroutes.destroy', {id: event.submitter.dataset.route}));
 };
+const formresetroutes = useForm();
+const resetroutes = (event) => {
+    formresetroutes.get(route('managerroutes.reset'));
+};
 </script>
 
 <template>
 <AppLayout :menuitems="menuitems" :avatar="avatar" :role="role" :name="name" :version="version" :breadcrumbCurrentTitle="breadcrumbCurrentTitle" :breadcrumbCurrentSection="breadcrumbCurrentSection" :title="title">
         <template #breadcrumb></template>
-		<div class="my-2"><Link :href="route('managerroutes.create')" class="btn btn-primary">Adicionar rota</Link></div>
+		<div class="my-2 btn-group border-0 rounded-0">
+		<Link :href="route('managerroutes.create')" class="btn btn-primary me-3 mr-3">Adicionar rota</Link>
+		<form @submit.prevent="resetroutes">
+		<button type="submit" :class="{ 'opacity-25': formresetroutes.processing }" :disabled="formresetroutes.processing" class="btn btn-dark hover:bg-orange-600"  data-bs-toggle="tooltip" data-bs-placement="top" title="Removes all routes and adds the updated list.">Reset routes</button>
+		</form>
+		</div>
         <div class="table-responsive">
             <table class="table">
                 <thead>
