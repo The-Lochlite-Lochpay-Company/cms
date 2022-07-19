@@ -56,7 +56,7 @@ class LochlitecmsProvider extends ServiceProvider
          $this->app->register(EventServiceProvider::class);
          $this->app->booted(function () {
              $schedule = $this->app->make(Schedule::class);
-             $schedule->job(new UpdateJob('2.0.6'))->daily();
+             $schedule->job(new UpdateJob(Lochlitecms::setStaticInstance()->application()->get('version')))->daily();
              $schedule->command('backup:run')->daily();
              $schedule->call(function () {
 		     $sitemap = SitemapGenerator::create(config('app.url'))->writeToFile(public_path('sitemap.xml'));
@@ -96,21 +96,6 @@ class LochlitecmsProvider extends ServiceProvider
      $instanceCMS->defaultRoutes();
      $instanceCMS->startPlugins(app());
      $instanceCMS->getRoutes();
-     //Fortify::loginView(function (\Illuminate\Http\Request $request) {
-     //    return Lochlitecms::login();
-     //});
-     //Fortify::registerView(function (\Illuminate\Http\Request $request) {
-     //    return Lochlitecms::register();
-     //});
-     //Fortify::requestPasswordResetLinkView(function (\Illuminate\Http\Request $request) {
-     //    return Lochlitecms::forgotpassword();
-     //});
-     //Fortify::resetPasswordView(function (\Illuminate\Http\Request $request) {
-     //    return Lochlitecms::resetpassword($request);
-     //});
-     //Fortify::verifyEmailView(function (\Illuminate\Http\Request $request) {
-     //    return Lochlitecms::emailverified();
-     //});
      //Fortify::confirmPasswordView(function (\Illuminate\Http\Request $request) {
      //    return Lochlitecms::confirmpassword();
      //});

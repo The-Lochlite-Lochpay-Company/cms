@@ -45,7 +45,7 @@ use Lochlite\cms\Models\Recoverypassword;
 use Lochlite\cms\Models\Services; 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Route; use File;
+use GuzzleHttp\Client; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Route; use File;
 
 class Lochlitecms implements LochlitecmsInterface
 {
@@ -106,7 +106,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function application()
     {
-        return collect(['name' => 'Lochlite CMS', 'version' => '2.0.11', 'madein' => 'Brazil', 'brand' => 'The Lochlite & Lochpay Company', 'manufacturer' => 'Lochlite e Lochpay Softwares e Pagamentos LTDA', 'license' => ['type' => 'private', 'name' => 'Proprietary', 'url' => 'https://djg.gpgic.com'], 'url_product' => 'https://lochlite.com/solutions/cms', 'homepage' => 'https://lochlite.com', 'developer' => ['name' => 'Igor Macedo Montalvão', 'contact' => ['email' => ['igor.macedo@gpgic.com', 'igmacedo01@gmail.com']]], 'support' => ['to' => 'drcg@gpgic.com', 'name' => 'Lochlite Technical Support', 'homepage' => 'https://drcg.gpgic.com']]);
+        return collect(['name' => 'Lochlite CMS', 'version' => '2.0.12', 'madein' => 'Brazil', 'brand' => 'The Lochlite & Lochpay Company', 'manufacturer' => 'Lochlite e Lochpay Softwares e Pagamentos LTDA', 'license' => ['type' => 'private', 'name' => 'Proprietary', 'url' => 'https://djg.gpgic.com'], 'url_product' => 'https://lochlite.com/solutions/cms', 'homepage' => 'https://lochlite.com', 'developer' => ['name' => 'Igor Macedo Montalvão', 'contact' => ['email' => ['igor.macedo@gpgic.com', 'igmacedo01@gmail.com']]], 'support' => ['to' => 'drcg@gpgic.com', 'name' => 'Lochlite Technical Support', 'homepage' => 'https://drcg.gpgic.com']]);
     }
 
     public function listModule()
@@ -114,12 +114,69 @@ class Lochlitecms implements LochlitecmsInterface
         return collect(['setInstance', 'start', 'setKeypass', 'application', 'listModule', 'update', 'report', 'support', 'artisan', 'command', 'config', 'isFile', 'isFolder', 'existsFolder', 'getFolder', 'existsPluginsFolder', 'getPluginsFolder']);
     }
 
+    private function getRemoteComposerJSON()
+    {
+		 try{
+		 $client = new Client([
+             'headers' => [ 'Content-Type' => 'application/json' ]
+         ]);
+         $response = $client->get('https://raw.githubusercontent.com/The-Lochlite-Lochpay-Company/cms/main/composer.json');
+		 return json_decode($response->getBody());
+		 } catch(\Exception $e){
+
+		 }		
+	}	
+
+    private function getRemoteUpdate()
+    {
+		 try{
+		 $client = new Client([
+             'headers' => [ 'Content-Type' => 'application/json' ]
+         ]);
+         $response = $client->get('https://api.github.com/repos/The-Lochlite-Lochpay-Company/cms/zipball');
+		 if($response->getStatusCode() == 200){
+		 $zip = new \ZipArchive;
+		 File::makeDirectory(base_path('/vendor/lochlite/temp'), 0777, true, true);
+         File::put(base_path('vendor/lochlite/temp/update.zip'), $response->getBody());
+         $zip->open(base_path('vendor/lochlite/temp/update.zip'));
+		 $zip->extractTo(base_path('vendor/lochlite/temp'));
+		 $zip->close();
+         File::delete(base_path('vendor/lochlite/temp/update.zip'));
+         File::copyDirectory(glob(base_path('vendor/lochlite/temp/*'))[0], base_path('vendor/lochlite/cms'));
+         File::deleteDirectory(base_path('vendor/lochlite/temp'));
+		 }
+         return true;		 
+		 } catch(\Exception $e){
+		 session()->flash('flash.banner', 'Falha na conexão com o servidor remoto.');
+         session()->flash('flash.bannerStyle', 'danger');    
+         return;		 
+		 }		
+	}	
+
+    public function isenabledFunction($func) {
+        return is_callable($func) && false === stripos(ini_get('disable_functions'), $func);
+    }
+
     public function update()
     {
-		if(!is_null($this->keypass) && is_string($this->keypass)){
-        return Lochlitecms::success('update', 'Updated successfully.');
+		try{
+		$version = Lochlitecms::application()->get('version');
+		$remoteversion = Lochlitecms::getRemoteComposerJSON();
+		if($version == $remoteversion->version){
+		if(Lochlitecms::isenabledFunction('exec') || Lochlitecms::isenabledFunction('shell_exec') || Lochlitecms::isenabledFunction('proc_open')){
+		Lochlitecms::command('cd '. base_path('/') .' && php composer.phar update');
 		} else {
-        return Lochlitecms::error('update', 'Keypass is missing, you must provide it before proceeding.', 'Use "new Lochlitecms($keypass)" or if using static method, use "Lochlitecms::setKeypass($keypass)" to solve this problem.');
+		Lochlitecms::getRemoteUpdate();	
+		}
+		
+		//if(!is_null($this->keypass) && is_string($this->keypass)){
+        //return Lochlitecms::success('update', 'Updated successfully.');
+		//} else {
+        //return Lochlitecms::error('update', 'Keypass is missing, you must provide it before proceeding.', 'Use "new Lochlitecms($keypass)" or if using static method, use "Lochlitecms::setKeypass($keypass)" to solve this problem.');
+		//}
+		
+		}
+		} catch(\Exception $e){
 		}
     }
 
@@ -165,8 +222,24 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function command($command)
     {
-        $result = shell_exec($command);	   
-        return collect(['success' => $result == 0 ? true : false, 'output' => $result]);
+		if(Lochlitecms::isenabledFunction('exec') && Lochlitecms::isenabledFunction('escapeshellcmd')){
+			 $result = exec(escapeshellcmd($command), $result);
+             return collect(['success' => $result == null ? false : true, 'output' => $result]);
+	    } else if(Lochlitecms::isenabledFunction('shell_exec')) {
+		     $result = shell_exec($command);
+             return collect(['success' => $result == 0 ? true : false, 'output' => $result]);
+	    } else if(Lochlitecms::isenabledFunction('proc_open')) {
+             $result = new \Symfony\Component\Process\Process(['php composer.phar install --no-interaction']);
+             $result->setWorkingDirectory(base_path('/'));
+             $result->run();
+             if ($result->isSuccessful()) {
+             return collect(['success' => true, 'output' => $result]);
+			 } else {
+             return collect(['success' => false, 'output' => $result]);
+             }
+        } else {
+		     return Lochlitecms::error('command', 'This server does not allow execution of shell commands, you must enable the functionality before proceeding.', 'Contact your hosting company or IT department and ask to enable one of the following PHP functions: exec, shell_exec or proc_open; This will solve the problem.');
+		}
     }
 
     public function setDefaultHeaderResponse()
@@ -178,20 +251,29 @@ class Lochlitecms implements LochlitecmsInterface
 
     private function checkVersion()
     {
+	    $versionpackage = Lochlitecms::setStaticInstance()->application()->get('version');
         $newversion = false;
         $lastversion = '';
-		$version = cache()->get('version', function(){
-			$versionpackage = Lochlitecms::application()->get('version');
+		function update($versionpackage,$newversion,$lastversion){
 		    if(!Updates::where('version', $versionpackage)->exists()){
 			$current = Updates::latest()->first();
             $newversion = true;
 			$lastversion = $current == null ? '' : $current->version;
-		    Updates::create(['version' => $versionpackage]);	
-		    }
-			$newversion = Updates::where('version', $versionpackage)->first();
-		    cache()->put('version', $newversion, 10000);
-		    return $newversion;
-		});
+		    $updatemodel = Updates::create(['version' => $versionpackage, 'lastversion' => $lastversion]);	
+		    $updatemodel->save();
+			}
+			$setversion = Updates::where('version', $versionpackage)->first();
+		    cache()->put('version', $setversion);
+		    return (object) array('newversion' => $newversion,'lastversion' => $lastversion, 'version' => $setversion);			
+		}
+		$version = cache()->get('version');
+		if($version->version !== $versionpackage){
+		cache()->forget('version');
+		$result = update($versionpackage,$newversion,$lastversion);
+		$newversion = $result->newversion;
+		$lastversion = $result->lastversion;
+		$version = $result->version;
+		}
 		return (object) array('newversion' => $newversion, 'lastversion' => $lastversion, 'version' => $version, 'status' => $version->status);
     }
 
@@ -226,6 +308,11 @@ class Lochlitecms implements LochlitecmsInterface
 		});	
     }
 
+    public function lang()
+    {
+		return Lochlitecms::config('language');
+    }
+
     public function config(String $param = null)
     {
 		return $param == null ? Lochlitecms::settingsDatabase() : Lochlitecms::settingsDatabase()->$param;
@@ -241,7 +328,7 @@ class Lochlitecms implements LochlitecmsInterface
 	        } else {
 		    	return (object) array(
 		    	'appname' => 'App Name',
-		    	'language' => 'pt',
+		    	'language' => 'pt_BR',
 		    	'domain' => request()->getSchemeAndHttpHost(),
 		    	'timezone' => 'America/Sao_Paulo',
 		    	'debug' => (bool) env('APP_DEBUG', true),
@@ -337,7 +424,12 @@ class Lochlitecms implements LochlitecmsInterface
     {
        try{
 	     $setting = Settings::where('default', true)->orWhere('id', 1)->first(); 
-         if($module == 'system'){
+         if($module == 'lang'){
+		   $setting->update(['language' => $request->get('language')]); 
+		   session()->flash('flash.banner', 'O idioma foi atualizado com sucesso.');
+           session()->flash('flash.bannerStyle', 'success');    
+         }
+		 else if($module == 'system'){
 		   $setting->update([
 		   'appname' => $request->get('appname'),
 		   'domain' => $request->get('domain'),
@@ -637,7 +729,7 @@ class Lochlitecms implements LochlitecmsInterface
     public function renderPanelCMS(String $view = 'Welcome', Array $data = [])
     {
 		 if(Auth()->check() || Auth()->check()){
-            return Inertia::render($view, array_merge(['menuitems' => Lochlitecms::generateSidebar()], $data))->rootview('lochlitecms::admin');
+            return Inertia::render('vendor/lochlite/cms/src/Views/Panel/'. Lochlitecms::lang() .'/'.$view, array_merge(['menuitems' => Lochlitecms::generateSidebar(), 'menulang' => Lochlitecms::generateMenuLang(), 'version' => Lochlitecms::application()->get('version')], $data))->rootview('lochlitecms::admin');
 	     } else {
             session()->flash('flash.banner', 'Você precisa fazer login ou registrar-se antes de continuar.');
             session()->flash('flash.bannerStyle', 'danger');    
@@ -1140,6 +1232,7 @@ class Lochlitecms implements LochlitecmsInterface
          ['system' => true, 'type' => 'resource', 'url' => '/manager/plugins', 'controller' => \Lochlite\cms\Controllers\Admin\PluginsController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerplugins'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/services', 'controller' => \Lochlite\cms\Controllers\Admin\ServicesController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerservices'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/system', 'controller' => \Lochlite\cms\Controllers\Admin\SystemController::class, 'middleware' => ['web', 'auth'], 'name' => 'managersystem'],
+         ['system' => true, 'type' => 'resource', 'url' => '/manager/updates', 'controller' => \Lochlite\cms\Controllers\Admin\UpdateController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerupdates'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/routes', 'controller' => \Lochlite\cms\Controllers\Admin\RoutesController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerroutes'],
          ['system' => true, 'type' => 'get', 'url' => '/manager/resetroutes', 'action' => 'resetroutes', 'controller' => \Lochlite\cms\Controllers\Admin\RoutesController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managerroutes.reset'],
          ['system' => true, 'type' => 'resource', 'url' => '/manager/settings', 'controller' => \Lochlite\cms\Controllers\Admin\SettingsController::class, 'middleware' => ['web', 'auth', 'password.confirm'], 'name' => 'managersettings', 'only' => ['index', 'store', 'update']],
@@ -1292,10 +1385,101 @@ class Lochlitecms implements LochlitecmsInterface
 	     }
     }
 
-    public function generateSidebar()
+    public function generateMenuLang()
     {
          return collect([
-		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('index.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdashboard.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdomains.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdomains.create')), 'id' => 'dashboard', 'url' => '#dashboard', 'icon' => 'menu-icon mdi mdi-television', 'name' => 'Dashboard & Dominios',
+		 'current' => Lochlitecms::lang(),
+		 'items' => [
+		 ['active' => Lochlitecms::lang() == 'pt_BR' ? 'true' : 'false', 'name' => 'Portuguese', 'code' => 'pt_BR'],
+		 ['active' => Lochlitecms::lang() == 'en_US' ? 'true' : 'false', 'name' => 'English', 'code' => 'en_US'],
+         ]
+		 ]);
+    }
+    public function generateSidebar()
+    {
+	     if(Lochlitecms::lang() == 'en_US') {
+         return collect([
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('index.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdashboard.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdomains.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdomains.create')), 'id' => 'dashboard', 'url' => '#dashboard', 'icon' => 'menu-icon mdi mdi-television', 'name' => 'Panel & Domains',
+		     'subitems' => [
+		     ['url' => route('managerdashboard.index'), 'name' => 'Main panel'],
+		     ['url' => route('managerdomains.index'), 'name' => 'Manage domains'],
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerposts.create') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerposts.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerpages.create') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerpages.index')), 'id' => 'pages', 'url' => '#pages', 'icon' => 'menu-icon mdi mdi-newspaper', 'name' => 'Pages & Articles',
+		     'subitems' => [
+             ['url' => route('managerposts.create'), 'name' => 'Create article'],
+             ['url' => route('managerpages.create'), 'name' => 'Create page'],
+             ['url' => route('managerlogin.create'), 'name' => 'Create login page'],
+             ['url' => route('managerregister.create'), 'name' => 'Create registration page'],
+             ['url' => route('managerpages.index'), 'name' => 'All pages'],
+             ['url' => route('managerposts.index'), 'name' => 'All posts'],
+             ['url' => route('managerseo.index'), 'name' => 'SEO Settings'],
+             ['url' => route('managerpwa.index'), 'name' => 'PWA Settings'],
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'appearance', 'url' => '#appearance', 'icon' => 'menu-icon mdi mdi-palette', 'name' => 'Appearance',
+		     'subitems' => [
+             ['url' => route('managerappendcoding.index'), 'name' => 'Add code'],
+             ['url' => route('managerlogin.index'), 'name' => 'Login page'],
+             ['url' => route('managerregister.index'), 'name' => 'Registration page'],
+             ['url' => route('managerrecoverypassword.index'), 'name' => 'Password recovery'],
+             ['url' => route('manageremailverify.index'), 'name' => 'Email verification'],
+             ['url' => route('managermainmenu.index'), 'name' => 'Main menu'],
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.moderate') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managercomments.index')), 'id' => 'comment', 'url' => '#comment', 'icon' => 'menu-icon mdi mdi-message-text', 'name' => 'Comments',
+		     'subitems' => [
+             ['url' => route('managercomments.moderate'), 'name' => 'Approve comments'],
+             ['url' => route('managercomments.index'), 'name' => 'All comments'],
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerplugins.create')), 'id' => 'plugins', 'url' => '#plugins', 'icon' => 'menu-icon mdi mdi-apps', 'name' => 'Plugins & Services',
+		     'subitems' => [
+             ['url' => route('managerplugins.index'), 'name' => 'Manage plugins'],
+             ['url' => route('managerservices.index'), 'name' => 'Manage services'],
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersettings.cleandata') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managersystem.index')), 'id' => 'manager', 'url' => '#manager', 'icon' => 'menu-icon mdi mdi-security', 'name' => 'Website administration',
+		     'subitems' => [
+             ['url' => route('managerroutes.index'), 'name' => 'Manage routes'],
+             ['url' => route('managersettings.index'), 'name' => 'System Settings'],
+             ['url' => route('managersettings.cleandata'), 'name' => 'Stored data'],
+             ['url' => route('managersystem.index'), 'name' => 'System Information'],
+		     ['url' => route('managerupdates.index'), 'name' => 'Update center'],			 
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerstorange.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerstorange.create')), 'id' => 'storage', 'url' => '#storage', 'icon' => 'menu-icon mdi mdi-database', 'name' => 'Storage',
+		     'subitems' => [
+             ['url' => route('managerstorange.index'), 'name' => 'All files'],
+             ['url' => route('managerstorange.create'), 'name' => 'Upload'],
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('manageremails.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('manageremailsmodel.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('manageremails.create')), 'id' => 'email', 'url' => '#email', 'icon' => 'menu-icon mdi mdi-email', 'name' => 'Email',
+		     'subitems' => [
+             ['url' => route('manageremails.index'), 'name' => 'All emails'],
+             ['url' => route('manageremailsmodel.index'), 'name' => 'Email Templates'],
+             ['url' => route('manageremails.create'), 'name' => 'New email'],
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerusers.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerroles.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerroles.create') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerusers.create')), 'id' => 'users', 'url' => '#users', 'icon' => 'menu-icon mdi mdi-account-multiple', 'name' => 'User management',
+		     'subitems' => [
+             ['url' => route('managerusers.index'), 'name' => 'All users'],
+             ['url' => route('managerroles.index'), 'name' => 'Permissions Management'],
+             ['url' => route('managerroles.create'), 'name' => 'New user type'],
+             ['url' => route('managerusers.create'), 'name' => 'Register user'],
+			 ]
+		 ],
+		 ['dropdown' => true, 'active' => request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerusers.index'), 'id' => 'support', 'url' => '#support', 'icon' => 'menu-icon mdi mdi-help-circle', 'name' => 'Support',
+		     'subitems' => [
+             ['url' => 'https://lochlite.com/', 'name' => 'Usage manual'],
+             ['url' => 'https://lochlite.com/', 'name' => 'Report a bug'],
+             ['url' => 'https://lochlite.com/', 'name' => 'Request support'],
+			 ]
+		 ],
+		 ]);
+	     } else if(Lochlitecms::lang() == 'pt_BR') {
+         return collect([
+		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('index.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdashboard.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdomains.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerdomains.create')), 'id' => 'dashboard', 'url' => '#dashboard', 'icon' => 'menu-icon mdi mdi-television', 'name' => 'Painel & Dominios',
 		     'subitems' => [
 		     ['url' => route('managerdashboard.index'), 'name' => 'Painel principal'],
 		     ['url' => route('managerdomains.index'), 'name' => 'Gerenciar dominios'],
@@ -1341,6 +1525,7 @@ class Lochlitecms implements LochlitecmsInterface
 		     ['url' => route('managersettings.index'), 'name' => 'Configurações do sistema'],
 		     ['url' => route('managersettings.cleandata'), 'name' => 'Dados armazenados'],
 		     ['url' => route('managersystem.index'), 'name' => 'Informações do sistema'],
+		     ['url' => route('managerupdates.index'), 'name' => 'Central de atualizações'],
 			 ]
 		 ],
 		 ['dropdown' => true, 'active' => (request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerstorange.index') || request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerstorange.create')), 'id' => 'storage', 'url' => '#storage', 'icon' => 'menu-icon mdi mdi-database', 'name' => 'Amazenamento',
@@ -1366,12 +1551,13 @@ class Lochlitecms implements LochlitecmsInterface
 		 ],
 		 ['dropdown' => true, 'active' => request()->getSchemeAndHttpHost(). '/' .Route::current()->uri() == route('managerusers.index'), 'id' => 'support', 'url' => '#support', 'icon' => 'menu-icon mdi mdi-help-circle', 'name' => 'Suporte',
 		     'subitems' => [
-		     ['url' => route('managerusers.index'), 'name' => 'Manual de uso'],
-		     ['url' => route('managerroles.index'), 'name' => 'Reportar um erro'],
-		     ['url' => route('managerroles.index'), 'name' => 'Solicitar suporte'],
+		     ['url' => 'https://lochlite.com/', 'name' => 'Manual de uso'],
+		     ['url' => 'https://lochlite.com/', 'name' => 'Reportar um erro'],
+		     ['url' => 'https://lochlite.com/', 'name' => 'Solicitar suporte'],
 			 ]
 		 ],
 		 ]);
+         }
     }
 	
 	
