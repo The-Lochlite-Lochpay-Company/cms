@@ -56,7 +56,7 @@ class CommentsController extends Controller
 		if (request()->wantsJson()) {
            return $comments;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/comments/index', [
+         return Lochlitecms::renderPanelCMS('comments/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de comentários | Lochlite CMS',
@@ -81,7 +81,7 @@ class CommentsController extends Controller
 		if (request()->wantsJson()) {
            return $comments;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/comments/moderate', [
+         return Lochlitecms::renderPanelCMS('comments/moderate', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de comentários | Lochlite CMS',
@@ -140,7 +140,7 @@ class CommentsController extends Controller
         try{
 		if(Comments::where('id', $id)->exists()){	
         $comment = Comments::where('id', $id)->with('post', 'reply')->first();
-		return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/comments/show', [
+		return Lochlitecms::renderPanelCMS('comments/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de comentários | Lochlite CMS',
@@ -175,7 +175,7 @@ class CommentsController extends Controller
         try{
 		if(Comments::where('id', $id)->exists()){	
         $comment = Comments::where('id', $id)->first();
-		return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/comments/edit', [
+		return Lochlitecms::renderPanelCMS('comments/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de comentários | Lochlite CMS',

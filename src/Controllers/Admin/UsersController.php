@@ -55,7 +55,7 @@ class UsersController extends Controller
 		 if (request()->wantsJson()) {
            return $users;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/users/index', [
+         return Lochlitecms::renderPanelCMS('users/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de usuários | Lochlite CMS',
@@ -77,7 +77,7 @@ class UsersController extends Controller
     public function create()
     {
         $roles = Role::all();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/users/create', [
+         return Lochlitecms::renderPanelCMS('users/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de usuários | Lochlite CMS',
@@ -134,7 +134,7 @@ class UsersController extends Controller
         try{
 		if(User::where('id', $id)->exists()){	
          $user = User::find($id);
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/users/show', [
+         return Lochlitecms::renderPanelCMS('users/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de usuários | Lochlite CMS',
@@ -176,7 +176,7 @@ class UsersController extends Controller
         $roles = Role::all();
         $userroles = $user->getRoleNames(); 
     
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/users/edit', [
+         return Lochlitecms::renderPanelCMS('users/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de usuários | Lochlite CMS',

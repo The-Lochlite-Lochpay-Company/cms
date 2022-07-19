@@ -54,7 +54,7 @@ class FeedbacksController extends Controller
     {
         $feedbacks = Feedbacks::latest()->get();
         $feedbacksresponses = Feedbacksresponses::latest()->paginate(15);
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/feedbacks/index', [
+         return Lochlitecms::renderPanelCMS('feedbacks/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -76,7 +76,7 @@ class FeedbacksController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/feedbacks/create', [
+         return Lochlitecms::renderPanelCMS('feedbacks/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -138,7 +138,7 @@ class FeedbacksController extends Controller
         try{
 		if(Feedbacks::where('id', $id)->exists()){	
         $feedback = Feedbacks::find($id);
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/feedbacks/show', [
+         return Lochlitecms::renderPanelCMS('feedbacks/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks | Lochlite CMS',
@@ -174,7 +174,7 @@ class FeedbacksController extends Controller
 		if(Feedbacks::where('id', $id)->exists()){	
         $feedback = Feedbacks::find($id);
     
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/feedbacks/edit', [
+         return Lochlitecms::renderPanelCMS('feedbacks/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de feedbacks| Lochlite CMS',

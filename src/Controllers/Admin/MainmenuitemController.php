@@ -56,7 +56,7 @@ class MainmenuitemController extends Controller
 		if (request()->wantsJson()) {
            return $mainmenuitem;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/mainmenuitem/index', [
+         return Lochlitecms::renderPanelCMS('mainmenuitem/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gerenciar menu | Lochlite CMS',
@@ -78,7 +78,7 @@ class MainmenuitemController extends Controller
     public function create(Request $request)
     {
          $mainmenu = Menu::all();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/mainmenuitem/create', [
+         return Lochlitecms::renderPanelCMS('mainmenuitem/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Adicionar ao menu | Lochlite CMS',
@@ -138,7 +138,7 @@ class MainmenuitemController extends Controller
     public function edit($id)
     {
          $mainmenuitem = Menuitem::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/mainmenuitem/edit', [
+         return Lochlitecms::renderPanelCMS('mainmenuitem/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Criar menu | Lochlite CMS',

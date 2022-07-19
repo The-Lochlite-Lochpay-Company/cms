@@ -42,7 +42,7 @@ class RecoverypasswordController extends Controller
 		if (request()->wantsJson()) {
            return $recoverypassword;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/recoverypassword/index', [
+         return Lochlitecms::renderPanelCMS('recoverypassword/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -63,7 +63,7 @@ class RecoverypasswordController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/recoverypassword/create', [
+         return Lochlitecms::renderPanelCMS('recoverypassword/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -122,7 +122,7 @@ class RecoverypasswordController extends Controller
     public function edit($id)
     {
 		 $recoverypassword = Recoverypassword::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/recoverypassword/edit', [
+         return Lochlitecms::renderPanelCMS('recoverypassword/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',

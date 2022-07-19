@@ -54,7 +54,7 @@ class PermissionsController extends Controller
 		 if (request()->wantsJson()) {
            return $roles;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/roles/index', [
+         return Lochlitecms::renderPanelCMS('roles/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de permissões | Lochlite CMS',
@@ -76,7 +76,7 @@ class PermissionsController extends Controller
     public function create()
     {
         $permission = Permission::get();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/roles/create', [
+         return Lochlitecms::renderPanelCMS('roles/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de permissões | Lochlite CMS',
@@ -128,7 +128,7 @@ class PermissionsController extends Controller
         $role = Role::find($id);
         $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")->where("role_has_permissions.role_id",$id)->get();
     
-        return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/roles/show', [
+        return Lochlitecms::renderPanelCMS('roles/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de permissões | Lochlite CMS',
@@ -166,7 +166,7 @@ class PermissionsController extends Controller
         $role = Role::find($id);
         $permission = Permission::get();
         $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)->pluck('role_has_permissions.permission_id')->all();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/roles/edit', [
+         return Lochlitecms::renderPanelCMS('roles/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de permissões | Lochlite CMS',

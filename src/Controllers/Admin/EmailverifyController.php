@@ -42,7 +42,7 @@ class EmailverifyController extends Controller
 		if (request()->wantsJson()) {
            return $emailverify;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emailverify/index', [
+         return Lochlitecms::renderPanelCMS('emailverify/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -63,7 +63,7 @@ class EmailverifyController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emailverify/create', [
+         return Lochlitecms::renderPanelCMS('emailverify/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',
@@ -152,7 +152,7 @@ class EmailverifyController extends Controller
     public function edit($id)
     {
          $emailverify = Emailverify::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emailverify/edit', [
+         return Lochlitecms::renderPanelCMS('emailverify/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',

@@ -55,7 +55,7 @@ class ServicesController extends Controller
 		if (request()->wantsJson()) {
            return $services;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/services/index', [
+         return Lochlitecms::renderPanelCMS('services/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gerenciar Serviços | Lochlite CMS',
@@ -76,7 +76,7 @@ class ServicesController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/services/create', [
+         return Lochlitecms::renderPanelCMS('services/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Criar Services | Lochlite CMS',
@@ -85,7 +85,6 @@ class ServicesController extends Controller
              'name' => Auth::User()->name ?? 'User Name',
              'breadcrumbCurrentTitle' => 'Criar Services',
              'breadcrumbCurrentSection' => 'Aparência',
-             'version' => Lochlitecms::application()->get('version'),
          ]);
     }
 
@@ -144,7 +143,7 @@ class ServicesController extends Controller
     public function edit($id)
     {
          $service = Services::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/services/edit', [
+         return Lochlitecms::renderPanelCMS('services/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Criar Services | Lochlite CMS',

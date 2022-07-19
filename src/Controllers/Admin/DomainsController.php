@@ -38,7 +38,22 @@ class DomainsController extends Controller
      */
     public function index()
     {
-        //
+         $domains = Domains::latest()->paginate(15);
+		 if (request()->wantsJson()) {
+           return $domains;
+         }
+         return Lochlitecms::renderPanelCMS('domains/index', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Gestão de dominios | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Gestão de dominios',
+             'breadcrumbCurrentSection' => 'Dominios',
+             'domains' => $domains,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -59,7 +74,11 @@ class DomainsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         $domain = Domains::where('id', $request->get('domain'))->first();
+		 $domain->update(['status' => 'active']); 
+         session()->flash('flash.banner', 'Dominio aprovado com sucesso.');
+         session()->flash('flash.bannerStyle', 'success');    
+         return redirect()->back();
     }
 
     /**
@@ -104,6 +123,10 @@ class DomainsController extends Controller
      */
     public function destroy($id)
     {
-        //
+         $domain = Domains::where('id', $id)->first();
+		 $domain->delete(); 
+         session()->flash('flash.banner', 'Dominio excluido com sucesso.');
+         session()->flash('flash.bannerStyle', 'success');    
+         return redirect()->back();
     }
 }

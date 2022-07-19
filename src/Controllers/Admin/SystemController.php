@@ -38,7 +38,7 @@ class SystemController extends Controller
     public function index()
     {
          $mysql = \DB::select('select version()')[0]->{'version()'};
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/system/index', [
+         return Lochlitecms::renderPanelCMS('system/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gerenciamento de rotas | Lochlite CMS',

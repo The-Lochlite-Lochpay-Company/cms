@@ -55,7 +55,7 @@ class AppendcodingController extends Controller
 		if (request()->wantsJson()) {
            return $appendcoding;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/appendcoding/index', [
+         return Lochlitecms::renderPanelCMS('appendcoding/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Appendcoding | Lochlite CMS',
@@ -65,7 +65,6 @@ class AppendcodingController extends Controller
              'breadcrumbCurrentTitle' => 'Adicionar Código',
              'breadcrumbCurrentSection' => 'Código',
              'appendcoding' => $appendcoding,
-             'version' => Lochlitecms::application()->get('version'),
          ]);
     }
 
@@ -76,7 +75,7 @@ class AppendcodingController extends Controller
      */
     public function create()
     {
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/appendcoding/create', [
+         return Lochlitecms::renderPanelCMS('appendcoding/create', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Appendcoding | Lochlite CMS',
@@ -123,7 +122,7 @@ class AppendcodingController extends Controller
     {
          if(Appendcoding::where('id', $id)->exists()){
  		 $appendcoding = Appendcoding::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/appendcoding/show', [
+         return Lochlitecms::renderPanelCMS('appendcoding/show', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Appendcoding | Lochlite CMS',
@@ -149,7 +148,7 @@ class AppendcodingController extends Controller
     {
          if(Appendcoding::where('id', $id)->exists()){
  		 $appendcoding = Appendcoding::where('id', $id)->first();
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/appendcoding/edit', [
+         return Lochlitecms::renderPanelCMS('appendcoding/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Appendcoding | Lochlite CMS',

@@ -55,7 +55,7 @@ class EmailsmodelController extends Controller
 		 if (request()->wantsJson()) {
            return $emails;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emails/models', [
+         return Lochlitecms::renderPanelCMS('emails/models', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de emails | Lochlite CMS',
@@ -78,7 +78,7 @@ class EmailsmodelController extends Controller
     public function show($id)
     {
          $model = MailTemplate::find($id);
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emails/showmodel', [
+         return Lochlitecms::renderPanelCMS('emails/showmodel', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de emails | Lochlite CMS',
@@ -102,7 +102,7 @@ class EmailsmodelController extends Controller
     public function edit($id)
     {
          $model = MailTemplate::find($id);
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/emails/edit', [
+         return Lochlitecms::renderPanelCMS('emails/edit', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de emails | Lochlite CMS',

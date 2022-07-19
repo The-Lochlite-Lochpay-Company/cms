@@ -55,7 +55,7 @@ class SchedulingController extends Controller
 		     $listevents = Scheduling::whereDate('start', '>=', $request->query('start') ?? now()->subDays(31))->whereDate('end', '<=', $request->query('end') ?? now())->get();
              return response()->json($listevents);
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/scheduling/index', [
+         return Lochlitecms::renderPanelCMS('scheduling/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de agendamentos | Lochlite CMS',
@@ -101,7 +101,7 @@ class SchedulingController extends Controller
         ]);
         session()->flash('flash.banner', 'Evento salvo com sucesso.');
         session()->flash('flash.bannerStyle', 'success');    
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/scheduling/index', [
+         return Lochlitecms::renderPanelCMS('scheduling/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Gestão de agendamentos | Lochlite CMS',

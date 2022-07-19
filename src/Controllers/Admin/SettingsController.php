@@ -23,6 +23,7 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Lochlite\cms\Models\Domains;
 use Lochlite\cms\Models\Settings;
 
 use Lochlite\cms\Controllers\Controller;
@@ -51,11 +52,12 @@ class SettingsController extends Controller
      */
     public function index()
     {
+        $domains = Domains::all();
         $settings = Settings::where('domain', request()->getHttpHost())->orWhere('default', true)->first();
 		 if (request()->wantsJson()) {
            return $posts;
          }
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/settings/index', [
+         return Lochlitecms::renderPanelCMS('settings/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Configurações do sistema | Lochlite CMS',
@@ -65,6 +67,7 @@ class SettingsController extends Controller
              'name' => Auth::User()->name ?? 'User Name',
              'breadcrumbCurrentTitle' => 'Configurações do sistema',
              'breadcrumbCurrentSection' => 'Configurações',
+             'domains' => $domains,
              'settings' => $settings,
              'version' => Lochlitecms::application()->get('version'),
          ]);
@@ -77,7 +80,7 @@ class SettingsController extends Controller
      */
     public function cleandata()
     {
-         return Lochlitecms::renderPanelCMS('vendor/lochlite/cms/src/Views/Panel/settings/cleandata', [
+         return Lochlitecms::renderPanelCMS('settings/cleandata', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Configurações do sistema | Lochlite CMS',
