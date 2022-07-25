@@ -10,7 +10,7 @@ import JetCheckbox from 'lochlitecms/Views/Components/Layouts/Checkbox.vue';
 import JetLabel from 'lochlitecms/Views/Components/Layouts/Label.vue';
 import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
-import Pagination from '@/Components/Pagination.vue';
+import Pagination from 'lochlitecms/Views/Components/Pagination.vue';
 
 const props = defineProps({
     canLogin: Boolean,

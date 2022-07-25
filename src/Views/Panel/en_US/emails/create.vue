@@ -9,7 +9,7 @@ import JetCheckbox from 'lochlitecms/Views/Components/Layouts/Checkbox.vue';
 import JetLabel from 'lochlitecms/Views/Components/Layouts/Label.vue';
 import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
-import MylochiTinyEditor from  '@/Components/MylochiTinyEditor.vue';
+import MylochiTinyEditor from  'lochlitecms/Views/Components/MylochiTinyEditor.vue';
 import tagify from '@yaireo/tagify'
 import Tags from '@yaireo/tagify/dist/tagify.vue'
 import DOMPurify from 'dompurify';

@@ -5,8 +5,8 @@ import JetDialogModal from 'lochlitecms/Views/Components/Layouts/DialogModal.vue
 import JetButton from 'lochlitecms/Views/Components/Layouts/Button.vue';
 import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
-import LoadingComponent from '@/Pages/LoadingComponent.vue';
-import ErrorComponent from '@/Pages/ErrorComponent.vue';
+import LoadingComponent from 'lochlitecms/Views/Components/LoadingComponent.vue';
+import ErrorComponent from 'lochlitecms/Views/Components/ErrorComponent.vue';
 
 const props = defineProps({
     canLogin: Boolean,
@@ -25,7 +25,7 @@ const props = defineProps({
 });
 
 const MylochiCalendar = defineAsyncComponent({
-  loader: () => import("@/Components/MylochiCalendar.vue"),
+  loader: () => import("lochlitecms/Views/Components/MylochiCalendar.vue"),
   loadingComponent: LoadingComponent,
   errorComponent: ErrorComponent,
   delay: 500,

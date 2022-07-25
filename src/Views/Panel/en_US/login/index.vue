@@ -25,6 +25,14 @@ const form = useForm();
 const submit = (event) => {
     form.delete(route('managerlogin.destroy', {id: event.submitter.dataset.login}));
 };
+const Pagination = defineAsyncComponent({
+  loader: () => import("lochlitecms/Views/Components/Pagination.vue"),
+  loadingComponent: LoadingComponent,
+  errorComponent: ErrorComponent,
+  delay: 500,
+  timeout: 5000,
+})
+
 </script>
 
 <template>
