@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 import JetDialogModal from 'lochlitecms/Views/Components/Layouts/DialogModal.vue';
 import JetButton from 'lochlitecms/Views/Components/Layouts/Button.vue';
 import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
+import LoadingComponent from 'lochlitecms/Views/Components/LoadingComponent.vue';
+import ErrorComponent from 'lochlitecms/Views/Components/ErrorComponent.vue';
 
 defineProps({
     canLogin: Boolean,
@@ -30,6 +32,14 @@ const deleterespform = useForm();
 const submitdeleteresp = (event) => {
     form.delete(route('managerfeedback-responses.destroy', {id: event.submitter.dataset.feedback}));
 };
+
+const Pagination = defineAsyncComponent({
+  loader: () => import("lochlitecms/Views/Components/Pagination.vue"),
+  loadingComponent: LoadingComponent,
+  errorComponent: ErrorComponent,
+  delay: 500,
+  timeout: 5000,
+})
 </script>
 
 <template>
@@ -95,5 +105,6 @@ const submitdeleteresp = (event) => {
                 </tbody>
             </table>
         </div>
+		<div class="card card-body border-light rounded-0 mt-2 shadow-none"><Pagination class="" :links="feedbacksresponses.links" /></div>
 </AppLayout>
 </template>

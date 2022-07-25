@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 import JetDialogModal from 'lochlitecms/Views/Components/Layouts/DialogModal.vue';
 import JetButton from 'lochlitecms/Views/Components/Layouts/Button.vue';
 import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
+import LoadingComponent from 'lochlitecms/Views/Components/LoadingComponent.vue';
+import ErrorComponent from 'lochlitecms/Views/Components/ErrorComponent.vue';
 
 defineProps({
     canLogin: Boolean,
@@ -25,6 +27,16 @@ const form = useForm();
 const submit = (event) => {
     form.delete(route('managerpages.destroy', {id: event.submitter.dataset.page}));
 };
+
+const Pagination = defineAsyncComponent({
+  loader: () => import("lochlitecms/Views/Components/Pagination.vue"),
+  loadingComponent: LoadingComponent,
+  errorComponent: ErrorComponent,
+  delay: 500,
+  timeout: 5000,
+})
+
+
 </script>
 
 <template>
@@ -43,7 +55,7 @@ const submit = (event) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(row, index)  in allPages" :key="row.id">
+                    <tr v-for="(row, index)  in pages.data" :key="row.id">
                         <td>{{ row.title }}</td>
                         <td>{{ row.keywords }}</td>
                         <td>{{ row.category }}</td>
@@ -65,38 +77,8 @@ const submit = (event) => {
                     </tr>
 				 </tbody>
             </table>
-			 <div class="text-center">
-             <button class="border border-gray-600 text-gray-600 px-4 py-2 rounded-full hover:bg-gray-600 hover:text-white mt-3" @click="loadMore" :disabled="loadingMore">Show More</button>
-             </div>
         </div>
+		 <div class="card card-body border-light rounded-0 mt-2 shadow-none"><Pagination class="" :links="pages.links" /></div>
  
 </AppLayout>
 </template>
-<script>
-  export default {
-   data () {
-     return {
-       loadingMore: false,
-       allPages: this.pages.data,
-       pagination: this.pages,
-     };
-   },
-
-    methods: {
-      loadMore () {
-        if (this.loadingMore) return;
- 
-         axios.get(`?page=${this.pagination.current_page + 1}`)
-            .then(({ data }) => {
-              this.allPages = [
-                ...data.data,
-                ...this.allPages,
-              ];
-              this.pagination = data;
-            }).catch(err => {
-            }).finally(() => this.loadingMore = false);
-      }
-    },
-  }
-</script>
-

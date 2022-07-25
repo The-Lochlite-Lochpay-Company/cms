@@ -11,7 +11,7 @@ import JetLabel from 'lochlitecms/Views/Components/Layouts/Label.vue';
 import JetSelect from 'lochlitecms/Views/Components/Layouts/Select.vue';
 import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import AppLayout from 'lochlitecms/Views/Panel/AppLayout.vue';
-import MylochiTinyEditor from  '@/Components/MylochiTinyEditor.vue';
+import MylochiTinyEditor from  'lochlitecms/Views/Components/MylochiTinyEditor.vue';
 import DOMPurify from 'dompurify';
 
 const props = defineProps({
