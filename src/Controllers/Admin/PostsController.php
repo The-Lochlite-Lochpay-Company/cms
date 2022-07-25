@@ -119,16 +119,9 @@ class PostsController extends Controller
             'post_id' => $post->id,
             'body' => $request->get('body'),
 		]);
-		try{
-        //Sitemap::create()->add($post);
         session()->flash('flash.banner', 'Artigo criado com sucesso.');
         session()->flash('flash.bannerStyle', 'success');    
         return redirect()->back()->with('success','Article created successfully.');
-		} catch(\Exception $e){
-        session()->flash('flash.banner', 'O artigo foi criado com sucesso, mas não foi adicionado ao mapa do site.');
-        session()->flash('flash.bannerStyle', 'danger');    
-        return redirect()->back()->with('error','Failed to add item to sitemap');
-        }
 		} catch(\Exception $e){
         session()->flash('flash.banner', 'Ocorreu um erro, o Artigo não foi criado!');
         session()->flash('flash.bannerStyle', 'danger');    

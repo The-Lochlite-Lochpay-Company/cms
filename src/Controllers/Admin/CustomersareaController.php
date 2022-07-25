@@ -23,26 +23,14 @@
 namespace Lochlite\cms\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Lochlite\cms\Models\Customersarea; 
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class PluginsController extends Controller
+class CustomersareaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    function __construct()
-    {
-         $this->middleware('permission:publish plugins|edit plugins|delete plugins', ['only' => ['index','show']]);
-         $this->middleware('permission:publish plugins', ['only' => ['create','store']]);
-         $this->middleware('permission:edit plugins', ['only' => ['edit','update']]);
-         $this->middleware('permission:delete plugins', ['only' => ['destroy']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -50,17 +38,20 @@ class PluginsController extends Controller
      */
     public function index()
     {
-         return Lochlitecms::renderPanelCMS('plugins/index', [
+        $customersarea = Customersarea::paginate(15);
+		if (request()->wantsJson()) {
+           return $customersarea;
+         }
+         return Lochlitecms::renderPanelCMS('customersarea/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
-             'title' => 'Gerenciamento de rotas | Lochlite CMS',
-             'user' => Auth::User(),
+             'title' => 'Área do cliente | Lochlite CMS',
              'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
              'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
              'name' => Auth::User()->name ?? 'User Name',
-             'breadcrumbCurrentTitle' => 'Gerenciamento de rotas',
-             'breadcrumbCurrentSection' => 'Rotas',
-             'plugins' => Lochlitecms::listPlugins(true),
+             'breadcrumbCurrentTitle' => 'Área do cliente',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'customersarea' => $customersarea,
              'version' => Lochlitecms::application()->get('version'),
          ]);
     }
@@ -105,7 +96,19 @@ class PluginsController extends Controller
      */
     public function edit($id)
     {
-        //
+		 $customersarea = Customersarea::where('id', $id)->first();
+         return Lochlitecms::renderPanelCMS('customersarea/edit', [
+             'canLogin' => Route::has('login'),
+             'canRegister' => Route::has('register'),
+             'title' => 'Login & Registro | Lochlite CMS',
+             'role' => Auth::User()->hasrole(['admin', 'Admin', 'administrador', 'Administrador']) == true ? 'Administrador' : Auth::User()->roles->pluck('name','name')->first() ?? 'Usuário',
+             'avatar' => Auth::User()->avatar ?? '/assets/images/faces-clipart/pic-1.png',
+             'name' => Auth::User()->name ?? 'User Name',
+             'breadcrumbCurrentTitle' => 'Login & Registro',
+             'breadcrumbCurrentSection' => 'Aparência',
+             'customersarea' => $customersarea,
+             'version' => Lochlitecms::application()->get('version'),
+         ]);
     }
 
     /**
@@ -117,7 +120,35 @@ class PluginsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+		$customersarea = Customersarea::where('id', $id)->first();
+        $customersarea->update([
+             'domain' =>  $request->get('domain'),
+             'default' =>  $request->get('default'),
+             'logo' =>  $request->get('logo'),
+             'logotype' =>  $request->get('logotype'),
+             'logowidth' =>  $request->get('logowidth'),
+             'logoheight' =>  $request->get('logoheight'),
+             'themecolor' =>  $request->get('themecolor'),
+             'coloredsidebar' =>  $request->get('coloredsidebar'),
+             'textsidebar' =>  $request->get('textsidebar'),
+             'buttoncolor' =>  $request->get('buttoncolor'),
+             'buttontext' =>  $request->get('buttontext'),
+             'buttonurl' =>  $request->get('buttonurl'),
+             'alert' =>  $request->get('alert'),
+             'search' =>  $request->get('search'),
+             'darkmode' =>  $request->get('darkmode'),
+             'button' =>  $request->get('button'),
+             'notifications' =>  $request->get('notifications'),
+             'comments' =>  $request->get('comments'),
+             'history' =>  $request->get('history'),
+             'shopping' =>  $request->get('shopping'),
+             'default' =>  $request->get('default'),
+             'items' =>  $request->get('items'),
+             'status' =>  $request->get('status'),
+		]);
+        session()->flash('flash.banner', 'Os dados foram atualizados com sucesso.');
+        session()->flash('flash.bannerStyle', 'success');    		
+		return redirect()->back();
     }
 
     /**

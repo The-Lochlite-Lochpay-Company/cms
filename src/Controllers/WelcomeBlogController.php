@@ -30,7 +30,7 @@ use Lochlite\cms\Models\Postvoters;
 
 use Lochlite\cms\Controllers\Controller;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
-use Carbon\Carbon; use Inertia\Inertia; use Response; use Cache; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
+use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Response; use Cache; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
 class WelcomeBlogController extends Controller
 {
@@ -45,7 +45,7 @@ class WelcomeBlogController extends Controller
 		if (request()->wantsJson()) {
            return $posts;
         }
-        return Inertia::render('posts', ['posts' => $posts]);
+        return Lochlitecms::render('vendor/lochlite/cms/src/Views/Web/posts', ['posts' => $posts], 'lochlitecms::tailwind');
 	}
 
     /**
@@ -126,12 +126,13 @@ class WelcomeBlogController extends Controller
 			session()->push('views', ['id' => $post->id]);
 			$post->update(['views' => intval($post->views) + 1]);
 		 }	
-        return Inertia::render('postrendering', [
+        return Inertia::render('vendor/lochlite/cms/src/Views/Components/postrendering', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => $post->title ?? 'Sem titulo',
              'breadcrumbCurrentTitle' => 'Gestão de artigos',
              'breadcrumbCurrentSection' => 'Artigos',
+             'user' => Auth()->check() == true ? Auth()->User() : null,
              'post' => $post,
              'postbody' => $postbody,
              'posted' => $posted,

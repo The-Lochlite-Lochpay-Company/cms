@@ -62,13 +62,13 @@ class WelcomeController extends Controller
 		     'pagebody' => $pagebody,
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
-		])->rootview('lochlitecms::app');
+		])->rootview('lochlitecms::tailwind');
         } else {
         return Inertia::render('vendor/lochlite/cms/src/Views/Web/Welcome', [
              'title' => Lochlitecms::seo('title'),
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
-		])->rootview('lochlitecms::app');
+		])->rootview('lochlitecms::tailwind');
         }
 
     }

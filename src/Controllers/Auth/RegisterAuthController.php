@@ -23,8 +23,12 @@
 namespace Lochlite\cms\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use Lochlite\cms\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Lochlite\cms\Providers\RouteServiceProvider;
 
 use Lochlite\cms\Controllers\Controller;
+use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Carbon\Carbon; use Inertia\Inertia; use Response; use Cache; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 use Lochlitecms;
@@ -61,13 +65,17 @@ class RegisterAuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'string|max:255|nullable',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'last_name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->tel,
             'password' => Hash::make($request->password),
         ]);
 

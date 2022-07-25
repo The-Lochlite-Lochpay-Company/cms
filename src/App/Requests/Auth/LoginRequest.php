@@ -2,6 +2,7 @@
 
 namespace Lochlite\cms\App\Requests\Auth;
 
+use Lochlite\cms\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -44,16 +45,19 @@ class LoginRequest extends FormRequest
     public function authenticate()
     {
         $this->ensureIsNotRateLimited();
-
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+		$request = $this->only('email', 'password');
+		$email = $request['email'];
+		$password = $request['password'];
+		$user = User::where('email', $email)->orWhere('phone', $email)->orWhere('social_security', $email)->first();
+        if (!Auth::attempt(['email' => $user == null ? null : $user->email, 'password' => $password], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
-
+			
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
-
         RateLimiter::clear($this->throttleKey());
+
     }
 
     /**
@@ -68,6 +72,7 @@ class LoginRequest extends FormRequest
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
+        Lochlitecms::setHistory($action = 'lockout ', $description = 'The user was temporarily blocked due to too many attempts on the day: ' . now(), $this->user);
 
         event(new Lockout($this));
 

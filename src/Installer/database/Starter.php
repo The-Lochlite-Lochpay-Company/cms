@@ -4,7 +4,8 @@ namespace Lochlite\cms\Installer\database;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Lochlite\cms\Models\Services;
+use Lochlite\cms\Installer\database\ServicesSeed;
+use Lochlite\cms\Installer\database\CustomersareaSeed;
 use Lochlite\cms\Installer\database\PostsSeed;
 use Lochlite\cms\Installer\database\EmailstemplateSeed;
 use Lochlite\cms\Installer\database\UsersSeed;
@@ -45,6 +46,16 @@ class Starter extends Seeder
         try{
 			$posts = new PostsSeed();
 			$posts->run();
+		} catch(\Exception $e){}
+		
+        try{
+			$customer = new CustomersareaSeed();
+			$customer->run();
+		} catch(\Exception $e){}
+		
+        try{
+			$services = new ServicesSeed();
+			$services->run();
 		} catch(\Exception $e){}
 		
 

@@ -20,8 +20,8 @@ class PostsSeed extends Seeder
             $post = Posts::create([
                 'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum efficitur libero pulvinar, rutrum eros elementum',
                 'description' => 'Morbi id massa eu leo luctus malesuada quis ut purus. Aenean ut consequat nulla, eget condimentum orci. Vestibulum egestas erat in risus porta, ut finibus neque congue. Donec feugiat libero sed vulputate pellentesque. Cras id odio facilisis, commodo ipsum in, commodo nibh.',
-                'authors' => $user->name,
-                'author_avatar' => $user->avatar,
+                'authors' => 'Administrator',
+                'author_avatar' => '/application/avatar.webp',
             ]);
             $postsbody = Postsbody::create([
                 'post_id' => $post->id,
