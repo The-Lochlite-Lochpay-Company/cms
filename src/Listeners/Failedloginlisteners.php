@@ -26,6 +26,7 @@ use Lochlite\cms\Models\User;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Lochlitecms;
 
 class Failedloginlisteners
 {
@@ -48,5 +49,6 @@ class Failedloginlisteners
     public function handle($event)
     {
        $user = $event->user;
+	   Lochlitecms::setHistory($action = 'loginFailed', $description = 'User authentication failed on the day: ' . now(), $user);       
     }
 }

@@ -36,6 +36,7 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->string('domain')->nullable();
+            $table->string('user_id')->nullable();
             $table->string('type')->nullable();
             $table->string('title')->nullable();
             $table->mediumText('body')->nullable();

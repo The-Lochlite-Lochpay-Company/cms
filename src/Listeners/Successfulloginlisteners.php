@@ -26,7 +26,7 @@ use Lochlite\cms\Models\User;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-
+use Lochlitecms;
 class Successfulloginlisteners
 {
     /**
@@ -48,5 +48,6 @@ class Successfulloginlisteners
     public function handle($event)
     {
        $user = $event->user ?? Auth()->User();
+	   Lochlitecms::setHistory($action = 'login ', $description = 'The user logged in on the day: ' . now(), $user);
     }
 }

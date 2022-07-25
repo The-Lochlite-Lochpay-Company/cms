@@ -35,6 +35,8 @@ class History extends Model
      * @var string[]
      */
     protected $fillable = [
+         'domain',
+         'visitorid',
          'userid',
          'username',
          'url',

@@ -25,7 +25,7 @@ namespace Lochlite\cms\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Domains extends Model
+class Customersarea extends Model
 {
     use HasFactory;
 	
@@ -35,10 +35,33 @@ class Domains extends Model
      * @var array
      */
     protected $fillable = [
-         'domain',
-         'errors',
-         'installation',
-         'main',
-         'status',
+         'domain', 
+         'default', 
+         'logo', 
+         'logotype', 
+         'logowidth', 
+         'logoheight', 
+         'themecolor', 
+         'textsidebar', 
+         'coloredsidebar', 
+         'buttoncolor', 
+         'buttontext', 
+         'buttonurl', 
+         'buttontextcolor', 
+         'alert', 
+         'search', 
+         'darkmode', 
+         'button', 
+         'notifications',
+         'comments', 
+         'history', 
+         'shopping', 
+         'default',
+         'items',
+         'status', 
 	];	
+
+    protected $casts = [
+        'items' => 'array',
+    ];
 }

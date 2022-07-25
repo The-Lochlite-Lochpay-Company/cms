@@ -51,7 +51,8 @@ return new class extends Migration
             $table->ipAddress('visitor')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('avatar')->default('/assets/img/avatar.webp')->nullable();
+            $table->string('avatar')->default('/application/avatar.webp')->nullable();
+            $table->string('wallpaper')->default('/application/wallpaper.jpg')->nullable();
             $table->rememberToken();
             $table->string('google_id')->nullable();
             $table->string('facebook_id')->nullable();

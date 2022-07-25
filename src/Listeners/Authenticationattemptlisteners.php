@@ -26,6 +26,7 @@ use Lochlite\cms\Models\User;
 use Illuminate\Auth\Events\Attempting;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Lochlitecms;
 
 class Authenticationattemptlisteners
 {
@@ -49,7 +50,7 @@ class Authenticationattemptlisteners
     {
        $user = $event->user ?? User::where('email', $event->credentials['email'])->first();
 	   if($user){
-
+	   Lochlitecms::setHistory($action = 'loginAttemp ', $description = 'The user made a login attempt on the day: ' . now(), $user);       
        }
     }
 }

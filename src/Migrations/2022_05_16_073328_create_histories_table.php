@@ -20,54 +20,50 @@
 * ('Art. 43 - LEI No 4.502/1964' - law of brazil) Indústria Brasileira - LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA, CNPJ: 37.816.728/0001-04; Address: SCS QUADRA 9, BLOCO C, 10 ANDAR, SALA 1003, Brasilia, Federal District, Brazil, Zip Code: 70308-200
 **/
 
-namespace Lochlite\cms\Listeners;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Lochlite\cms\Events\Setupaccount;
-use Lochlite\cms\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
-use Lochlitecms;
-
-class Setupaccountlisteners
+return new class extends Migration
 {
     /**
-     * Create the event listener.
+     * Run the migrations.
      *
      * @return void
      */
-    public function __construct()
+    public function up()
     {
-        //
+        Schema::create('histories', function (Blueprint $table) {
+            $table->id();
+            $table->string('domain')->nullable();
+            $table->string('visitorid')->nullable();
+            $table->string('userid')->nullable();
+            $table->string('username')->nullable();
+            $table->string('urlprevious')->nullable();
+            $table->string('url')->nullable();
+            $table->string('action')->nullable();
+            $table->string('description')->nullable();
+            $table->string('agent')->nullable();
+            $table->string('system')->nullable();
+            $table->string('device')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('country')->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
+            $table->string('zipcode')->nullable();
+            $table->ipAddress('ip')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
-     * Handle the event.
+     * Reverse the migrations.
      *
-     * @param  \App\Events\Setupaccount  $event
      * @return void
      */
-    public function handle($event = null)
+    public function down()
     {
-		 if(is_null($event->user)){
-         $user = Auth()->User();
-         $id = $user->id;
-		 } else {
-         $user = $event->user;
-         $id = $user->id;
-		 }
-		 if($user){
-	        Lochlitecms::setHistory($action = 'register', $description = 'The user registered on the day: ' . now(), $user);       
-			$user->assignRole('user');
-			$user->save();
-			if($user->hasRole('user')){
-	        Lochlitecms::setHistory($action = 'accountSetup', $description = 'The system configured the user account on the day: ' . now(), $user);       
-	        } else {
-			Lochlitecms::setHistory($action = 'accountSetupFailed', $description = 'There was a failure to configure the user account on the day: ' . now(), $user);       				
-			}
-		 }
+        Schema::dropIfExists('histories');
     }
-}
+};

@@ -33,22 +33,30 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('customersareas', function (Blueprint $table) {
             $table->id();
-			$table->string('domain')->nullable();
-			$table->string('title')->default('untitled')->nullable();
-			$table->mediumText('description')->nullable();
-			$table->string('authors')->default('Author name')->nullable();
-			$table->string('author_avatar')->default('/application/avatar.webp')->nullable();
-			$table->string('keywords')->default('article')->nullable();
-			$table->string('imgcap')->default('/application/post-default.jpg')->nullable();
-			$table->string('category')->default('news')->nullable();
-			$table->string('url')->nullable();
-			$table->integer('upvote')->default('0')->nullable();
-			$table->integer('downvote')->default('0')->nullable();
-			$table->string('views')->default('0')->nullable();
-			$table->string('status')->default('active')->nullable();
-            $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('domain')->nullable();
+            $table->string('logo')->default('My company')->nullable();
+            $table->string('logotype')->default('text')->nullable();
+            $table->string('logowidth')->default('56')->nullable();
+            $table->string('logoheight')->default('56')->nullable();
+            $table->string('themecolor')->default('#0044FF')->nullable();
+            $table->string('textsidebar')->default('#000000')->nullable();
+            $table->string('coloredsidebar')->default('#FFFFFF')->nullable();
+            $table->string('buttoncolor')->default('#0044FF')->nullable();
+            $table->string('buttontext')->default('Exemple link')->nullable();
+            $table->string('buttonurl')->default('/')->nullable();
+            $table->text('alert')->nullable();
+            $table->boolean('search')->default(true)->nullable();
+            $table->boolean('darkmode')->default(true)->nullable();
+            $table->boolean('button')->default(true)->nullable();
+            $table->boolean('notifications')->default(true)->nullable();
+            $table->boolean('comments')->default(true)->nullable();
+            $table->boolean('history')->default(true)->nullable();
+            $table->boolean('shopping')->default(true)->nullable();
+            $table->boolean('default')->default(false)->nullable();
+            $table->json('items')->nullable();
+            $table->string('status')->default('active')->nullable();
             $table->timestamps();
         });
     }
@@ -60,6 +68,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('customersareas');
     }
 };
