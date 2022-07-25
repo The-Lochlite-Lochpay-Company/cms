@@ -1,13 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
-import JetActionMessage from '@/Jetstream/ActionMessage.vue';
-import JetButton from '@/Jetstream/Button.vue';
-import JetInput from '@/Jetstream/Input.vue';
-import JetSelect from '@/Jetstream/Select.vue';
-import JetCheckbox from '@/Jetstream/Checkbox.vue';
-import JetLabel from '@/Jetstream/Label.vue';
-import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
+import JetActionMessage from 'lochlitecms/Views/Components/Layouts/ActionMessage.vue';
+import JetButton from 'lochlitecms/Views/Components/Layouts/Button.vue';
+import JetInput from 'lochlitecms/Views/Components/Layouts/Input.vue';
+import JetSelect from 'lochlitecms/Views/Components/Layouts/Select.vue';
+import JetCheckbox from 'lochlitecms/Views/Components/Layouts/Checkbox.vue';
+import JetLabel from 'lochlitecms/Views/Components/Layouts/Label.vue';
+import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import AppLayout from 'lochlitecms/Views/Web/Layouts/AppLayout.vue';
 
 defineProps({

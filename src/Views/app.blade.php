@@ -39,7 +39,7 @@
          <link rel="manifest" href="/manifest.webmanifest">
          {!! Lochlitecms::appendCoding('head') !!}
         @routes
-		@vite(['resources/css/dashboard.css', 'resources/css/app.css', 'resources/sass/main.scss', 'resources/js/app.js'])
+		@vite(['vendor/lochlite/cms/src/Disk/private/dashboard.css', 'vendor/lochlite/cms/src/Disk/private/app.css', 'vendor/lochlite/cms/src/Disk/private/main.scss', 'resources/js/app.js'])
         @inertiaHead
     </head>
     <body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0" data-mode="web">

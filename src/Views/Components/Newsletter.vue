@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
-import JetActionMessage from '@/Jetstream/ActionMessage.vue';
-import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
+import JetActionMessage from 'lochlitecms/Views/Components/Layouts/ActionMessage.vue';
+import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import DOMPurify from 'dompurify';
 
 defineProps({

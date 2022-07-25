@@ -2,10 +2,10 @@
 import { defineAsyncComponent } from "vue"
 
 import { Head } from '@inertiajs/inertia-vue3';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import LoadingComponent from '@/Pages/LoadingComponent.vue';
-import ErrorComponent from '@/Pages/ErrorComponent.vue';
+import JetAuthenticationCardLogo from 'lochlitecms/Views/Components/Layouts/AuthenticationCardLogo.vue';
+import AppLayout from 'lochlitecms/Views/Web/Layouts/AppLayout.vue';
+import LoadingComponent from 'lochlitecms/Views/Components/LoadingComponent.vue';
+import ErrorComponent from 'lochlitecms/Views/Components/ErrorComponent.vue';
 import DOMPurify from 'dompurify';
 
 const props = defineProps({
@@ -24,7 +24,7 @@ const props = defineProps({
 $('body').ready(function(){$('article#mainarticle').html(DOMPurify.sanitize(Base64.decode($('article#mainarticle').data('body'))))})
 
 const MylochiComment = defineAsyncComponent({
-  loader: () => import("@/Components/MylochiComment.vue"),
+  loader: () => import("lochlitecms/Views/Components/MylochiComment.vue"),
   loadingComponent: LoadingComponent,
   errorComponent: ErrorComponent,
   delay: 500,

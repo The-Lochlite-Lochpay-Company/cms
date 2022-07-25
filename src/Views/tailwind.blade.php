@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"{{ Lochlitecms::seo('translate') == 'notranslate' ? ' notranslate' : '' }}>
+    <head>
          <meta charset="utf-8">
-         <meta http-equiv="X-UA-Compatible" content="IE=edge">
          <meta name="viewport" content="width=device-width, initial-scale=1">
          <meta name="application-name" content="{{ Lochlitecms::config('appname') }}">
          <meta name="generator" content="Lochlite CMS">
 	     <meta name="robots" content="{{ Lochlitecms::seo('robots') }}">
-  
-        <!-- CSRF Token -->
-        <meta name="_token" content="{{ csrf_token() }}">
+		 
+         <!-- CSRF Token -->
+         <meta name="_token" content="{{ csrf_token() }}">
 
          <title inertia>{{ Lochlitecms::seo('title') }}</title>
 	     <meta name="author" content="{{ Lochlitecms::seo('author') }}">
@@ -36,15 +35,16 @@
          <meta name="twitter:site" content="{{ Lochlitecms::seo('twitter:site') }}">
 	     <meta name="msapplication-TileColor" content="{{ Lochlitecms::pwa('msapplicationtilecolor') }}">
 	     <meta name="theme-color" content="{{ Lochlitecms::pwa('theme_color') }}">
-  
 	     <link rel="shortcut icon" href="{{ Lochlitecms::seo('icon') }}">
          <link rel="manifest" href="/manifest.webmanifest">
+         {!! Lochlitecms::appendCoding('head') !!}
         @routes
-		@vite(['vendor/lochlite/cms/src/Disk/private/main.scss', 'vendor/lochlite/cms/src/Disk/private/app.css', 'vendor/lochlite/cms/src/Disk/private/dashboard.css', 'resources/js/app.js'])
+		@vite(['vendor/lochlite/cms/src/Disk/private/app.css', 'vendor/lochlite/cms/src/Disk/private/main.scss', 'resources/js/app.js'])
         @inertiaHead
-</head>
-<body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0 sidebar-icon-only" data-base-url="{{url('/')}}" data-mode="dashboard">
-        @inertia
-
-</body>
+    </head>
+    <body class="relative min-h-screen min-w-screen font-sans antialiased m-0 p-0" data-mode="web">
+         {!! Lochlitecms::appendCoding('body-top') !!}
+         @inertia
+         {!! Lochlitecms::appendCoding('body-end') !!}
+    </body>
 </html>

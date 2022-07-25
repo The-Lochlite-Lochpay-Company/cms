@@ -2,8 +2,8 @@
 import { defineAsyncComponent } from "vue"
 
 import { Head } from '@inertiajs/inertia-vue3';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import JetAuthenticationCardLogo from 'lochlitecms/Views/Components/Layouts/AuthenticationCardLogo.vue';
+import AppLayout from 'lochlitecms/Views/Web/Layouts/AppLayout.vue';
 import DOMPurify from 'dompurify';
 
 const props = defineProps({

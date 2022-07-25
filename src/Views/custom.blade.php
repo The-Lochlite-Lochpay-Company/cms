@@ -42,7 +42,7 @@
          @endif
 
          @routes
-		 @vite(['resources/css/app.css', 'resources/sass/main.scss', 'resources/js/app.js'])
+		 @vite(['vendor/lochlite/cms/src/Disk/private/app.css', 'vendor/lochlite/cms/src/Disk/private/main.scss', 'resources/js/app.js'])
          @inertiaHead
          @if(empty($importCSS) == false && is_array($importCSS) == true)
 	      	{!! Lochlitecms::generateStylesheet($importCSS) !!}

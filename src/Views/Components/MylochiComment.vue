@@ -1,6 +1,6 @@
 <style scoped>#newcomment {min-height: 2.5rem; white-space: pre-wrap; overflow-wrap: break-word;} .emoji-mart {position: absolute; top: 23px; right: 10px; z-index: 10000 !important;} @media (max-width: 600px){ .emoji-mart {position: absolute; top: 23px; right: 0; left: 0; padding: 1rem; width: 100%;}}</style>
 <script setup>
-import { ref } from 'vue'; import { Head, Link, useForm } from '@inertiajs/inertia-vue3'; import JetValidationErrors from '@/Jetstream/ValidationErrors.vue'; import DOMPurify from 'dompurify'; import arrive from 'arrive';
+import { ref } from 'vue'; import { Head, Link, useForm } from '@inertiajs/inertia-vue3'; import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue'; import DOMPurify from 'dompurify'; import arrive from 'arrive';
 const props = defineProps({user: Object, post: Object, comments: Object, likes: Object, deslikes: Object, voted: Boolean, status: ''});
 const commentform = useForm({comment: ''});
 const formaddcomment = (event) => {
@@ -56,7 +56,7 @@ $('body').ready(function(){
              </form>
          </div>
          <div v-else class="flex w-full mt-1 pt-2 pl-5">
-             <Link :href="route('login')" class="border border-blue-700 from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br hover:text-white hover:outline-none focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-3">
+             <Link :href="route('login.index')" class="border border-blue-700 from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br hover:text-white hover:outline-none focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-3">
                  Faça login para comentar
              </Link>
          </div>

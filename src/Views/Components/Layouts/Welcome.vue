@@ -1,5 +1,5 @@
 <script setup>
-import JetApplicationLogo from '@/Jetstream/ApplicationLogo.vue';
+import JetApplicationLogo from 'lochlitecms/Views/Components/Layouts//ApplicationLogo.vue';
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'; import { Head, Link, useForm } from '@inertiajs/inertia-vue3'; import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
+import { ref } from 'vue'; import { Head, Link, useForm } from '@inertiajs/inertia-vue3'; import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
