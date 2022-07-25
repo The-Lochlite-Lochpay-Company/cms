@@ -5,7 +5,7 @@
 * (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
 *
 * Software: LOCHLITE CMS
-* Version: 2.0.7  
+* Version: 2.0.10  
 * License: Proprietary
 * Made in: Brazil
 * Author: The Lochlite & Lochpay Company
@@ -22,69 +22,10 @@
 
 namespace Lochlite\cms\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable implements MustVerifyEmail
+class Visitor extends Model
 {
     use HasFactory;
-    use Notifiable;
-	use HasRoles;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
-    protected $fillable = [
-           'name',
-           'last_name',
-           'email',
-           'phone',
-           'internal_code',
-           'social_security',
-           'gender',
-           'address',
-           'address_number',
-           'city',
-           'state',
-           'country',
-           'zipcode',
-           'visitor',
-           'email_verified_at',
-           'password',
-           'avatar',
-           'wallpaper',
-           'profile_photo_path',
-           'google_id',
-           'facebook_id',
-           'twitter_id',
-           'gameloch_id',
-           'status',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
 }
