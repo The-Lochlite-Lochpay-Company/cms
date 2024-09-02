@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eefbf288a13fa5a5eb6bfea8195b584c",
+    "content-hash": "454f7a410fb88debf6c8543b4ecd5c68",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2241,6 +2241,78 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2023-10-03T13:02:30+00:00"
+        },
+        {
+            "name": "laravel/jetstream",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/jetstream.git",
+                "reference": "2af8f166436bf73c946f7187055d2df317d3e981"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/jetstream/zipball/2af8f166436bf73c946f7187055d2df317d3e981",
+                "reference": "2af8f166436bf73c946f7187055d2df317d3e981",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/console": "^9.21|^10.0",
+                "illuminate/support": "^9.21|^10.0",
+                "jenssegers/agent": "^2.6",
+                "laravel/fortify": "^1.15",
+                "php": "^8.0.2"
+            },
+            "conflict": {
+                "laravel/framework": "<9.37.0"
+            },
+            "require-dev": {
+                "inertiajs/inertia-laravel": "^0.6.5",
+                "laravel/sanctum": "^3.0",
+                "livewire/livewire": "^2.12",
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "^7.0|^8.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Jetstream\\JetstreamServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Jetstream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Tailwind scaffolding for the Laravel framework.",
+            "keywords": [
+                "auth",
+                "laravel",
+                "tailwind"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/jetstream/issues",
+                "source": "https://github.com/laravel/jetstream"
+            },
+            "time": "2023-03-01T19:31:53+00:00"
         },
         {
             "name": "laravel/sanctum",

@@ -1,5 +1,4 @@
 {
-    "version": "2.0.13",
     "name": "lochlite/cms",
     "description": "Lochlite CMS Update, Management and Maintenance Pack.",
     "type": "library",
@@ -32,6 +31,7 @@
         "jenssegers/agent": "^2.6",
         "laravel/fortify": "^1.19",
         "laravel/framework": "^9.21",
+        "laravel/jetstream": "^3.0",
         "laravel/sanctum": "^3.0",
         "laravel/socialite": "^5.5",
         "laravel/tinker": "^2.7",
