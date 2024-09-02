@@ -1,5 +1,5 @@
 {
-    "version": "2.0.12",
+    "version": "2.0.13",
     "name": "lochlite/cms",
     "description": "Lochlite CMS Update, Management and Maintenance Pack.",
     "type": "library",
@@ -16,15 +16,16 @@
         "multidomain",
         "management",
         "analysis",
-        "framework"
+        "framework",
+        "pwa"
     ],
     "require": {
-        "php": "^8.0|^8.1",
-        "ext-openssl": "^8.0|^8.1",
-        "ext-mbstring": "^8.0|^8.1",
-        "ext-imap": "^8.0|^8.1",
-        "ext-soap": "^8.0|^8.1",
-        "ext-json": "^8.0|^8.1",
+        "php": ">=8.0",
+        "ext-openssl": ">=8.0",
+        "ext-mbstring": ">=8.0",
+        "ext-imap": ">=8.0",
+        "ext-soap": ">=8.0",
+        "ext-json": ">=8.0",
         "nesbot/carbon": "^2.59",
         "inertiajs/inertia-laravel": "^0.6",
         "laravel/framework": "^9.21",
