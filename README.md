@@ -37,7 +37,7 @@
       <p>Open the command prompt in the folder of your choice, paste the highlighted text below and press Enter.</p>
 
       ```html
-      composer create-project lochlite/cms-install lochlite 
+      composer create-project lochlite/cms-install lochlite --stability dev
       ```
       
       <p>This process may take a few minutes, do not interrupt it, wait until the command prompt is unlocked for new commands.</p>

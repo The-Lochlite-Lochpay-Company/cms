@@ -210,6 +210,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function install(String $domain = null)
     {
+		try{
 		$host = Lochlitecms::domainsDatabase($domain == null ? request()->getHttpHost() : $domain);
 		if(!$host == false && $host->status == 'pre-installation'){
         $start = new \Lochlite\cms\Installer\database\Starter();
@@ -218,6 +219,7 @@ class Lochlitecms implements LochlitecmsInterface
 		$host->save();
         cache()->put('domains-'. $host->domain, $host, 15000);
 		}
+	} catch(\Exception $e){}
     }
 
     public function artisan($command)
@@ -261,7 +263,8 @@ class Lochlitecms implements LochlitecmsInterface
         $newversion = false;
         $lastversion = '';
 		$toupdate = function($versionpackage,$newversion,$lastversion){
-		    if(!Updates::where('version', $versionpackage)->exists()){
+		    try{
+			if(!Updates::where('version', $versionpackage)->exists()){
 			$current = Updates::latest()->first();
             $newversion = true;
 			$lastversion = $current == null ? '' : $current->version;
@@ -270,7 +273,10 @@ class Lochlitecms implements LochlitecmsInterface
 			}
 			$setversion = Updates::where('version', $versionpackage)->first();
 		    cache()->put('version', $setversion);
-		    return (object) array('newversion' => $newversion,'lastversion' => $lastversion, 'version' => $setversion);			
+		    return (object) array('status' => 'success', 'newversion' => $newversion,'lastversion' => $lastversion, 'version' => $setversion);
+		    } catch(\Exception $e){			
+		    return (object) array('status' => 'error', 'newversion' => $versionpackage,'lastversion' => $versionpackage, 'version' => $versionpackage);	
+		    }		
 		};
 		$version = cache()->get('version');
 		if(is_null($version) || $version->version !== $versionpackage){
@@ -280,7 +286,7 @@ class Lochlitecms implements LochlitecmsInterface
 		$lastversion = $result->lastversion;
 		$version = $result->version;
 		}
-		return (object) array('newversion' => $newversion, 'lastversion' => $lastversion, 'version' => $version, 'status' => $version->status);
+		return (object) array('newversion' => $newversion, 'lastversion' => $lastversion, 'version' => $version, 'status' => $version->status ?? 'active');
     }
 
     public function setChangesVersion()
