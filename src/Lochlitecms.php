@@ -1263,7 +1263,11 @@ class Lochlitecms implements LochlitecmsInterface
 
     public static function addRoutes(array $array)
     {
+		try{
         RegisterRouteJob::dispatch($array);
+		} catch(\Exception $e){
+            
+		}
     }
 
     public static function defaultRoutes()
