@@ -1705,4 +1705,3 @@ class Lochlitecms implements LochlitecmsInterface
 	
 
 }
-
