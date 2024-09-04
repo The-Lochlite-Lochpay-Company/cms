@@ -714,6 +714,7 @@ class Lochlitecms implements LochlitecmsInterface
 
     private function servicesDatabase(String $query = null)
     {
+		try{
 		if(is_null($query)){
         return cache()->get('services', function() use ($query){
 		if(Schema::hasTable('services')){
@@ -745,14 +746,31 @@ class Lochlitecms implements LochlitecmsInterface
 		}
 		});	
         }
+	} catch(\Exception $e){
+		return (object) array(
+			'domain' => '',
+			'name' => '',
+			'host' => '',
+			'callback' => '',
+			'query' => '',
+			'type' => 'post',
+			'data' => 'json',
+			'apis' => (object) array('original' => [], 'api' => []),
+			'status' => 'disabled',
+	   );
+	}
     }
 
     public function setServices()
     {
+		try{
         $database = Lochlitecms::servicesDatabase();
         foreach($database as $row){
 		config()->set('services.'. $row->name, Lochlitecms::serviceData($row));
         }
+        } catch(\Exception $e) {
+
+		}
     }
 
     public function serviceData(Services $service)
@@ -804,11 +822,28 @@ class Lochlitecms implements LochlitecmsInterface
     }
 
     public function visitor(String $ip = null, String $param = null)
-    {
+    {    try{
 		 Config()->set('cache.default', 'array');
 		 $geo = ($ip == null ? GeoIP()->getLocation() : GeoIP($ip));
 		 Config()->set('cache.default', Lochlitecms::config('cache_driver'));
          return $param == null ? $geo : $geo->$param;
+         } catch(\Exception $e){
+			return (object)[
+				'ip' => '127.0.0.0',
+				'iso_code' => 'US',
+				'country' => 'United States',
+				'city' => 'New Haven',
+				'state' => 'CT',
+				'state_name' => 'Connecticut',
+				'postal_code' => '06510',
+				'lat' => 41.31,
+				'lon' => -72.92,
+				'timezone' => 'America/New_York',
+				'continent' => 'NA',
+				'default' => true,
+				'currency' => 'USD',
+			];
+		 }
     }
 
     public function userAgent()
@@ -1257,7 +1292,7 @@ class Lochlitecms implements LochlitecmsInterface
 		}
 	    return;
      } catch(\Exception $e){
-        dd($e); 
+        //dd($e); 
      }
 	 }
 
