@@ -36,7 +36,7 @@ const submit = (event) => {
 <template>
 <AppLayout :menulang="menulang" :menuitems="menuitems" :avatar="avatar" :role="role" :name="name" :version="version" :breadcrumbCurrentTitle="breadcrumbCurrentTitle" :breadcrumbCurrentSection="breadcrumbCurrentSection" :title="title">
       <div class="row mb-3">
-      <div class="col"><img src="/application/lochlite.png"></div>
+      <div class="col"><img :src="window.location.origin + '/application/lochlite.png'"></div>
       <div class="col">
       <div class="">Framework: Laravel V{{ framework }}</div>
       <div class="">Lochlite CMS: {{ version }}</div>

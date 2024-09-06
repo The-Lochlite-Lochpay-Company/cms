@@ -1292,7 +1292,7 @@ class Lochlitecms implements LochlitecmsInterface
 		}
 	    return;
      } catch(\Exception $e){
-        //dd($e); 
+        dd($e); 
      }
 	 }
 
@@ -1301,7 +1301,7 @@ class Lochlitecms implements LochlitecmsInterface
 		try{
         RegisterRouteJob::dispatch($array);
 		} catch(\Exception $e){
-            
+            dd($e);
 		}
     }
 

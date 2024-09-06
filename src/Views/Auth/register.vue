@@ -1,162 +1,112 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue';
-import JetButton from '@/Jetstream/Button.vue';
-import JetInput from '@/Jetstream/Input.vue';
-import JetCheckbox from '@/Jetstream/Checkbox.vue';
-import JetLabel from '@/Jetstream/Label.vue';
-import JetValidationErrors from '@/Jetstream/ValidationErrors.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-
-defineProps({
-    appname: String,
-    title: String,
-    description: String,
-    canLogin: Boolean,
-    canRegister: Boolean,
-    canResetPassword: Boolean,
-    register: Object,
-    status: String,
-});
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import AuthenticationCard from '@/Components/Layouts/AuthenticationCard.vue';
+import AuthenticationCardLogo from '@/Components/Layouts/AuthenticationCardLogo.vue';
+import Checkbox from '@/Components/Layouts/Checkbox.vue';
+import InputError from '@/Components/Layouts/InputError.vue';
+import InputLabel from '@/Components/Layouts/InputLabel.vue';
+import PrimaryButton from '@/Components/Layouts/PrimaryButton.vue';
+import TextInput from '@/Components/Layouts/TextInput.vue';
 
 const form = useForm({
     name: '',
     email: '',
-    tel: '',
     password: '',
     password_confirmation: '',
+    terms: false,
 });
 
-
 const submit = () => {
-    form.post(route('register.store'), {
+    form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
 </script>
 
 <template>
-    <Head :title="title ?? appname" :description="description" />
-        <div class="flex items-center bg-gray-50" :class="{'min-h-screen': register.centered == 1, 'h-screen': register.centered == 0}">
-            <div class="flex-1 h-full mx-auto bg-white" :class="{'rounded-lg': register.rounded == 1, 'shadow-xl': register.shadow == 1, 'max-w-4xl': register.centered == 1, 'w-full': register.centered == 0}">
-                <div class="flex flex-col md:flex-row">
-                    <div v-if="register.imagevisible" class="hidden md:block h-32 md:h-auto md:w-1/2">
-					<img class="object-cover w-full h-full" :class="{'h-screen': register.centered == 0}" :src="register.image" alt="img" />
-                    </div>
-                    <div class="flex items-center justify-center p-6 sm:p-12" :class="{'md:w-1/2': register.imagevisible == 1, 'w-full': register.imagevisible == 0}">
-                        <div class="w-full h-full">
-                            <div class="flex justify-center">
-                             <img v-if="register.logo" width="72" height="72" class="responsive-image" :src="register.logo" alt="img" />
-                            </div>
-                            <h1 class="mb-4 mt-2 text-2xl font-bold text-center text-gray-700">
-                                {{ register.emphasis ?? 'Login to Your Account' }}
-                            </h1>
-                            <JetValidationErrors class="mb-4" />
-		                    
-                            <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-                                {{ status }}
-                            </div>
-		                    
-                            <form @submit.prevent="submit">
-							<div>
-                                <label class="block text-sm">
-                                    Name
-                                </label>
-                                <input type="text"
-					                id="name"
-                                    v-model="form.name"			
-                                    class="w-full px-4 py-2 text-sm border rounded-md focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                                    placeholder="" required />
-                            </div>
-							<div class="d-md-flex flex-md-col flex-md-row">
-							<div class="w-full me-2 mr-2">
-                                <label class="block mt-4 text-sm">
-                                    Email
-                                </label>
-                                <input type="email"
-					                id="email"
-                                    v-model="form.email"			
-                                    class="w-full px-4 py-2 text-sm border rounded-md focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                                    placeholder="" required />
-                            </div>
-							<div class="w-full">
-                                <label class="block mt-4 text-sm">
-                                    Phone
-                                </label>
-                                <input type="tel"
-					                id="tel"
-                                    v-model="form.tel"			
-                                    class="w-full px-4 py-2 text-sm border rounded-md focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                                    placeholder="" />
-                            </div>
-                            </div>
-							<div class="d-md-flex flex-md-col flex-md-row">
-                            <div class="w-full me-2 mr-2">
-                                <label class="block mt-4 text-sm">
-                                    Password
-                                </label>
-                                <input
-                                    id="password"
-                                    v-model="form.password"
-                                    class="w-full px-4 py-2 text-sm border rounded-md focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                                    placeholder="********" type="password" required />
-                            </div>
-                            <div class="w-full">
-                                <label class="block mt-4 text-sm">
-                                    Password Confirmation
-                                </label>
-                                <input
-                                    id="password_confirmation"
-                                    v-model="form.password_confirmation"
-                                    class="w-full px-4 py-2 text-sm border rounded-md focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                                    placeholder="********" type="password" required />
-                            </div>
-                            </div>
-                            <p class="mt-4">
-                                <Link :href="route('login.index')" class="text-sm text-blue-600 hover:underline" href="#login">
-                                   {{ register.logintext ?? 'Already have an account?' }}
-                                </Link>
-                            </p>
+    <Head title="Register" />
 
+    <AuthenticationCard>
+        <template #logo>
+            <AuthenticationCardLogo />
+        </template>
 
-                            <button :disabled="form.processing" :class="[{'opacity-25': form.processing}, register.buttoncolor, register.buttontextcolor]" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue" type="submit">
-                                {{ register.buttontext ?? 'Log in' }}
-                            </button>
-                            </form>
+        <form @submit.prevent="submit">
+            <div>
+                <InputLabel for="name" value="Name" />
+                <TextInput
+                    id="name"
+                    v-model="form.name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    required
+                    autofocus
+                    autocomplete="name"
+                />
+                <InputError class="mt-2" :message="form.errors.name" />
+            </div>
 
-                            <hr v-if="register.facebook || register.twitter || register.google" class="my-8 px-0 px-md-3" />
+            <div class="mt-4">
+                <InputLabel for="email" value="Email" />
+                <TextInput
+                    id="email"
+                    v-model="form.email"
+                    type="email"
+                    class="mt-1 block w-full"
+                    required
+                    autocomplete="username"
+                />
+                <InputError class="mt-2" :message="form.errors.email" />
+            </div>
 
-                            <div class="d-md-flex items-center justify-center gap-4">
-                                <a v-if="register.facebook" class="flex items-center justify-center w-full mb-4 px-4 py-2 text-sm text-primary text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 focus:border-gray-500" href="/oauth/facebook">
-                                    <i class="fa-brands fa-facebook mr-2"></i>
-                                    Facebook
-                                </a>
-                                <a v-if="register.twitter" class="flex items-center justify-center w-full mb-4 px-4 py-2 text-sm text-info text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 focus:border-gray-500" href="/oauth/twitter">
-                                    <i class="fa-brands fa-twitter mr-2"></i>
-                                    Twitter
-                                </a>
-                                <a v-if="register.google" class="flex items-center justify-center w-full mb-4 px-4 py-2 text-sm text-dark text-gray-700 border border-gray-300 rounded-lg hover:border-gray-500 focus:border-gray-500" href="/oauth/google">
-                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        class="w-4 h-4 mr-2" viewBox="0 0 48 48">
-                                        <defs>
-                                            <path id="a"
-                                                d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z" />
-                                        </defs>
-                                        <clipPath id="b">
-                                            <use xlink:href="#a" overflow="visible" />
-                                        </clipPath>
-                                        <path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z" />
-                                        <path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z" />
-                                        <path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z" />
-                                        <path clip-path="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z" />
-                                    </svg>Google
-                                </a>
-                            </div>
+            <div class="mt-4">
+                <InputLabel for="password" value="Password" />
+                <TextInput
+                    id="password"
+                    v-model="form.password"
+                    type="password"
+                    class="mt-1 block w-full"
+                    required
+                    autocomplete="new-password"
+                />
+                <InputError class="mt-2" :message="form.errors.password" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="password_confirmation" value="Confirm Password" />
+                <TextInput
+                    id="password_confirmation"
+                    v-model="form.password_confirmation"
+                    type="password"
+                    class="mt-1 block w-full"
+                    required
+                    autocomplete="new-password"
+                />
+                <InputError class="mt-2" :message="form.errors.password_confirmation" />
+            </div>
+
+            <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="mt-4">
+                <InputLabel for="terms">
+                    <div class="flex items-center">
+                        <Checkbox id="terms" v-model:checked="form.terms" name="terms" required />
+
+                        <div class="ms-2">
+                            I agree to the <a target="_blank" :href="route('terms.show')" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Terms of Service</a> and <a target="_blank" :href="route('policy.show')" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Privacy Policy</a>
                         </div>
                     </div>
-                </div>
-        </div>
-        </div>
+                    <InputError class="mt-2" :message="form.errors.terms" />
+                </InputLabel>
+            </div>
 
+            <div class="flex items-center justify-end mt-4">
+                <Link :href="route('login')" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                    Already registered?
+                </Link>
+
+                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    Register
+                </PrimaryButton>
+            </div>
+        </form>
+    </AuthenticationCard>
 </template>

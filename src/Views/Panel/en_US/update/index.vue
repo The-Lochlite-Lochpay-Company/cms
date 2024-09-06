@@ -32,7 +32,7 @@ const submit = (event) => {
          <div class="card shadow-none mb-3">
            <div class="row g-0">
              <div class="col-md-4">
-               <img src="/application/update.jpg" class="img-fluid rounded-start" alt="...">
+               <img :src="window.location.origin + '/application/update.jpg'" class="img-fluid rounded-start" alt="...">
              </div>
              <div class="col-md-8">
                <div class="card-body">
