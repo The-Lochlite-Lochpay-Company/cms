@@ -799,7 +799,7 @@ class Lochlitecms implements LochlitecmsInterface
     public function renderPanelCMS(String $view = 'Welcome', Array $data = [])
     {
 		 if(Auth()->check() || Auth()->check()){
-            return Inertia::render('vendor/lochlite/cms/src/Views/Panel/'. Lochlitecms::lang() .'/'.$view, array_merge(['lang' => Lochlitecms::lang(), 'menuitems' => Lochlitecms::generateSidebar(), 'menulang' => Lochlitecms::generateMenuLang(), 'version' => Lochlitecms::application()->get('version')], $data))->rootview('lochlitecms::admin');
+            return Inertia::render('Panel/'. Lochlitecms::lang() .'/'.$view, array_merge(['lang' => Lochlitecms::lang(), 'menuitems' => Lochlitecms::generateSidebar(), 'menulang' => Lochlitecms::generateMenuLang(), 'version' => Lochlitecms::application()->get('version')], $data))->rootview('lochlitecms::admin');
 	     } else {
             session()->flash('flash.banner', 'Você precisa fazer login ou registrar-se antes de continuar.');
             session()->flash('flash.bannerStyle', 'danger');    
@@ -923,13 +923,13 @@ class Lochlitecms implements LochlitecmsInterface
     public static function login()
     {    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/login', ['canResetPassword' => Route::has('password.request.index'), 'status' => session('status'), 'title' => $login->title, 'description' => $login->description, 'login' => $login], 'lochlitecms::tailwind');
+         return \Lochlite\cms\Facades\Lochlitecms::render('Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/login', ['canResetPassword' => Route::has('password.request.index'), 'status' => session('status'), 'title' => $login->title, 'description' => $login->description, 'login' => $login], 'lochlitecms::tailwind');
     }
 
     public static function forgotpassword()
     {    
 	     $recoverypassword = Lochlitecms::recoverypasswordDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/forgotpassword', ['status' => session('status'), 'title' => $recoverypassword->title, 'description' => $recoverypassword->description, 'recoverypassword' => $recoverypassword], 'lochlitecms::tailwind');
+         return \Lochlite\cms\Facades\Lochlitecms::render('Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/forgotpassword', ['status' => session('status'), 'title' => $recoverypassword->title, 'description' => $recoverypassword->description, 'recoverypassword' => $recoverypassword], 'lochlitecms::tailwind');
     }
 
     public static function resetpassword(Request $request)
@@ -937,25 +937,25 @@ class Lochlitecms implements LochlitecmsInterface
 		 $token = $request->route('token');    
 		 $email = $request->query('email');    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/resetpassword', ['status' => session('status'), 'title' => 'Forgot Password', 'description' => $login->description, 'email' => $email, 'token' => $token, 'login' => $login], 'lochlitecms::tailwind');
+         return \Lochlite\cms\Facades\Lochlitecms::render('Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/resetpassword', ['status' => session('status'), 'title' => 'Forgot Password', 'description' => $login->description, 'email' => $email, 'token' => $token, 'login' => $login], 'lochlitecms::tailwind');
     }
 
     public static function register()
     {    
 	     $register = Lochlitecms::registerDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/register', ['status' => session('status'), 'title' => $register->title, 'description' => $register->description, 'register' => $register], 'lochlitecms::tailwind');
+         return \Lochlite\cms\Facades\Lochlitecms::render('Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/register', ['status' => session('status'), 'title' => $register->title, 'description' => $register->description, 'register' => $register], 'lochlitecms::tailwind');
     }
 
     public static function emailverified()
     {    
 	     $emailverify = Lochlitecms::emailverifyDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/emailverified', ['status' => session('status'), 'title' => $emailverify->title, 'description' => $emailverify->description, 'emailverify' => $emailverify], 'lochlitecms::tailwind');
+         return \Lochlite\cms\Facades\Lochlitecms::render('Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/emailverified', ['status' => session('status'), 'title' => $emailverify->title, 'description' => $emailverify->description, 'emailverify' => $emailverify], 'lochlitecms::tailwind');
     }
 
     public static function confirmpassword()
     {    
 	     $login = Lochlitecms::loginDatabase();
-         return \Lochlite\cms\Facades\Lochlitecms::render('vendor/lochlite/cms/src/Views/Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/confirmpassword', ['title' => $login->title, 'description' => $login->description, 'login' => $login], 'lochlitecms::tailwind');
+         return \Lochlite\cms\Facades\Lochlitecms::render('Auth/' .  Lochlitecms::setStaticInstance()->lang() . '/confirmpassword', ['title' => $login->title, 'description' => $login->description, 'login' => $login], 'lochlitecms::tailwind');
     }
 
     public function isFile($path)

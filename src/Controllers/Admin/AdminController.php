@@ -60,7 +60,7 @@ class AdminController extends Controller
          
              return sprintf('%.2f '.$symbols[$exp], ($bytes == 0 ? 0 : ($bytes/pow(1024, floor($exp))) ));
          }
-         return Lochlitecms::renderPanelCMS('dashboard', [
+         return Lochlitecms::renderPanelCMS('Panel/pt_BR/dashboard', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => 'Login & Registro | Lochlite CMS',

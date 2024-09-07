@@ -20,7 +20,9 @@ defineProps({
     name: String,
     email: String,
 });
-
+const getOrigin = () => {
+   return window.origin;
+}
 </script>
 <template>
 
@@ -33,7 +35,7 @@ defineProps({
                     </div>
                     <div class="flex flex-col mb-8 animated fadeIn sm:flex-row">
                         <div class="flex items-center mb-8 sm:w-1/2 md:w-5/12 sm:order-last">
-                            <img class="rounded-lg shadow-xl" :src="windows.origin + '/application/welcome.jpg'" alt="">
+                            <img class="rounded-lg shadow-xl" :src="getOrigin() + '/application/welcome.jpg'" alt="">
                         </div>
                         <div class="flex flex-col justify-center mt-5 mb-8 md:mt-0 sm:w-1/2 md:w-7/12 sm:pr-16">
                             <p class="mb-2 text-sm font-semibold leading-none text-left text-indigo-600 uppercase">Social Network Integration</p>

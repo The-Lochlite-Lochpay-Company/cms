@@ -56,7 +56,7 @@ class WelcomePagesController extends Controller
 			session()->push('views', ['id' => $page->id]);
 			$page->update(['views' => intval($page->views) + 1]);
 		 }	
-        return Inertia::render('pagerendering', [
+        return Inertia::render('Components/pagerendering', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => $page->title ?? 'Sem titulo',

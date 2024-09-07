@@ -45,7 +45,7 @@ class WelcomeBlogController extends Controller
 		if (request()->wantsJson()) {
            return $posts;
         }
-        return Lochlitecms::render('vendor/lochlite/cms/src/Views/Web/posts', ['posts' => $posts], 'lochlitecms::tailwind');
+        return Lochlitecms::render('Web/posts', ['posts' => $posts], 'lochlitecms::tailwind');
 	}
 
     /**
@@ -126,7 +126,7 @@ class WelcomeBlogController extends Controller
 			session()->push('views', ['id' => $post->id]);
 			$post->update(['views' => intval($post->views) + 1]);
 		 }	
-        return Inertia::render('vendor/lochlite/cms/src/Views/Components/postrendering', [
+        return Inertia::render('Components/postrendering', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
              'title' => $post->title ?? 'Sem titulo',

@@ -45,7 +45,7 @@ class HomeController extends Controller
 		$user = Auth()->User();
 		$customersarea = Customersarea::where('domain', request()->getHttpHost())->orWhere('default', 1)->first();
 		$posts = Posts::latest()->limit(3)->get();
-		return Lochlitecms::renderAuth('vendor/lochlite/cms/src/Views/Customersarea/dashboard', [
+		return Lochlitecms::renderAuth('Customersarea/dashboard', [
 		'title' => "Customer's area",
 		'customersarea' => $customersarea,
 		'posts' => $posts,
@@ -57,7 +57,7 @@ class HomeController extends Controller
 		$user = Auth()->User();
 		$customersarea = Customersarea::where('domain', request()->getHttpHost())->orWhere('default', 1)->first();
 		$comments = Comments::where('user_id', $user->id)->paginate();
-		return Lochlitecms::renderAuth('vendor/lochlite/cms/src/Views/Customersarea/comments', [
+		return Lochlitecms::renderAuth('Customersarea/comments', [
 		'title' => "Customer's area",
 		'customersarea' => $customersarea,
 		'comments' => $comments,
@@ -74,7 +74,7 @@ class HomeController extends Controller
 		$user = Auth()->User();
 		$customersarea = Customersarea::where('domain', request()->getHttpHost())->orWhere('default', 1)->first();
 		$notifications = Notifications::where('user_id', null)->paginate();
-		return Lochlitecms::renderAuth('vendor/lochlite/cms/src/Views/Customersarea/notifications', [
+		return Lochlitecms::renderAuth('Customersarea/notifications', [
 		'title' => "Customer's area",
 		'tab' => $request->query('tab'),
 		'customersarea' => $customersarea,
@@ -92,7 +92,7 @@ class HomeController extends Controller
 		$user = Auth()->User();
 		$customersarea = Customersarea::where('domain', request()->getHttpHost())->orWhere('default', 1)->first();
 		$history = Lochlitecms::getHistory($user->id);
-		return Lochlitecms::renderAuth('vendor/lochlite/cms/src/Views/Customersarea/history', [
+		return Lochlitecms::renderAuth('Customersarea/history', [
 		'title' => "History",
 		'customersarea' => $customersarea,
 		'history' => $history,
@@ -107,7 +107,7 @@ class HomeController extends Controller
     public function profile()
     {
 		$customersarea = Customersarea::where('domain', request()->getHttpHost())->orWhere('default', 1)->first();
-		return Lochlitecms::renderAuth('vendor/lochlite/cms/src/Views/Customersarea/profile', [
+		return Lochlitecms::renderAuth('Customersarea/profile', [
 		'title' => "Profile",
 		'customersarea' => $customersarea,
 		'user' => Auth()->User(),
@@ -122,7 +122,7 @@ class HomeController extends Controller
     public function editprofile(Request $request)
     {
 		$customersarea = Customersarea::where('domain', request()->getHttpHost())->orWhere('default', 1)->first();
-		return Lochlitecms::renderAuth('vendor/lochlite/cms/src/Views/Customersarea/editprofile', [
+		return Lochlitecms::renderAuth('Customersarea/editprofile', [
 		'title' => "Edit Profile",
 		'customersarea' => $customersarea,
 		'user' => Auth()->User(),
