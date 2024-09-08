@@ -20,10 +20,19 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2' # Specify the PHP version here
+        extensions: mbstring, intl, curl
+        ini-values: post_max_size=256M, upload_max_filesize=256M
+        coverage: none
+        
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
       with:
+        php-version: 8.2
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
@@ -31,7 +40,6 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
-
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 

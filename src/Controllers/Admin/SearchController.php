@@ -31,11 +31,29 @@ use Lochlite\cms\Models\Emails;
 use Lochlite\cms\Models\User;
 
 use Lochlite\cms\Controllers\Controller;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class SearchController extends Controller
+class SearchController extends \App\Http\Controllers\Controller implements HasMiddleware
 {
+     /**
+     * Get the middleware that should be assigned to the controller.
+     */
+    public static function middleware(): array
+    {
+
+        return [
+            // examples with aliases, pipe-separated names, guards, etc:
+            'auth',
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('publish system|edit system|delete system,sanctum'), only:['index', 'show']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('publish system'), only:['create', 'store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('edit system'), only:['edit','update','cleandata']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('delete system'), only:['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      *

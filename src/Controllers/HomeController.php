@@ -43,7 +43,7 @@ class HomeController extends Controller
     public function index()
     {
 		$user = Auth()->User();
-		$customersarea = Customersarea::where('domain', request()->getHttpHost())->orWhere('default', 1)->first();
+		$customersarea = Customersarea::whereLike('domain', request()->getHttpHost())->orWhere('default', 1)->first();
 		$posts = Posts::latest()->limit(3)->get();
 		return Lochlitecms::renderAuth('Customersarea/dashboard', [
 		'title' => "Customer's area",

@@ -5,7 +5,7 @@
 * (c) 2019 - 2022 LOCHLITE E LOCHPAY SOFTWARES E PAGAMENTOS LTDA., All Right Reserved.
 *
 * Software: LOCHLITE CMS
-* Version: 2.0.7  
+* Version: 2.0.8  
 * License: Proprietary
 * Made in: Brazil
 * Author: The Lochlite & Lochpay Company
@@ -29,22 +29,27 @@ use Lochlite\cms\Models\Postsbody;
 use Spatie\Sitemap\Sitemap;
 
 use Lochlite\cms\Controllers\Controller;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class PwaController extends Controller
+class PwaController extends \App\Http\Controllers\Controller implements HasMiddleware
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Get the middleware that should be assigned to the controller.
      */
-    function __construct()
+    public static function middleware(): array
     {
-         $this->middleware('permission:publish pwa|edit pwa|delete pwa', ['only' => ['index','show']]);
-         $this->middleware('permission:publish pwa', ['only' => ['create','store']]);
-         $this->middleware('permission:edit pwa', ['only' => ['edit','update']]);
-         $this->middleware('permission:delete pwa', ['only' => ['destroy']]);
+
+        return [
+            // examples with aliases, pipe-separated names, guards, etc:
+            'auth',
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('publish system|edit system|delete system|publish pwa|edit pwa|delete pwa,sanctum'), only:['index', 'show']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('publish system|publish pwa'), only:['create', 'store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('edit system|edit pwa'), only:['edit','update','cleandata']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('delete system|delete pwa'), only:['destroy']),
+        ];
     }
 
     /**

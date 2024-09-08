@@ -26,22 +26,27 @@ use Illuminate\Http\Request;
 use Lochlite\cms\Models\Scheduling;
 
 use Lochlite\cms\Controllers\Controller;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Models\Role; use Spatie\Permission\Models\Permission;
 use Lochlitecms; use Carbon\Carbon; use Inertia\Inertia; use Artisan; use Storage; use Config; use DB; use Mail; use Hash; use Route; use Auth; use Arr; use Str;
 
-class SchedulingController extends Controller
+class SchedulingController extends \App\Http\Controllers\Controller implements HasMiddleware
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Get the middleware that should be assigned to the controller.
      */
-    function __construct()
+    public static function middleware(): array
     {
-         $this->middleware('permission:publish schedulings|edit schedulings|delete schedulings', ['only' => ['index','show']]);
-         $this->middleware('permission:publish schedulings', ['only' => ['create','store']]);
-         $this->middleware('permission:edit schedulings', ['only' => ['edit','update']]);
-         $this->middleware('permission:delete schedulings', ['only' => ['destroy']]);
+
+        return [
+            // examples with aliases, pipe-separated names, guards, etc:
+            'auth',
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('publish system|edit system|delete system|publish schedulings|edit schedulings|delete schedulings,sanctum'), only:['index', 'show']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('publish system|publish schedulings'), only:['create', 'store']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('edit system|edit schedulings'), only:['edit','update','cleandata']),
+            new Middleware(\Spatie\Permission\Middleware\PermissionMiddleware::using('delete system|delete schedulings'), only:['destroy']),
+        ];
     }
 
     /**

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('buttoncolor')->default('bg-blue-600')->nullable();
             $table->string('buttontextcolor')->default('text-white')->nullable();
             $table->string('logo')->default('/application/72x72.png')->nullable();
-            $table->string('image')->default('https://source.unsplash.com/user/erondu/1600x900')->nullable();
+            $table->string('image')->default('https://images.wallpaperscraft.com/image/single/city_night_aerial_view_154153_1600x900.jpg')->nullable();
             $table->json('form')->nullable();
             $table->boolean('imagevisible')->default(true)->nullable();
             $table->boolean('rounded')->default(true)->nullable();

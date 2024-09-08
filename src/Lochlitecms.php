@@ -1241,7 +1241,8 @@ class Lochlitecms implements LochlitecmsInterface
 
     public function renderPanelCMS(string $view = "Welcome", array $data = [])
     {
-        if (Auth()->check() || Auth()->check()) {
+        if (Auth()->check() || Auth()->check()) {//dd(Auth()->User()->assignRole(\Spatie\Permission\Models\Role::where('name', 'user')->first()));
+
             return Inertia::render(
                 "Panel/" . Lochlitecms::lang() . "/" . $view,
                 array_merge(
@@ -3076,7 +3077,7 @@ class Lochlitecms implements LochlitecmsInterface
     public static function seo(string $param = null)
     {
         try {
-            $opt = cache()->get("seo", function () {
+            return cache()->get("seo", function () {
                 if (\Schema::hasTable("seos")) {
                     if (
                         !Seo::where("default", true)

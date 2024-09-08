@@ -29,8 +29,6 @@ use Illuminate\Console\Scheduling\Schedule;
 use Lochlite\cms\Providers\MainServiceProvider;
 use Lochlite\cms\Providers\EventServiceProvider;
 use Lochlite\cms\Providers\RouteServiceProvider;
-use Lochlite\cms\Middleware\Authenticate;
-use Lochlite\cms\Middleware\RedirectIfAuthenticated;
 use Lochlite\cms\Middleware\MainMiddleware;
 use Lochlite\cms\Middleware\HandleInertiaRequests;
 use Spatie\Sitemap\SitemapGenerator;
@@ -71,26 +69,20 @@ class LochlitecmsProvider extends ServiceProvider
      */
     public function boot(Kernel $kernel)
     {
+
      $router = $this->app->make(Router::class);
-     $router->aliasMiddleware('auth', Authenticate::class);
-     $router->aliasMiddleware('auth.basic', \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class);
-     $router->aliasMiddleware('auth.session', \Illuminate\Session\Middleware\AuthenticateSession::class);
-     $router->aliasMiddleware('can', \Illuminate\Auth\Middleware\Authorize::class);
-     $router->aliasMiddleware('guest', RedirectIfAuthenticated::class);
-     $router->aliasMiddleware('password.confirm', \Illuminate\Auth\Middleware\RequirePassword::class);
-     $router->aliasMiddleware('verified', \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class);
      $router->aliasMiddleware('role', \Spatie\Permission\Middlewares\RoleMiddleware::class);
      $router->aliasMiddleware('permission', \Spatie\Permission\Middlewares\PermissionMiddleware::class);
      $router->aliasMiddleware('role_or_permission', \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class);
-     $kernel->pushMiddleware(MainMiddleware::class);
+     //$kernel->pushMiddleware(MainMiddleware::class);
      $kernel->pushMiddleware(HandleInertiaRequests::class);
      $this->loadMigrationsFrom(__DIR__ . '/Migrations');
      $this->loadViewsFrom(__DIR__ . '/Views', 'lochlitecms');
      $this->loadViewsFrom(base_path('plugins'), 'plugins');
      $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 	 $instanceCMS = Lochlitecms::setStaticInstance();	
-     $instanceCMS->setChangesVersion();
-     $instanceCMS->install();
+     //$instanceCMS->setChangesVersion();
+     //$instanceCMS->install();
      $instanceCMS->setDefaultHeaderResponse();
      $instanceCMS->setServices();
      $instanceCMS->defaultRoutes();
