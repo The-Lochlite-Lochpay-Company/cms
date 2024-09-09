@@ -45,7 +45,19 @@ class CreateCommentsReplyTable extends Migration
             $table->foreign('comment_id')->references('id')->on('comments')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
-        DB::statement("ALTER TABLE commentsreplies MODIFY comment LONGBLOB");
+		
+        /***
+         * DB::statement("ALTER TABLE commentsreplies MODIFY comment LONGBLOB"); 
+         * SQLite implementation
+         * Check the driver and change the column as needed
+        */
+        if (Schema::getConnection()->getDriverName() == 'sqlite') {
+            Schema::table('commentsreplies', function (Blueprint $table) {
+                $table->binary('body')->change();
+            });
+        } else {
+            DB::statement("ALTER TABLE commentsreplies MODIFY comment LONGBLOB");
+        }
     }
 
     /**

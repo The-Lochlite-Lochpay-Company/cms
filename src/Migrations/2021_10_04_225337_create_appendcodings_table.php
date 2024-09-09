@@ -27,7 +27,19 @@ return new class extends Migration
             $table->foreign('domain')->references('domain')->on('domains')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
-        DB::statement("ALTER TABLE appendcodings MODIFY body LONGBLOB");
+
+        /***
+         * DB::statement("ALTER TABLE appendcodings MODIFY body LONGBLOB"); 
+         * SQLite implementation
+         * Check the driver and change the column as needed
+        */
+        if (Schema::getConnection()->getDriverName() == 'sqlite') {
+            Schema::table('appendcodings', function (Blueprint $table) {
+                $table->binary('body')->change();
+            });
+        } else {
+            DB::statement("ALTER TABLE appendcodings MODIFY body LONGBLOB");
+        }
     }
 
     /**

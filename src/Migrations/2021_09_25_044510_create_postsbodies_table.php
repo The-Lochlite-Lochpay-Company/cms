@@ -41,7 +41,19 @@ return new class extends Migration
             $table->foreign('post_id')->references('id')->on('posts')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
-        DB::statement("ALTER TABLE postsbodies MODIFY body LONGBLOB");
+
+        /***
+         * DB::statement("ALTER TABLE postsbodies MODIFY body LONGBLOB"); 
+         * SQLite implementation
+         * Check the driver and change the column as needed
+        */
+        if (Schema::getConnection()->getDriverName() == 'sqlite') {
+            Schema::table('postsbodies', function (Blueprint $table) {
+                $table->binary('body')->change();
+            });
+        } else {
+            DB::statement("ALTER TABLE postsbodies MODIFY body LONGBLOB");
+        }
     }
 
     /**

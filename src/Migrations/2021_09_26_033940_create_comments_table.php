@@ -47,7 +47,18 @@ class CreateCommentsTable extends Migration
             $table->timestamps();
         });
 		
-        DB::statement("ALTER TABLE comments MODIFY comment LONGBLOB");
+        /***
+         * DB::statement("ALTER TABLE comments MODIFY comment LONGBLOB"); 
+         * SQLite implementation
+         * Check the driver and change the column as needed
+        */
+        if (Schema::getConnection()->getDriverName() == 'sqlite') {
+            Schema::table('comments', function (Blueprint $table) {
+                $table->binary('body')->change();
+            });
+        } else {
+            DB::statement("ALTER TABLE comments MODIFY comment LONGBLOB");
+        }
     }
 
     /**
