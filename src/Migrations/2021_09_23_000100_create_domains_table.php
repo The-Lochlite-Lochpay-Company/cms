@@ -35,7 +35,7 @@ return new class extends Migration
     {
         Schema::create('domains', function (Blueprint $table) {
             $table->id();
-            $table->string('domain')->index()->nullable();
+            $table->string('domain')->unique()->nullable();
             $table->boolean('installation')->default(false)->nullable();
             $table->boolean('main')->default(false)->nullable();
             $table->text('errors')->nullable();
