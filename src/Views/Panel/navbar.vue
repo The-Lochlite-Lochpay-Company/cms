@@ -46,6 +46,9 @@ const logout = () => {
     useForm().post(route('logout'));
 };
 
+const getOrigin = () => {
+   return window.origin;
+}
 </script>
 
 <template>
@@ -54,7 +57,7 @@ const logout = () => {
          <a class="navbar-brand brand-logo text-dark" href="route('managerdashboard.index')">
            Lochlite  </a>
          <Link class="brand-logo-mini align-self-center text-dark px-3 h1" :href="route('managerdashboard.index')">
-           <img class="w-full h-full w-100 h-100" :src="window.location.origin + '/application/72x72.png'"> </Link>
+           <img class="w-full h-full w-100 h-100" :src="getOrigin() + '/application/72x72.png'"> </Link>
        </div>
        <div class="navbar-menu-wrapper bg-dark d-flex align-items-center justify-content-end">
          <button class="navbar-toggler navbar-toggler align-self-cente active" type="button" data-toggle="minimize">

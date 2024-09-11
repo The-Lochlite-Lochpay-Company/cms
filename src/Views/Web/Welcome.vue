@@ -25,7 +25,7 @@ const getOrigin = () => {
 }
 </script>
 <template>
-
+   <AppLayout :appname="appname" :canLogin="canLogin" :canRegister="canRegister" :title="title">
          <div class="relative items-top justify-center min-h-screen bg-white sm:items-center py-4 sm:pt-0">
             <section id="home" class="py-20 bg-white">
                 <div class="flex flex-col px-8 mx-auto space-y-12 max-w-7xl xl:px-12">
@@ -46,4 +46,5 @@ const getOrigin = () => {
              </div>
          </section>
      </div>
+     </AppLayout>
 </template>

@@ -81,8 +81,8 @@ class LochlitecmsProvider extends ServiceProvider
      $this->loadViewsFrom(base_path('plugins'), 'plugins');
      $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 	 $instanceCMS = Lochlitecms::setStaticInstance();	
-     //$instanceCMS->setChangesVersion();
-     //$instanceCMS->install();
+     $instanceCMS->setChangesVersion();
+     $instanceCMS->install();
      $instanceCMS->setDefaultHeaderResponse();
      $instanceCMS->setServices();
      $instanceCMS->defaultRoutes();

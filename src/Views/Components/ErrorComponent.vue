@@ -4,6 +4,10 @@ import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 import JetDialogModal from 'lochlitecms/Views/Components/Layouts/DialogModal.vue';
 import JetButton from 'lochlitecms/Views/Components/Layouts/Button.vue';
 import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/ValidationErrors.vue';
+
+const getOrigin = () => {
+   return window.origin;
+}
 </script>
 <template>
      <div class="bg-white h-full lg:px-24 lg:py-24 md:py-20 md:px-44 px-4 py-24 items-center flex justify-center flex-col-reverse lg:flex-row md:gap-28 gap-16">
@@ -21,7 +25,7 @@ import JetValidationErrors from 'lochlitecms/Views/Components/Layouts/Validation
                 </div>
             </div>
             <div>
-                <img :src="window.origin + '/application/error.webp'" />
+                <img :src="getOrigin() + '/application/error.webp'" />
             </div>
      </div> 
 </template>

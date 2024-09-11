@@ -2,12 +2,12 @@
 import { ref } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { Head, Link } from '@inertiajs/inertia-vue3';
-import JetApplicationMark from 'lochlitecms/Views/Components/Layouts//ApplicationMark.vue';
+import JetApplicationMark from 'lochlitecms/Views/Components/Layouts/ApplicationMark.vue';
 import JetBanner from 'lochlitecms/Views/Components/Layouts/Banner.vue';
-import JetDropdown from 'lochlitecms/Views/Components/Layouts//Dropdown.vue';
-import JetDropdownLink from 'lochlitecms/Views/Components/Layouts//DropdownLink.vue';
-import JetNavLink from 'lochlitecms/Views/Components/Layouts//NavLink.vue';
-import JetResponsiveNavLink from 'lochlitecms/Views/Components/Layouts//ResponsiveNavLink.vue';
+import JetDropdown from 'lochlitecms/Views/Components/Layouts/Dropdown.vue';
+import JetDropdownLink from 'lochlitecms/Views/Components/Layouts/DropdownLink.vue';
+import JetNavLink from 'lochlitecms/Views/Components/Layouts/NavLink.vue';
+import JetResponsiveNavLink from 'lochlitecms/Views/Components/Layouts/ResponsiveNavLink.vue';
 
 defineProps({
     title: String,

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref,onMounted } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 import JetActionMessage from 'lochlitecms/Views/Components/Layouts//ActionMessage.vue';
 import JetButton from 'lochlitecms/Views/Components/Layouts//Button.vue';
@@ -19,6 +19,20 @@ defineProps({
     email: String,
     message: String,
     menuitems: Object,
+});
+
+const isCollapsed = ref(false);
+
+const collapseElements = ref([]);
+
+onMounted(() => {
+  collapseElements.value = document.querySelectorAll('[ref="collapseElement"]');
+
+  collapseElements.value.forEach(element => {
+    $(element).on('show.bs.collapse', () => {
+      $(this).classList.remove('collapse');
+    });
+  });
 });
 
 const form = useForm({
@@ -70,8 +84,8 @@ const submit = () => {
         <span class="menu-title">{{ row.name }}</span>
         <i class="text-right mdi mdi-chevron-right pl-auto ml-auto"></i>
       </a>
-      <div class="collapse" :class="row.active == true ? 'show' : ''" :id="row.id">
-        <ul class="nav flex-column sub-menu">
+  <div ref="collapseElement" class="collapse bg-light" :class="{ 'show': row.active == true, 'collapse': row.active == false }" :id="row.id">
+        <ul class="nav flex-column sub-menu bg-light">
           <li v-for="item in row.subitems" class="nav-item">
             <Link class="nav-link" :href="item.url">{{ item.name }}</Link>
           </li>

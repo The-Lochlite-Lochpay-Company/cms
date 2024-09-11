@@ -55,7 +55,7 @@ class SystemController extends \App\Http\Controllers\Controller implements HasMi
      */
     public function index()
     {
-         $mysql = \DB::select('select version()')[0]->{'version()'};
+        // $mysql = \DB::select('select version()')[0]->{'version()'} || 'SQLITE';
          return Lochlitecms::renderPanelCMS('system/index', [
              'canLogin' => Route::has('login'),
              'canRegister' => Route::has('register'),
@@ -67,7 +67,7 @@ class SystemController extends \App\Http\Controllers\Controller implements HasMi
              'framework' => app()->version(),
              'langplatform' => phpversion(),
              'extensions' => collect(['CURL' => phpversion('curl'), 'FTP' => phpversion('ftp'), 'FILEINFO' => phpversion('fileinfo'), 'INTL' => phpversion('intl'), 'LDAP' => phpversion('ldap'), 'GD' => phpversion('gd'), 'GMP' => phpversion('gmp'), 'EXIF' => phpversion('exif'), 'MBSTRING' => phpversion('mbstring'), 'IMAP' => phpversion('imap'), 'MYSQLI' => phpversion('mysqli'), 'PDO_MYSQL' => phpversion('pdo_mysql'), 'PDO_SQLITE' => phpversion('pdo_sqlite'), 'PDO_FIREBIRD' => phpversion('pdo_firebird'), 'PDO_ODBC' => phpversion('pdo_odbc'), 'ODBC' => phpversion('odbc'), 'PDO_PGSQL' => phpversion('pdo_pgsql'), 'PGSQL' => phpversion('pgsql'), 'OPENSSL' => phpversion('openssl'), 'SOAP' => phpversion('soap'), 'SOCKETS' => phpversion('sockets'), 'SODIUM' => phpversion('sodium'), 'SQLITE3' => phpversion('sqlite3'), 'TIDY' => phpversion('tidy'), 'XSL' => phpversion('xsl')]),
-             'mysql' => $mysql,
+             'mysql' => $mysql ?? '',
              'host' => request()->getSchemeAndHttpHost(),
              'server' => (request()->server('SERVER_SIGNATURE') ?? 'NOT SIGNED'). ' - ' .(request()->server('SERVER_SOFTWARE') ?? 'CGI'). ' '  .(request()->server('SERVER_PROTOCOL') ?? 'HTTP/1.1'),
              'breadcrumbCurrentTitle' => 'Gerenciamento de rotas',
