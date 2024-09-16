@@ -48,53 +48,50 @@ const logout = () => {
 </script>
 
 <template>
-        <Head :title="title" />
-           
-            <div class="container-scroller" id="app">
-                 <Navbarpanel :menulang="menulang" :avatar="avatar" :name="name" :user="user" />
-               <div class="container-fluid page-body-wrapper">
-                 <Sidebarpanel :menuitems="menuitems" :avatar="avatar" :name="name" :role="role" />
-                 <div class="main-panel">
-                   <main class="content-wrapper">
-                   <JetBanner />
-                   <div class="card">
-                   <div class="card-body">
-	               <header v-if="$slots.breadcrumb">
-                   <div class="card-title h3 fw-bold mb-0 pb-0">{{ breadcrumbCurrentTitle }}</div>
-                   <nav aria-label="breadcrumb">
-                   <ol class="breadcrumb pl-0 border-0">
-                     <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                     <li class="breadcrumb-item active">{{ breadcrumbCurrentSection }}</li>
-                           <slot name="breadcrumb" />
-                   </ol>
-                   </nav> 
-                   </header>
-			       <slot />
-                   </div>
-                   </div>
-				   </main>
-                   <footer class="footer">
-                     <div class="container-fluid clearfix">
-                       <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright ©  <a href="https://www.lochlite.com/" target="_blank">The Lochlite & Lochpay Company</a></span>
-                       <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"><a href="https://www.lochlite.com/solutions/cms" target="_blank">Lochlite CMS</a> - Version {{ version }}</span>
-                     </div>
-                   </footer>
-                 </div>
-               </div>
-             </div>
-			  <div v-if="$slots.modal">
-              <!-- Modal -->
-              <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content bg-white">
-                    <div class="modal-body bg-white">
-                        <slot name="modal" />
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-dark bg-dark text-white" data-bs-dismiss="modal">Close</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </div>
+  <Head :title="title" />
+  <div class="min-h-screen flex flex-col" id="app">
+    <Navbarpanel :menulang="menulang" :avatar="avatar" :name="name" :user="user" />
+    <div class="flex flex-1">
+      <Sidebarpanel :menuitems="menuitems" :avatar="avatar" :name="name" :role="role" />
+      <div class="flex-1 flex flex-col">
+        <main class="flex-1 p-4 pt-12 mt-14">
+          <JetBanner />
+          <div class="bg-white shadow rounded-lg">
+            <div class="p-4">
+              <header v-if="$slots.breadcrumb">
+                <div class="text-2xl font-bold mb-4">{{ breadcrumbCurrentTitle }}</div>
+                <nav aria-label="breadcrumb">
+                  <ol class="flex space-x-2 text-gray-600">
+                    <li><a href="/dashboard" class="hover:underline">Dashboard</a></li>
+                    <li class="text-gray-500">{{ breadcrumbCurrentSection }}</li>
+                    <slot name="breadcrumb" />
+                  </ol>
+                </nav>
+              </header>
+              <slot />
+            </div>
+          </div>
+        </main>
+        <footer class="bg-gray-100 p-4">
+          <div class="container mx-auto flex justify-between items-center">
+            <span class="text-gray-600">Copyright © <a href="https://www.lochlite.com/" target="_blank" class="hover:underline">The Lochlite & Lochpay Company</a></span>
+            <span class="text-gray-600"><a href="https://www.lochlite.com/solutions/cms" target="_blank" class="hover:underline">Lochlite CMS</a> - Version {{ version }}</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <div v-if="$slots.modal">
+    <!-- Modal -->
+    <div class="fixed inset-0 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-lg">
+        <div class="p-4">
+          <slot name="modal" />
+        </div>
+        <div class="flex justify-end p-4">
+          <button type="button" class="btn btn-dark bg-dark text-white" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

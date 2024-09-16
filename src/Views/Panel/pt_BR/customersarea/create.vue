@@ -56,209 +56,210 @@ const submit = () => {
 
 <template>
 <AppLayout :menulang="menulang" :menuitems="menuitems" :avatar="avatar" :role="role" :name="name" :version="version" :breadcrumbCurrentTitle="breadcrumbCurrentTitle" :breadcrumbCurrentSection="breadcrumbCurrentSection" :title="title">
-        <template #breadcrumb>
-              <li class="breadcrumb-item active" aria-current="page">Nova página de login</li>
-        </template>
-        <JetValidationErrors class="mb-4" />
+  <template #breadcrumb>
+    <li class="breadcrumb-item active" aria-current="page">Nova página de login</li>
+  </template>
+  <JetValidationErrors class="mb-4" />
 
-        <form @submit.prevent="submit">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6">
-                <div class="form-group">
-                     <JetLabel for="domain" value="Domain" />
-                     <JetInput id="domain" type="text" class="form-control mt-1 block w-full" placeholder="https://domain.com" v-model="form.domain" name="domain" autocomplete="domain" autofocus required />
-                     <JetInputError for="domain" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-6">
-                <div class="form-group">
-                     <JetLabel for="default" value="Default" />
-                     <JetSelect id="default" class="form-control mt-1 block w-full" placeholder="Default" v-model="form.default" name="default" autocomplete required>
-					 <option value="0">False</option>
-					 <option value="1">True</option>
-					 </JetSelect>
-                     <JetInputError for="default" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-12 card border-0 shadow-none">
-            <div class="card-header">SEO</div>
-            <div class="card-body">
-            <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6">
-                <div class="form-group">
-                     <JetLabel for="title" value="Title" />
-                     <JetInput id="title" type="text" class="form-control mt-1 block w-full" placeholder="Title" v-model="form.title" name="title" autocomplete="title" />
-                     <JetInputError for="title" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-6">
-                <div class="form-group">
-                     <JetLabel for="description" value="Description" />
-                     <input id="description" class="form-control mt-1 block w-full" placeholder="Escreva a descrição que aparecerá nos buscadores" v-model="form.description" name="description" autocomplete required>
-                     <JetInputError for="description" class="mt-2" />
-                </div>
-            </div>
-            </div>
-            </div>
-            </div>
-            <div class="col-12 card border-0 shadow-none">
-            <div class="card-header">Image</div>
-            <div class="card-body">
-            <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6">
-                <div class="form-group">
-                     <JetLabel for="image" value="Image URL" />
-                     <JetInput id="image" type="url" class="form-control mt-1 block w-full" placeholder="https://exemple.com/image.png" v-model="form.image" name="image" autocomplete="image" required />
-                     <JetInputError for="image" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-6">
-                <div class="form-group">
-                     <JetLabel for="imagevisible" value="Image visible" />
-                     <JetSelect id="imagevisible" class="form-control mt-1 block w-full" placeholder="imagevisible" v-model="form.imagevisible" name="imagevisible" autocomplete required>
-					 <option value="0">False</option>
-					 <option value="1">True</option>
-					 </JetSelect>
-                     <JetInputError for="imagevisible" class="mt-2" />
-                </div>
-            </div>
-            </div>
-            </div>
-            </div>
-            <div class="col-12 card border-0 shadow-none">
-            <div class="card-header">Details</div>
-            <div class="card-body">
-            <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="logo" value="Logo" />
-                     <JetInput id="logo" type="url" class="form-control mt-1 block w-full" placeholder="https://exemple.com/image.png" v-model="form.logo" name="logo" autocomplete="logo" required />
-                     <JetInputError for="logo" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="emphasis" value="Emphasis" />
-                     <JetInput id="emphasis" type="text" class="form-control mt-1 block w-full" placeholder="Emphasis" v-model="form.emphasis" name="emphasis" autocomplete="emphasis" required />
-                     <JetInputError for="emphasis" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="forgottext" value="Forgot text" />
-                     <input id="forgottext" class="form-control mt-1 block w-full" placeholder="Forgot text" v-model="form.forgottext" name="forgottext" autocomplete required>
-                     <JetInputError for="forgottext" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="buttontext" value="Button text" />
-                     <input id="buttontext" class="form-control mt-1 block w-full" placeholder="Button text" v-model="form.buttontext" name="buttontext" autocomplete required>
-                     <JetInputError for="buttontext" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="buttoncolor" value="Button color" />
-                     <JetSelect id="buttoncolor" class="form-control mt-1 block w-full" placeholder="Button color" v-model="form.buttoncolor" name="buttoncolor" autocomplete required>
-					 <option value="bg-blue-600">Default</option>
-					 <option value="btn-primary">Blue</option>
-					 <option value="btn-info">Light blue</option>
-					 <option value="btn-light">Light</option>
-					 <option value="btn-danger">Red</option>
-					 <option value="btn-warning">Yellow</option>
-					 <option value="btn-dark">Black</option>
-					 </JetSelect>
-                     <JetInputError for="buttoncolor" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="buttontextcolor" value="Button Text Color" />
-                     <JetSelect id="buttontextcolor" class="form-control mt-1 block w-full" placeholder="Button text color" v-model="form.buttontextcolor" name="buttontextcolor" autocomplete required>
-					 <option value="text-white">White</option>
-					 <option value="text-primary">Blue</option>
-					 <option value="text-info">Light blue</option>
-					 <option value="text-light">Light</option>
-					 <option value="text-danger">Red</option>
-					 <option value="text-warning">Yellow</option>
-					 <option value="text-dark">Black</option>
-					 </JetSelect>
-                     <JetInputError for="buttoncolor" class="mt-2" />
-                </div>
-            </div>
-            </div>
-            </div>
-            </div>
-            <div class="col-12 card border-0 shadow-none">
-            <div class="card-header">Social Networks & External Providers</div>
-            <div class="card-body">
-            <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="google" value="Enable Google" />
-                     <JetSelect id="google" class="form-control mt-1 block w-full" placeholder="Google" v-model="form.google" name="google" autocomplete required>
-					 <option value="0">False</option>
-					 <option value="1">True</option>
-					 </JetSelect>
-                     <JetInputError for="google" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="facebook" value="Enable Facebook" />
-                     <JetSelect id="facebook" class="form-control mt-1 block w-full" placeholder="Facebook" v-model="form.facebook" name="facebook" autocomplete required>
-					 <option value="0">False</option>
-					 <option value="1">True</option>
-					 </JetSelect>
-                     <JetInputError for="facebook" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="twitter" value="Enable Twitter" />
-                     <JetSelect id="twitter" class="form-control mt-1 block w-full" placeholder="Twitter" v-model="form.twitter" name="twitter" autocomplete required>
-					 <option value="0">False</option>
-					 <option value="1">True</option>
-					 </JetSelect>
-                     <JetInputError for="twitter" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="goprovider" value="Service provider of Google" />
-                     <JetSelect id="goprovider" class="form-control mt-1 block w-full" placeholder="Google Provide" v-model="form.goprovider" name="goprovider" autocomplete>
-					 <option v-for="rowgo in services" :value="rowgo.id">{{ rowgo.name }} - {{ rowgo.domain }}</option>
-					 </JetSelect>
-                     <JetInputError for="goprovider" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="fbprovider" value="Service provider of Facebook" />
-                     <JetSelect id="fbprovider" class="form-control mt-1 block w-full" placeholder="Facebook Provider" v-model="form.fbprovider" name="fbprovider" autocomplete>
-					 <option v-for="rowfb in services" :value="rowfb.id">{{ rowfb.name }} - {{ rowfb.domain }}</option>
-					 </JetSelect>
-                     <JetInputError for="fbprovider" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-4">
-                <div class="form-group">
-                     <JetLabel for="ttprovider" value="Service provider of Twitter" />
-                     <JetSelect id="ttprovider" class="form-control mt-1 block w-full" placeholder="Twitter Provider" v-model="form.ttprovider" name="ttprovider" autocomplete>
-					 <option v-for="rowtt in services" :value="rowtt.id">{{ rowtt.name }} - {{ rowtt.domain }}</option>
-					 </JetSelect>
-                     <JetInputError for="ttprovider" class="mt-2" />
-                </div>
-            </div>
-            </div>
-            </div>
-            </div>
-
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                <JetButton type="submit" class="btn btn-primary" title="Adicionar" aria-label="Adicionar" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Adicionar</JetButton>
-            </div>
+  <form @submit.prevent="submit">
+    <div class="flex flex-wrap">
+      <div class="w-full md:w-1/2">
+        <div class="mb-4">
+          <JetLabel for="domain" value="Domain" />
+          <JetInput id="domain" type="text" class="mt-1 block w-full" placeholder="https://domain.com" v-model="form.domain" name="domain" autocomplete="domain" autofocus required />
+          <JetInputError for="domain" class="mt-2" />
         </div>
+      </div>
+      <div class="w-full md:w-1/2">
+        <div class="mb-4">
+          <JetLabel for="default" value="Default" />
+          <JetSelect id="default" class="mt-1 block w-full" placeholder="Default" v-model="form.default" name="default" autocomplete required>
+            <option value="0">False</option>
+            <option value="1">True</option>
+          </JetSelect>
+          <JetInputError for="default" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full card border-0 shadow-none">
+        <div class="card-header">SEO</div>
+        <div class="card-body">
+          <div class="flex flex-wrap">
+            <div class="w-full md:w-1/2">
+              <div class="mb-4">
+                <JetLabel for="title" value="Title" />
+                <JetInput id="title" type="text" class="mt-1 block w-full" placeholder="Title" v-model="form.title" name="title" autocomplete="title" />
+                <JetInputError for="title" class="mt-2" />
+              </div>
+            </div>
+            <div class="w-full md:w-1/2">
+              <div class="mb-4">
+                <JetLabel for="description" value="Description" />
+                <input id="description" class="mt-1 block w-full" placeholder="Escreva a descrição que aparecerá nos buscadores" v-model="form.description" name="description" autocomplete required>
+                <JetInputError for="description" class="mt-2" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w-full card border-0 shadow-none">
+        <div class="card-header">Image</div>
+        <div class="card-body">
+          <div class="flex flex-wrap">
+            <div class="w-full md:w-1/2">
+              <div class="mb-4">
+                <JetLabel for="image" value="Image URL" />
+                <JetInput id="image" type="url" class="mt-1 block w-full" placeholder="https://exemple.com/image.png" v-model="form.image" name="image" autocomplete="image" required />
+                <JetInputError for="image" class="mt-2" />
+              </div>
+            </div>
+            <div class="w-full md:w-1/2">
+              <div class="mb-4">
+                <JetLabel for="imagevisible" value="Image visible" />
+                <JetSelect id="imagevisible" class="mt-1 block w-full" placeholder="imagevisible" v-model="form.imagevisible" name="imagevisible" autocomplete required>
+                  <option value="0">False</option>
+                  <option value="1">True</option>
+                </JetSelect>
+                <JetInputError for="imagevisible" class="mt-2" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="w-full card border-0 shadow-none">
+  <div class="card-header">Details</div>
+  <div class="card-body">
+    <div class="flex flex-wrap">
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="logo" value="Logo" />
+          <JetInput id="logo" type="url" class="mt-1 block w-full" placeholder="https://exemple.com/image.png" v-model="form.logo" name="logo" autocomplete="logo" required />
+          <JetInputError for="logo" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="emphasis" value="Emphasis" />
+          <JetInput id="emphasis" type="text" class="mt-1 block w-full" placeholder="Emphasis" v-model="form.emphasis" name="emphasis" autocomplete="emphasis" required />
+          <JetInputError for="emphasis" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="forgottext" value="Forgot text" />
+          <input id="forgottext" class="mt-1 block w-full" placeholder="Forgot text" v-model="form.forgottext" name="forgottext" autocomplete required>
+          <JetInputError for="forgottext" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="buttontext" value="Button text" />
+          <input id="buttontext" class="mt-1 block w-full" placeholder="Button text" v-model="form.buttontext" name="buttontext" autocomplete required>
+          <JetInputError for="buttontext" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="buttoncolor" value="Button color" />
+          <JetSelect id="buttoncolor" class="mt-1 block w-full" placeholder="Button color" v-model="form.buttoncolor" name="buttoncolor" autocomplete required>
+            <option value="bg-blue-600">Default</option>
+            <option value="btn-primary">Blue</option>
+            <option value="btn-info">Light blue</option>
+            <option value="btn-light">Light</option>
+            <option value="btn-danger">Red</option>
+            <option value="btn-warning">Yellow</option>
+            <option value="btn-dark">Black</option>
+          </JetSelect>
+          <JetInputError for="buttoncolor" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="buttontextcolor" value="Button Text Color" />
+          <JetSelect id="buttontextcolor" class="mt-1 block w-full" placeholder="Button text color" v-model="form.buttontextcolor" name="buttontextcolor" autocomplete required>
+            <option value="text-white">White</option>
+            <option value="text-primary">Blue</option>
+            <option value="text-info">Light blue</option>
+            <option value="text-light">Light</option>
+            <option value="text-danger">Red</option>
+            <option value="text-warning">Yellow</option>
+            <option value="text-dark">Black</option>
+          </JetSelect>
+          <JetInputError for="buttoncolor" class="mt-2" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="w-full card border-0 shadow-none">
+  <div class="card-header">Social Networks & External Providers</div>
+  <div class="card-body">
+    <div class="flex flex-wrap">
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="google" value="Enable Google" />
+          <JetSelect id="google" class="mt-1 block w-full" placeholder="Google" v-model="form.google" name="google" autocomplete required>
+            <option value="0">False</option>
+            <option value="1">True</option>
+          </JetSelect>
+          <JetInputError for="google" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="facebook" value="Enable Facebook" />
+          <JetSelect id="facebook" class="mt-1 block w-full" placeholder="Facebook" v-model="form.facebook" name="facebook" autocomplete required>
+            <option value="0">False</option>
+            <option value="1">True</option>
+          </JetSelect>
+          <JetInputError for="facebook" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="twitter" value="Enable Twitter" />
+          <JetSelect id="twitter" class="mt-1 block w-full" placeholder="Twitter" v-model="form.twitter" name="twitter" autocomplete required>
+            <option value="0">False</option>
+            <option value="1">True</option>
+          </JetSelect>
+          <JetInputError for="twitter" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="goprovider" value="Service provider of Google" />
+          <JetSelect id="goprovider" class="mt-1 block w-full" placeholder="Google Provide" v-model="form.goprovider" name="goprovider" autocomplete>
+            <option v-for="rowgo in services" :value="rowgo.id">{{ rowgo.name }} - {{ rowgo.domain }}</option>
+          </JetSelect>
+          <JetInputError for="goprovider" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="fbprovider" value="Service provider of Facebook" />
+          <JetSelect id="fbprovider" class="mt-1 block w-full" placeholder="Facebook Provider" v-model="form.fbprovider" name="fbprovider" autocomplete>
+            <option v-for="rowfb in services" :value="rowfb.id">{{ rowfb.name }} - {{ rowfb.domain }}</option>
+          </JetSelect>
+          <JetInputError for="fbprovider" class="mt-2" />
+        </div>
+      </div>
+      <div class="w-full md:w-1/3">
+        <div class="mb-4">
+          <JetLabel for="ttprovider" value="Service provider of Twitter" />
+          <JetSelect id="ttprovider" class="mt-1 block w-full" placeholder="Twitter Provider" v-model="form.ttprovider" name="ttprovider" autocomplete>
+            <option v-for="rowtt in services" :value="rowtt.id">{{ rowtt.name }} - {{ rowtt.domain }}</option>
+          </JetSelect>
+          <JetInputError for="ttprovider" class="mt-2" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="w-full text-center">
+  <JetButton type="submit" class="btn btn-primary" title="Adicionar" aria-label="Adicionar" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Adicionar</JetButton>
+</div>
+</div>
+
       </form>
 
 </AppLayout>

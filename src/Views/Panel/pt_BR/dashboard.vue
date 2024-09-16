@@ -39,169 +39,169 @@ const submit = (event) => {
 <template>
 <AppLayout :menulang="menulang" :menuitems="menuitems" :avatar="avatar" :role="role" :name="name" :version="version" :breadcrumbCurrentTitle="breadcrumbCurrentTitle" :breadcrumbCurrentSection="breadcrumbCurrentSection" :title="title">
 
-     <div class="row px-3">
-     <div class="col">
-     <div class="card shadow-none my-2">
-     <div class="row">
-         <div class="col-12 col-md-3 py-1 text-center mx-auto align-self-center border-0 bg-primary">
-         <i class="fa-solid fa-compact-disc h3 align-self-center text-white"></i>
-         </div>   
-         <div class="col-12 col-md-9 py-1 px-4 align-self-center border-0 bg-transparent">
-         <div class="fw-bold font-bold pt-3 align-self-center">Espaço em disco</div>
-		 <p>{{ diskfreespace }}/{{ disk }}</p>
-         </div>   
-     </div>
-     </div>
-     </div>
-	 
-     <div class="col">
-     <div class="card shadow-none my-2">
-     <div class="row">
-         <div class="col-12 col-md-3 py-1 text-center mx-auto align-self-center border-0 bg-warning">
-         <i class="fa-solid fa-users h3 align-self-center text-white"></i>
-         </div>   
-         <div class="col-12 col-md-9 py-1 px-4 align-self-center border-0 bg-transparent">
-         <div class="fw-bold font-bold pt-3 mt-1 align-self-center">Total de usuários</div>
-		 <p>{{ users }}</p>
-         </div>   
-     </div>
-     </div>
-     </div>
-     <div class="col">
-     <div class="card shadow-none my-2">
-     <div class="row">
-         <div class="col-12 col-md-3 py-1 text-center mx-auto align-self-center border-0 bg-success">
-         <i class="fa-solid fa-plug-circle-check h3 align-self-center text-white"></i>
-         </div>   
-         <div class="col-12 col-md-9 py-1 px-4 align-self-center border-0 bg-transparent">
-         <div class="fw-bold font-bold pt-3 mt-1 align-self-center">Plugins ativos</div>
-		 <p>{{ plugins }}</p>
-         </div>   
-     </div>
-     </div>
-     </div>
-     <div class="col">
-     <div class="card shadow-none my-2">
-     <div class="row">
-         <div class="col-12 col-md-3 py-1 text-center mx-auto align-self-center border-0 bg-danger">
-         <i class="fa-solid fa-globe h3 align-self-center text-white"></i>
-         </div>   
-         <div class="col-12 col-md-9 py-1 px-4 align-self-center border-0 bg-transparent">
-         <div class="fw-bold font-bold pt-3 mt-1 align-self-center">Dominios ativos</div>
-		 <p>{{ domains.length }}</p>
-         </div>   
-     </div>
-     </div>
-     </div>
+  <div class="flex flex-wrap px-3">
+    <div class="w-full md:w-1/2 lg:w-1/4">
+      <div class="shadow-none my-2">
+        <div class="flex">
+          <div class="w-full md:w-1/4 py-1 text-center mx-auto flex items-center justify-center bg-blue-500">
+            <i class="fa-solid fa-compact-disc text-white text-3xl"></i>
+          </div>   
+          <div class="w-full md:w-3/4 py-1 px-4 flex flex-col items-center bg-transparent">
+            <div class="font-bold pt-3">Espaço em disco</div>
+            <div>{{ diskfreespace }}/{{ disk }}</div>
+          </div>   
+        </div>
+      </div>
+    </div>
+    
+    <div class="w-full md:w-1/2 lg:w-1/4">
+      <div class="shadow-none my-2">
+        <div class="flex">
+          <div class="w-full md:w-1/4 py-1 text-center mx-auto flex items-center justify-center bg-yellow-500">
+            <i class="fa-solid fa-users text-white text-3xl"></i>
+          </div>   
+          <div class="w-full md:w-3/4 py-1 px-4 flex items-center bg-transparent">
+            <div class="font-bold pt-3 mt-1">Total de usuários</div>
+            <p>{{ users }}</p>
+          </div>   
+        </div>
+      </div>
+    </div>
+    
+    <div class="w-full md:w-1/2 lg:w-1/4">
+      <div class="shadow-none my-2">
+        <div class="flex">
+          <div class="w-full md:w-1/4 py-1 text-center mx-auto flex items-center justify-center bg-green-500">
+            <i class="fa-solid fa-plug-circle-check text-white text-3xl"></i>
+          </div>   
+          <div class="w-full md:w-3/4 py-1 px-4 flex items-center bg-transparent">
+            <div class="font-bold pt-3 mt-1">Plugins ativos</div>
+            <p>{{ plugins }}</p>
+          </div>   
+        </div>
+      </div>
+    </div>
+    
+    <div class="w-full md:w-1/2 lg:w-1/4">
+      <div class="shadow-none my-2">
+        <div class="flex">
+          <div class="w-full md:w-1/4 py-1 text-center mx-auto flex items-center justify-center bg-red-500">
+            <i class="fa-solid fa-globe text-white text-3xl"></i>
+          </div>   
+          <div class="w-full md:w-3/4 py-1 px-4 flex items-center bg-transparent">
+            <div class="font-bold pt-3 mt-1">Dominios ativos</div>
+            <p>{{ domains.length }}</p>
+          </div>   
+        </div>
+      </div>
+    </div>
+  </div>
 
-     </div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+  <div class="col">
+    <Link :href="route('managerstorange.index')" class="bg-gray-100 shadow-none my-2 text-center">
+      <div class="border-0 bg-transparent p-4">
+        <i class="fa-solid fa-cloud text-3xl"></i>
+      </div>   
+      <div class="border-0 bg-transparent p-4">
+        Armanezamento
+      </div>   
+    </Link>
+  </div>
+  
+  <div class="col">
+    <Link :href="route('manageremails.index')" class="bg-gray-100 shadow-none my-2 text-center">
+      <div class="border-0 bg-transparent p-4">
+        <i class="fa-solid fa-envelope text-3xl"></i>
+      </div>   
+      <div class="border-0 bg-transparent p-4">
+        Emails
+      </div>   
+    </Link>   
+  </div>   
 
-     <div class="row row-cols-1 row-cols-md-4 w-full w-100">
-     <div class="col">
-     <Link :href="route('managerstorange.index')" class="card text-center bg-light shadow-none my-2 ">
-         <div class="card-header border-0 bg-transparent">
-         <i class="fa-solid fa-cloud h3"></i>
-         </div>   
-         <div class="card-body border-0 bg-transparent">
-         Armanezamento
-         </div>   
-     </Link>
-     </div>
-	 
-     <div class="col">
-     <Link :href="route('manageremails.index')" class="card text-center bg-light shadow-none my-2 ">
-         <div class="card-header border-0 bg-transparent">
-         <i class="fa-solid fa-envelope h3"></i>
-         </div>   
-         <div class="card-body border-0 bg-transparent">
-         Emails
-         </div>   
-     </Link>   
-     </div>   
+  <div class="col">
+    <Link :href="route('managerusers.index')" class="bg-gray-100 shadow-none my-2 text-center">
+      <div class="border-0 bg-transparent p-4">
+        <i class="fa-solid fa-people-group text-3xl"></i>
+      </div>   
+      <div class="border-0 bg-transparent p-4">
+        Usuários
+      </div>   
+    </Link>   
+  </div>   
 
-     <div class="col">
-     <Link :href="route('managerusers.index')" class="card text-center bg-light shadow-none my-2">
-         <div class="card-header border-0 bg-transparent">
-         <i class="fa-solid fa-people-group h3"></i>
-         </div>   
-         <div class="card-body border-0 bg-transparent">
-         Usuários
-         </div>   
-     </Link>   
-     </div>   
+  <div class="col">
+    <Link :href="route('managersettings.index')" class="bg-gray-100 shadow-none my-2 text-center">
+      <div class="border-0 bg-transparent p-4">
+        <i class="fa-solid fa-gears text-3xl"></i>
+      </div>   
+      <div class="border-0 bg-transparent p-4">
+        Configurações
+      </div>   
+    </Link>   
+  </div>   
+</div>
 
-     <div class="col">
-     <Link :href="route('managersettings.index')" class="card text-center bg-light shadow-none my-2">
-         <div class="card-header border-0 bg-transparent">
-         <i class="fa-solid fa-gears h3"></i>
-         </div>   
-         <div class="card-body border-0 bg-transparent">
-         Configurações
-         </div>   
-     </Link>   
-     </div>   
-     </div> 
-
-     <div class="row bg-light py-4 px-3 mt-4">
-         <div class="col-12 col-md-6">
-             <div class="card shadow-none h-100">
-                 <div class="card-header border-0 bg-white">
-				 <div class="h4">Domains</div>
-				 </div>
-                 <div class="card-body table-responsive">
-	                 <table class="table table-hover">
-                     <thead>
-                       <tr>
-                         <th scope="col">#</th>
-                         <th scope="col">Domain</th>
-                         <th scope="col">Status</th>
-                         <th scope="col">Atualizado em</th>
-                       </tr>
-                     </thead>
-                     <tbody>
-                       <tr v-for="(row,index) in domains">
-                         <th scope="row">{{ row.id }}</th>
-                         <td>{{ row.domain }}</td>
-                         <td>{{ row.status }}</td>
-                         <td>{{ new Date(row.updated_at).toLocaleString() }}</td>
-                       </tr>
-                     </tbody>
-                     </table>
-                 </div>   
-             </div>   
-         </div>   
-         <div class="col-12 col-md-6">
-             <div class="card shadow-none h-100">
-                 <div class="card-header border-0 bg-white">
-				 <div class="h4">Shortcuts</div>
-				 </div>
-                 <div class="card-body">
-                     <ul class="list-group">
-                       <li class="list-group-item list-group-item-action border-light d-flex justify-content-between align-items-center">
-                         Otimizar o site
-                        <form id="optimize" method="POST" @submit.prevent="submit">
-                        <button type="submit" class="btn btn-primary" data-module="optimize" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"><i class="mdi mdi-lightning-bolt"></i></button>
-                        </form>
-                       </li>
-                       <li class="list-group-item list-group-item-action border-light d-flex justify-content-between align-items-center">
-                         Limpar o cache do site
-                         <form id="cleanall" method="POST" @submit.prevent="submit">
-                         <button type="submit" class="btn btn-primary" data-module="cleanall" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"><i class="mdi mdi-vacuum"></i></button>
-                         </form>
-                       </li>
-                       <li class="list-group-item list-group-item-action border-light d-flex justify-content-between align-items-center">
-                         Enviar um email
-                         <Link :href="route('manageremails.create')" class="btn btn-primary"><i class="mdi mdi-button-cursor"></i></Link>
-                       </li>
-                       <li class="list-group-item list-group-item-action border-light d-flex justify-content-between align-items-center">
-                         Criar novo usuário
-                         <Link :href="route('managerusers.create')" class="btn btn-primary"><i class="mdi mdi-account-multiple-plus"></i></Link>
-                       </li>
-                     </ul>	 
-                 </div>   
-             </div>   
-         </div>   
-     </div>   
- 
+<div class="flex flex-wrap bg-gray-100 py-4 px-3 mt-4">
+  <div class="w-full md:w-1/2">
+    <div class="shadow-none h-full">
+      <div class="border-0 bg-white p-4">
+        <div class="text-xl font-bold">Domains</div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th class="px-4 py-2">#</th>
+              <th class="px-4 py-2">Domain</th>
+              <th class="px-4 py-2">Status</th>
+              <th class="px-4 py-2">Atualizado em</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in domains" :key="index" class="hover:bg-gray-100">
+              <td class="border px-4 py-2">{{ row.id }}</td>
+              <td class="border px-4 py-2">{{ row.domain }}</td>
+              <td class="border px-4 py-2">{{ row.status }}</td>
+              <td class="border px-4 py-2">{{ new Date(row.updated_at).toLocaleString() }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>   
+    </div>   
+  </div>   
+  <div class="w-full md:w-1/2">
+    <div class="shadow-none h-full">
+      <div class="border-0 bg-white p-4">
+        <div class="text-xl font-bold">Shortcuts</div>
+      </div>
+      <div class="p-4 bg-white">
+        <ul class="list-none bg-white">
+          <li class="flex justify-between items-center border-b py-2">
+            Otimizar o site
+            <form id="optimize" method="POST" @submit.prevent="submit">
+              <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded" data-module="optimize" :class="{ 'opacity-50': form.processing }" :disabled="form.processing"><i class="mdi mdi-lightning-bolt"></i></button>
+            </form>
+          </li>
+          <li class="flex justify-between items-center border-b py-2">
+            Limpar o cache do site
+            <form id="cleanall" method="POST" @submit.prevent="submit">
+              <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded" data-module="cleanall" :class="{ 'opacity-50': form.processing }" :disabled="form.processing"><i class="mdi mdi-vacuum"></i></button>
+            </form>
+          </li>
+          <li class="flex justify-between items-center border-b py-2">
+            Enviar um email
+            <Link :href="route('manageremails.create')" class="bg-blue-500 text-white px-4 py-2 rounded"><i class="mdi mdi-button-cursor"></i></Link>
+          </li>
+          <li class="flex justify-between items-center border-b py-2">
+            Criar novo usuário
+            <Link :href="route('managerusers.create')" class="bg-blue-500 text-white px-4 py-2 rounded"><i class="mdi mdi-account-multiple-plus"></i></Link>
+          </li>
+        </ul>	 
+      </div>   
+    </div>   
+  </div>   
+</div>    
 </AppLayout>
 </template>

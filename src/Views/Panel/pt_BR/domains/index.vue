@@ -42,38 +42,37 @@ const Pagination = defineAsyncComponent({
 })
 
 </script>
-
 <template>
 <AppLayout :menulang="menulang" :menuitems="menuitems" :avatar="avatar" :role="role" :name="name" :version="version" :breadcrumbCurrentTitle="breadcrumbCurrentTitle" :breadcrumbCurrentSection="breadcrumbCurrentSection" :title="title">
         <template #breadcrumb></template>
-        <div class="table-responsive">
-	                 <table class="table table-hover">
-                     <thead>
+        <div class="overflow-x-auto">
+	                 <table class="min-w-full divide-y divide-gray-200">
+                     <thead class="bg-gray-50">
                        <tr>
-                         <th scope="col">#</th>
-                         <th scope="col">Domain</th>
-                         <th scope="col">Status</th>
-                         <th scope="col">Atualizado em</th>
-                         <th scope="col">Ação</th>
+                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Domain</th>
+                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Atualizado em</th>
+                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ação</th>
                        </tr>
                      </thead>
-                     <tbody>
-                       <tr v-for="(row,index) in domains.data">
-                         <th scope="row">{{ row.id }}</th>
-                         <td>{{ row.domain }}</td>
-                         <td>{{ row.status }}</td>
-                         <td>{{ new Date(row.updated_at).toLocaleString() }}</td>
-                         <td>
-                         <div class="btn-group">
-                         <form v-if="row.status == 'pending'" :id="row.id" class="w-100" @submit.prevent="approved">
-						 <JetButton type="submit" class="btn btn-outline-light text-success fw-bold font-bold" data-event="submit" data-function="store" :data-domain="row.id"  :class="{ 'opacity-25': formapproved.processing }" :disabled="formapproved.processing" data-bs-toggle="tooltip" data-bs-placement="top" title="To approve"><i class="mdi mdi-check-circle"></i></JetButton>
+                     <tbody class="bg-white divide-y divide-gray-200">
+                       <tr v-for="(row,index) in domains.data" :key="index">
+                         <th scope="row" class="px-6 py-4 whitespace-nowrap">{{ row.id }}</th>
+                         <td class="px-6 py-4 whitespace-nowrap">{{ row.domain }}</td>
+                         <td class="px-6 py-4 whitespace-nowrap">{{ row.status }}</td>
+                         <td class="px-6 py-4 whitespace-nowrap">{{ new Date(row.updated_at).toLocaleString() }}</td>
+                         <td class="px-6 py-4 whitespace-nowrap">
+                         <div class="flex space-x-2">
+                         <form v-if="row.status == 'pending'" :id="row.id" class="w-full" @submit.prevent="approved">
+						 <JetButton type="submit" class="bg-transparent text-green-500 font-bold" data-event="submit" data-function="store" :data-domain="row.id"  :class="{ 'opacity-25': formapproved.processing }" :disabled="formapproved.processing" title="To approve"><i class="mdi mdi-check-circle"></i></JetButton>
                          </form>
-                         <form :id="row.id" class="w-100" @submit.prevent="submit">
+                         <form :id="row.id" class="w-full" @submit.prevent="submit">
                           <JetValidationErrors class="mb-4" />
-                          <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+                          <div v-if="status" class="mb-4 text-sm text-green-600">
                               {{ status }}
                           </div>
-                          <JetButton class="btn btn-outline-light bg-light rounded-0 border-0 text-dark" type="submit" data-event="submit" data-function="delete" :data-domain="row.id" :class="{ 'opacity-25': form.processing }" :disabled="form.processing" data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir"><i class="mdi mdi-delete"></i> </JetButton>
+                          <JetButton class="bg-transparent text-gray-700" type="submit" data-event="submit" data-function="delete" :data-domain="row.id" :class="{ 'opacity-25': form.processing }" :disabled="form.processing" title="Excluir"><i class="mdi mdi-delete"></i> </JetButton>
 						 </form>
 						 </div>
 						 </td>
@@ -81,7 +80,7 @@ const Pagination = defineAsyncComponent({
                      </tbody>
                      </table>
         </div>
-		 <div class="card card-body border-light rounded-0 mt-2 shadow-none"><Pagination class="" :links="domains.links" /></div>
+		 <div class="mt-2"><Pagination :links="domains.links" /></div>
  
 </AppLayout>
 </template>

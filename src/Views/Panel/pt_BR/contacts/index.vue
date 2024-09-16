@@ -37,49 +37,47 @@ const Pagination = defineAsyncComponent({
 })
 
 </script>
-
 <template>
 <AppLayout :menulang="menulang" :menuitems="menuitems" :avatar="avatar" :role="role" :name="name" :version="version" :breadcrumbCurrentTitle="breadcrumbCurrentTitle" :breadcrumbCurrentSection="breadcrumbCurrentSection" :title="title">
-        <template #breadcrumb></template>
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>IP</th>
-                        <th>status</th>
-                        <th>Criado em</th>
-                        <th>Atualizado em</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(row, index) in contacts.data" :key="row.id">
-                        <td>{{ row.name }}</td>
-                        <td>{{ row.email }}</td>
-                        <td>{{ row.visitor }}</td>
-                        <td>{{ row.status }}</td>
-                        <td>{{ new Date(row.created_at).toLocaleString() }}</td>
-                        <td>{{ new Date(row.updated_at).toLocaleString() }}</td>
-                        <td>
-                        <div class="btn-group">
-						<Link :href="route('managercontacts.show', {id: row.id})" class="btn btn-outline-light text-dark" data-event="link" data-function="show" :data-contact="row.id" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver"><i class="mdi mdi-eye"></i></Link>
-						<Link :href="route('managercontacts.edit', {id: row.id})" class="btn btn-outline-light text-dark" data-event="link" data-function="edit" :data-contact="row.id" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="mdi mdi-pencil"></i></Link>
-                        <form :id="row.id" class="w-100" @submit.prevent="submit">
-                         <JetValidationErrors class="mb-4" />
-                         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-                             {{ status }}
-                         </div>
-                         <JetButton class="btn btn-outline-light bg-light rounded-0 border-0 text-dark" type="submit" data-event="submit" data-function="delete" :data-contact="row.id" :class="{ 'opacity-25': form.processing }" :disabled="form.processing" data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir"><i class="mdi mdi-delete"></i> </JetButton>
-						</form>
-						</div>
-						</td>
-                    </tr>
-				 </tbody>
-            </table>
-        </div>
-		 <div class="card card-body border-light rounded-0 mt-2 shadow-none"><Pagination class="" :links="contacts.links" /></div>
- 
+  <template #breadcrumb></template>
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr>
+          <th class="px-4 py-2">Nome</th>
+          <th class="px-4 py-2">Email</th>
+          <th class="px-4 py-2">IP</th>
+          <th class="px-4 py-2">status</th>
+          <th class="px-4 py-2">Criado em</th>
+          <th class="px-4 py-2">Atualizado em</th>
+          <th class="px-4 py-2">Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(row, index) in contacts.data" :key="row.id" class="hover:bg-gray-100">
+          <td class="px-4 py-2">{{ row.name }}</td>
+          <td class="px-4 py-2">{{ row.email }}</td>
+          <td class="px-4 py-2">{{ row.visitor }}</td>
+          <td class="px-4 py-2">{{ row.status }}</td>
+          <td class="px-4 py-2">{{ new Date(row.created_at).toLocaleString() }}</td>
+          <td class="px-4 py-2">{{ new Date(row.updated_at).toLocaleString() }}</td>
+          <td class="px-4 py-2">
+            <div class="flex space-x-2">
+              <Link :href="route('managercontacts.show', {id: row.id})" class="bg-gray-200 text-gray-800 px-2 py-1 rounded" data-event="link" data-function="show" :data-contact="row.id" title="Ver"><i class="mdi mdi-eye"></i></Link>
+              <Link :href="route('managercontacts.edit', {id: row.id})" class="bg-gray-200 text-gray-800 px-2 py-1 rounded" data-event="link" data-function="edit" :data-contact="row.id" title="Editar"><i class="mdi mdi-pencil"></i></Link>
+              <form :id="row.id" @submit.prevent="submit" class="inline">
+                <JetValidationErrors class="mb-4" />
+                <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+                  {{ status }}
+                </div>
+                <JetButton class="bg-gray-200 text-gray-800 px-2 py-1 rounded" type="submit" data-event="submit" data-function="delete" :data-contact="row.id" :class="{ 'opacity-50': form.processing }" :disabled="form.processing" title="Excluir"><i class="mdi mdi-delete"></i></JetButton>
+              </form>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-2"><Pagination :links="contacts.links" /></div>
 </AppLayout>
 </template>
